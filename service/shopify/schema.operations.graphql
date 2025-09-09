@@ -1,0 +1,247 @@
+mutation FulfillmentCreateV2($fulfillment: FulfillmentV2Input!) {
+    fulfillmentCreateV2(fulfillment: $fulfillment) {
+        fulfillment {
+            id
+            status
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
+mutation PerformBulkOperation($query: String!) {
+    bulkOperationRunQuery(query: $query) {
+        bulkOperation {
+            id
+        }
+        userErrors {
+            field
+            message
+            code
+        }
+    }
+}
+
+mutation TagsAdd($id: ID!, $tag: String!) {
+    tagsAdd(id: $id, tags: [$tag]) {
+        __typename
+        userErrors {
+            message
+        }
+    }
+}
+
+mutation UpdateTrackingInfo($fulfillmentId: ID!, $notifyCustomer: Boolean, $trackingInfoInput: FulfillmentTrackingInput!) {
+    fulfillmentTrackingInfoUpdateV2(fulfillmentId: $fulfillmentId, notifyCustomer: $notifyCustomer, trackingInfoInput: $trackingInfoInput) {
+        fulfillment {
+            trackingInfo {
+                company
+                number
+                url
+            }
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
+query CurrentBulkOperation {
+    currentBulkOperation {
+        id
+        status
+        url
+        createdAt
+        completedAt
+    }
+}
+
+query GetFulfillment($id: ID!) {
+    fulfillment(id: $id) {
+        status
+    }
+}
+
+query GetFulfillmentOrder($id: ID!) {
+    fulfillmentOrder(id: $id) {
+        fulfillments(first: 20) {
+            nodes {
+                id
+                status
+            }
+        }
+    }
+}
+
+query GetLocation($id: ID!) {
+    location(id: $id) {
+        id
+        name
+        isActive
+        address {
+            address1
+            address2
+            city
+            countryCode
+            phone
+            province
+            zip
+        }
+    }
+}
+
+query GetLocations {
+    locationsAvailableForDeliveryProfilesConnection(first: 100) {
+        nodes{
+            id
+            name
+            isActive
+            address {
+                address1
+                address2
+                city
+                countryCode
+                phone
+                province
+                zip
+            }
+        }
+    }
+}
+
+query MyShop {
+    shop {
+        name
+        email
+        orderNumberFormatPrefix
+        orderNumberFormatSuffix
+        currencyCode
+    }
+}
+
+query DeliveryProfiles {
+    deliveryProfiles(first: 50) {
+        nodes {
+            id
+            name
+        }
+    }
+}
+
+query OrderDetailById($id: ID!) {
+    order(id: $id) {
+        id
+        email
+        name
+        note
+        phone
+        shippingLine {
+            title
+        }
+        transactions {
+            gateway
+        }
+        totalPriceSet {
+            presentmentMoney {
+                amount
+                currencyCode
+            }
+            shopMoney {
+                amount
+                currencyCode
+            }
+        }
+        currentTotalPriceSet {
+            presentmentMoney {
+                amount
+                currencyCode
+            }
+            shopMoney {
+                amount
+                currencyCode
+            }
+        }
+        fulfillmentOrders(first: 10, query: "status:OPEN OR status:CLOSED") {
+            nodes {
+                id
+                status
+                lineItems(first: 20) {
+                    nodes {
+                        requiresShipping
+                        productTitle
+                        variantTitle
+                        sku
+                        totalQuantity
+                        originalUnitPriceSet {
+                            presentmentMoney {
+                                amount
+                                currencyCode
+                            }
+                            shopMoney {
+                                amount
+                                currencyCode
+                            }
+                        }
+                        weight {
+                            unit
+                            value
+                        }
+                    }
+                }
+                assignedLocation {
+                    name
+                    phone
+                    address1
+                    address2
+                    city
+                    province
+                    countryCode
+                    zip
+                    location {
+                        id
+                    }
+                }
+                destination {
+                    address1
+                    address2
+                    city
+                    company
+                    province
+                    countryCode
+                    firstName
+                    lastName
+                    zip
+                    phone
+                    email
+                }
+                fulfillments(first: 1) {
+                    nodes {
+                        status
+                        id
+                        service {
+                            type
+                        }
+                    }
+                }
+            }
+        }
+        customAttributes {
+            key
+            value
+        }
+    }
+}
+
+query OrderNames($query: String!) {
+    orders(query: $query, first: 50) {
+        edges {
+             node {
+                 id
+                 name
+             }
+        }
+    }
+}
