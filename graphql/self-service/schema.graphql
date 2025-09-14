@@ -3,9 +3,21 @@ type Query {
     product(id: ID!): Product
 }
 
+type Mutation {
+    createDraftOrder: Boolean!
+}
+
 type PriceRange {
     minVariantPrice: Float
     maxVariantPrice: Float
+}
+
+type ProductVariant {
+    id: ID!
+    title: String!
+    sku: String!
+    price: Float!
+    image: [URL!]
 }
 
 type Product {
@@ -13,6 +25,7 @@ type Product {
     description: String!
     priceRange: PriceRange!
     images: [URL!]
+    variants: [ProductVariant!]
 }
 
 scalar URL

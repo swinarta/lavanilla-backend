@@ -2,16 +2,28 @@
 
 package model
 
+type Mutation struct {
+}
+
 type PriceRange struct {
 	MinVariantPrice *float64 `json:"minVariantPrice,omitempty"`
 	MaxVariantPrice *float64 `json:"maxVariantPrice,omitempty"`
 }
 
 type Product struct {
-	ID          string      `json:"id"`
-	Description string      `json:"description"`
-	PriceRange  *PriceRange `json:"priceRange"`
-	Images      []string    `json:"images,omitempty"`
+	ID          string            `json:"id"`
+	Description string            `json:"description"`
+	PriceRange  *PriceRange       `json:"priceRange"`
+	Images      []string          `json:"images,omitempty"`
+	Variants    []*ProductVariant `json:"variants,omitempty"`
+}
+
+type ProductVariant struct {
+	ID    string   `json:"id"`
+	Title string   `json:"title"`
+	Sku   string   `json:"sku"`
+	Price float64  `json:"price"`
+	Image []string `json:"image,omitempty"`
 }
 
 type Query struct {

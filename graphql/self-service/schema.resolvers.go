@@ -7,11 +7,32 @@ package self_service
 import (
 	"context"
 	"lavanilla/graphql/self-service/model"
+	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
 	"strconv"
 
 	"github.com/samber/lo"
 )
+
+// CreateDraftOrder is the resolver for the createDraftOrder field.
+func (r *mutationResolver) CreateDraftOrder(ctx context.Context) (bool, error) {
+	// p, err := r.ShopifyClient.CreateDraftOrder(ctx)
+	// if err != nil || p.DraftOrderCreate.UserErrors != nil {
+	// 	log.Println(err)
+	// 	log.Println(p.DraftOrderCreate.UserErrors)
+	// 	if err != nil {
+	// 		return false, err
+	// 	}
+	// 	return false, errors.New(p.DraftOrderCreate.UserErrors[0].Message)
+	// }
+	// log.Println(p)
+	client := custom.NewClient()
+	_, err := client.CreateDraftOrder(ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
 
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
@@ -39,6 +60,7 @@ func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) 
 			Images: lo.Map(product.Node.Media.Nodes, func(imageEdge shopify.GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia, _ int) string {
 				return imageEdge.GetPreview().Image.Url
 			}),
+			// Variants: lo.Map(product.Node.Media),
 		})
 	}
 	return result, nil
@@ -56,10 +78,26 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 		Images: lo.Map(productResp.Product.Media.Nodes, func(imageEdge shopify.GetProductProductMediaMediaConnectionNodesMedia, _ int) string {
 			return imageEdge.GetPreview().Image.Url
 		}),
+		Variants: lo.Map(productResp.Product.Variants.Nodes, func(variantEdge shopify.GetProductProductVariantsProductVariantConnectionNodesProductVariant, _ int) *model.ProductVariant {
+			price, err := strconv.ParseFloat(variantEdge.Price, 64)
+			if err != nil {
+				price = 0
+			}
+			return &model.ProductVariant{
+				ID:    variantEdge.Id,
+				Title: variantEdge.Title,
+				Sku:   variantEdge.Sku,
+				Price: price,
+			}
+		}),
 	}, nil
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

@@ -5,6 +5,7 @@ generate:
 
 client:
 	cd service/shopify && go get github.com/Khan/genqlient/generate && go run -v github.com/Khan/genqlient
+	cd service/custom && go get github.com/Khan/genqlient/generate && go run -v github.com/Khan/genqlient
 	go mod tidy
 
 all: generate client
