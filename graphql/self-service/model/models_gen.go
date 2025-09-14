@@ -2,7 +2,16 @@
 
 package model
 
+type LineItem struct {
+	VariantID string `json:"variantId"`
+	Quantity  int    `json:"quantity"`
+}
+
 type Mutation struct {
+}
+
+type OrderInput struct {
+	Items []*LineItem `json:"items"`
 }
 
 type PriceRange struct {

@@ -4,7 +4,16 @@ type Query {
 }
 
 type Mutation {
-    createDraftOrder: Boolean!
+    createOrder(input: OrderInput!): Boolean!
+}
+
+input OrderInput {
+    items: [LineItem!]!
+}
+
+input LineItem {
+    variantId: String!
+    quantity: Int!
 }
 
 type PriceRange {

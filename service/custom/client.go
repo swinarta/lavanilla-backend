@@ -5,10 +5,12 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"lavanilla/graphql/self-service/model"
 	"log"
 	"net/http"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/samber/lo"
 )
 
 const (
@@ -56,14 +58,14 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) CreateDraftOrder(ctx context.Context) (*CreateDraftOrderResponse, error) {
+func (c *Client) CreateDraftOrder(ctx context.Context, input model.OrderInput) (*CreateDraftOrderResponse, error) {
 	return CreateDraftOrder(ctx, c.graphql, DraftOrderInput{
 		Email: "sastraw@gmail.com",
-		LineItems: []DraftOrderLineItemInput{
-			{
-				VariantId: "gid://shopify/ProductVariant/45539712303303",
-				Quantity:  2,
-			},
-		},
+		LineItems: lo.Map(input.Items, func(item *model.LineItem, _ int) DraftOrderLineItemInput {
+			return DraftOrderLineItemInput{
+				VariantId: item.VariantID,
+				Quantity:  item.Quantity,
+			}
+		}),
 	})
 }

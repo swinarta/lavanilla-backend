@@ -14,20 +14,10 @@ import (
 	"github.com/samber/lo"
 )
 
-// CreateDraftOrder is the resolver for the createDraftOrder field.
-func (r *mutationResolver) CreateDraftOrder(ctx context.Context) (bool, error) {
-	// p, err := r.ShopifyClient.CreateDraftOrder(ctx)
-	// if err != nil || p.DraftOrderCreate.UserErrors != nil {
-	// 	log.Println(err)
-	// 	log.Println(p.DraftOrderCreate.UserErrors)
-	// 	if err != nil {
-	// 		return false, err
-	// 	}
-	// 	return false, errors.New(p.DraftOrderCreate.UserErrors[0].Message)
-	// }
-	// log.Println(p)
+// CreateOrder is the resolver for the createOrder field.
+func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (bool, error) {
 	client := custom.NewClient()
-	_, err := client.CreateDraftOrder(ctx)
+	_, err := client.CreateDraftOrder(ctx, input)
 	if err != nil {
 		return false, err
 	}
