@@ -30,4 +30,9 @@ jobs:
 
       - run: sam build
 
-      - run: sam deploy --config-env development AppEnv=DEV --resolve-s3 --stack-name lavanilla-backend-dev
+      - run: sam deploy \
+          --config-env development \
+          --resolve-s3 \
+          --stack-name lavanilla-backend-dev \
+          --parameter-overrides AppEnv=DEV \
+          --capabilities CAPABILITY_IAM
