@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-lambda-go v1.41.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/gin-gonic/gin v1.10.1
+	github.com/samber/lo v1.51.0
 	github.com/vektah/gqlparser/v2 v2.5.30
 )
 

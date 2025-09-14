@@ -2601,6 +2601,8 @@ func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdge) GetNod
 // Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
 // including limitations and considerations.
 type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
 	// A single-line description of the product,
 	// with [HTML tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
 	Description string `json:"description"`
@@ -2608,6 +2610,14 @@ type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct 
 	// For example, if the product is priced between $10.00 and $50.00,
 	// then the price range is $10.00 - $50.00.
 	PriceRangeV2 GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 `json:"priceRangeV2"`
+	// The [media](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// associated with the product. Valid media are images, 3D models, videos.
+	Media GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection `json:"media"`
+}
+
+// GetId returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.Id, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetId() string {
+	return v.Id
 }
 
 // GetDescription returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.Description, and is useful for accessing the field via an interface.
@@ -2618,6 +2628,350 @@ func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProd
 // GetPriceRangeV2 returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.PriceRangeV2, and is useful for accessing the field via an interface.
 func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetPriceRangeV2() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 {
 	return v.PriceRangeV2
+}
+
+// GetMedia returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetMedia() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection {
+	return v.Media
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection includes the requested fields of the GraphQL type MediaConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Media.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection struct {
+	// A list of nodes that are contained in MediaEdge. You can fetch data about an
+	// individual node, or you can follow the edges to fetch data about a collection
+	// of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia `json:"-"`
+}
+
+// GetNodes returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection) GetNodes() []GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia {
+	return v.Nodes
+}
+
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+}
+
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection) __premarshalJSON() (*__premarshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection, error) {
+	var retval __premarshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnection.Nodes: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo includes the requested fields of the GraphQL type ExternalVideo.
+// The GraphQL type's documentation follows.
+//
+// Represents a video hosted outside of Shopify.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
+}
+
+// GetTypename returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo) GetTypename() string {
+	return v.Typename
+}
+
+// GetPreview returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo) GetPreview() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia includes the requested fields of the GraphQL interface Media.
+//
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia is implemented by the following types:
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo
+// The GraphQL type's documentation follows.
+//
+// Represents a media interface.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia interface {
+	implementsGraphQLInterfaceGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+	// GetPreview returns the interface-field "preview" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The preview image for the media.
+	GetPreview() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage
+}
+
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo) implementsGraphQLInterfaceGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia() {
+}
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage) implementsGraphQLInterfaceGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia() {
+}
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d) implementsGraphQLInterfaceGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia() {
+}
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo) implementsGraphQLInterfaceGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia() {
+}
+
+func __unmarshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia(b []byte, v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "ExternalVideo":
+		*v = new(GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo)
+		return json.Unmarshal(b, *v)
+	case "MediaImage":
+		*v = new(GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage)
+		return json.Unmarshal(b, *v)
+	case "Model3d":
+		*v = new(GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d)
+		return json.Unmarshal(b, *v)
+	case "Video":
+		*v = new(GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Media.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia(v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo:
+		typename = "ExternalVideo"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesExternalVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage:
+		typename = "MediaImage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d:
+		typename = "Model3d"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo:
+		typename = "Video"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia: "%T"`, v)
+	}
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage includes the requested fields of the GraphQL type MediaImage.
+// The GraphQL type's documentation follows.
+//
+// The `MediaImage` object represents an image hosted on Shopify's
+// [content delivery network (CDN)](https://shopify.dev/docs/storefronts/themes/best-practices/performance/platform#shopify-cdn).
+// Shopify CDN is a content system that serves as the primary way to store,
+// manage, and deliver visual content for products, variants, and other resources across the Shopify platform.
+//
+// The `MediaImage` object provides information to:
+//
+// - Store and display product and variant images across online stores, admin interfaces, and mobile apps.
+// - Retrieve visual branding elements, including logos, banners, favicons, and background images in checkout flows.
+// - Retrieve signed URLs for secure, time-limited access to original image files.
+//
+// Each `MediaImage` object provides both the processed image data (with automatic optimization and CDN delivery)
+// and access to the original source file. The image processing is handled asynchronously, so images
+// might not be immediately available after upload. The
+// [`status`](https://shopify.dev/docs/api/admin-graphql/latest/objects/mediaimage#field-MediaImage.fields.status)
+// field indicates when processing is complete and the image is ready for use.
+//
+// The `MediaImage` object implements the [`Media`](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/Media)
+// interface alongside other media types, like videos and 3D models.
+//
+// Learn about
+// managing media for [products](https://shopify.dev/docs/apps/build/online-store/product-media),
+// [product variants](https://shopify.dev/docs/apps/build/online-store/product-variant-media), and
+// [asynchronous media management](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components#asynchronous-media-management).
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
+}
+
+// GetTypename returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage) GetTypename() string {
+	return v.Typename
+}
+
+// GetPreview returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaImage) GetPreview() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage includes the requested fields of the GraphQL type MediaPreviewImage.
+// The GraphQL type's documentation follows.
+//
+// Represents the preview image for a media.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage struct {
+	// The preview image for the media. Returns `null` until `status` is `READY`.
+	Image GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage `json:"image"`
+}
+
+// GetImage returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage.Image, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage) GetImage() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage {
+	return v.Image
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage includes the requested fields of the GraphQL type Image.
+// The GraphQL type's documentation follows.
+//
+// Represents an image resource.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage struct {
+	// The location of the image as a URL.
+	//
+	// If no transform options are specified, then the original image will be preserved including any pre-applied transforms.
+	//
+	// All transformation options are considered "best-effort". Any transformation
+	// that the original image type doesn't support will be ignored.
+	//
+	// If you need multiple variations of the same image, then you can use [GraphQL
+	// aliases](https://graphql.org/learn/queries/#aliases).
+	Url string `json:"url"`
+}
+
+// GetUrl returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage.Url, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage) GetUrl() string {
+	return v.Url
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d includes the requested fields of the GraphQL type Model3d.
+// The GraphQL type's documentation follows.
+//
+// Represents a Shopify hosted 3D model.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
+}
+
+// GetTypename returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d) GetTypename() string {
+	return v.Typename
+}
+
+// GetPreview returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesModel3d) GetPreview() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo includes the requested fields of the GraphQL type Video.
+// The GraphQL type's documentation follows.
+//
+// Represents a Shopify hosted video.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
+}
+
+// GetTypename returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo) GetTypename() string {
+	return v.Typename
+}
+
+// GetPreview returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesVideo) GetPreview() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
 }
 
 // GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 includes the requested fields of the GraphQL type ProductPriceRangeV2.
@@ -4634,6 +4988,7 @@ query GetProductsSelfService {
 	products(first: 50) {
 		edges {
 			node {
+				id
 				description
 				priceRangeV2 {
 					minVariantPrice {
@@ -4641,6 +4996,16 @@ query GetProductsSelfService {
 					}
 					maxVariantPrice {
 						amount
+					}
+				}
+				media(first: 1) {
+					nodes {
+						__typename
+						preview {
+							image {
+								url
+							}
+						}
 					}
 				}
 			}

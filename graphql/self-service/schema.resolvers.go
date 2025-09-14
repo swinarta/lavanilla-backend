@@ -9,6 +9,9 @@ import (
 	"fmt"
 	"lavanilla/graphql/self-service/model"
 	"lavanilla/service/shopify"
+	"strconv"
+
+	"github.com/samber/lo"
 )
 
 // Ok is the resolver for the ok field.
@@ -19,13 +22,31 @@ func (r *queryResolver) Ok(ctx context.Context) (bool, error) {
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
 	client := shopify.NewClient()
-	a, err := client.GetProductsSelfService(ctx)
+	productConn, err := client.GetProductsSelfService(ctx)
 	if err != nil {
 		return nil, err
 	}
 	var result []*model.Product
-	for _, i2 := range a.Products.Edges {
-		result = append(result, &model.Product{Description: &i2.Node.Description})
+	for _, product := range productConn.Products.Edges {
+		maxPrice, err := strconv.ParseFloat(product.Node.PriceRangeV2.MaxVariantPrice.Amount, 64)
+		if err != nil {
+			return nil, err
+		}
+		minPrice, err := strconv.ParseFloat(product.Node.PriceRangeV2.MinVariantPrice.Amount, 64)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &model.Product{
+			ID:          product.Node.Id,
+			Description: product.Node.Description,
+			PriceRange: &model.PriceRange{
+				MaxVariantPrice: &maxPrice,
+				MinVariantPrice: &minPrice,
+			},
+			Images: lo.Map(product.Node.Media.Nodes, func(imageEdge shopify.GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia, _ int) string {
+				return imageEdge.GetPreview().Image.Url
+			}),
+		})
 	}
 	return result, nil
 }

@@ -204,6 +204,7 @@ query GetProductsSelfService {
     products(first: 50) {
         edges {
             node {
+                id
                 description
                 priceRangeV2 {
                     minVariantPrice {
@@ -213,6 +214,16 @@ query GetProductsSelfService {
                         amount
                     }
                 }
+                media(first: 1) {
+                    nodes {
+                        preview {
+                            image {
+                                url
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }

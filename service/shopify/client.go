@@ -11,7 +11,7 @@ import (
 
 const (
 	shopId                   = "lvn-dev.myshopify.com"
-	accessToken              = "effc2a0026e267bc8e50b06fef29804e"
+	accessToken              = "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"
 	shopifyGraphqlApiVersion = "2025-10"
 	headerKeyAccessToken     = "X-Shopify-Access-Token"
 	headerKeyUserAgent       = "User-Agent"
@@ -48,6 +48,5 @@ func (c *Client) AddTag(ctx context.Context, orderId string, tag string) (*TagsA
 }
 
 func (c *Client) GetProductsSelfService(ctx context.Context) (*GetProductsSelfServiceResponse, error) {
-	log.Printf("GetProductsSelfService: \n")
 	return GetProductsSelfService(ctx, c.graphql)
 }

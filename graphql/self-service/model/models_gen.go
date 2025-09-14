@@ -2,8 +2,16 @@
 
 package model
 
+type PriceRange struct {
+	MinVariantPrice *float64 `json:"minVariantPrice,omitempty"`
+	MaxVariantPrice *float64 `json:"maxVariantPrice,omitempty"`
+}
+
 type Product struct {
-	Description *string `json:"description,omitempty"`
+	ID          string      `json:"id"`
+	Description string      `json:"description"`
+	PriceRange  *PriceRange `json:"priceRange"`
+	Images      []string    `json:"images,omitempty"`
 }
 
 type Query struct {
