@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	shopId                   = "lvn-dev"
+	shopId                   = "lvn-dev.myshopify.com"
 	accessToken              = "effc2a0026e267bc8e50b06fef29804e"
 	shopifyGraphqlApiVersion = "2025-10"
 	headerKeyAccessToken     = "X-Shopify-Access-Token"
