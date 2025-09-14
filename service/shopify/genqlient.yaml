@@ -15,3 +15,5 @@ bindings:
     type: string
   ARN:
     type: string
+  Money:
+    type: string

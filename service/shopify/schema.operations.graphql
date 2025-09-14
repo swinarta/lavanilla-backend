@@ -76,52 +76,6 @@ query GetFulfillmentOrder($id: ID!) {
     }
 }
 
-query GetLocation($id: ID!) {
-    location(id: $id) {
-        id
-        name
-        isActive
-        address {
-            address1
-            address2
-            city
-            countryCode
-            phone
-            province
-            zip
-        }
-    }
-}
-
-query GetLocations {
-    locationsAvailableForDeliveryProfilesConnection(first: 100) {
-        nodes{
-            id
-            name
-            isActive
-            address {
-                address1
-                address2
-                city
-                countryCode
-                phone
-                province
-                zip
-            }
-        }
-    }
-}
-
-query MyShop {
-    shop {
-        name
-        email
-        orderNumberFormatPrefix
-        orderNumberFormatSuffix
-        currencyCode
-    }
-}
-
 query DeliveryProfiles {
     deliveryProfiles(first: 50) {
         nodes {
@@ -242,6 +196,55 @@ query OrderNames($query: String!) {
                  id
                  name
              }
+        }
+    }
+}
+
+query GetProductsSelfService {
+    products(first: 50) {
+        edges {
+            node {
+                description
+                priceRangeV2 {
+                    minVariantPrice {
+                        amount
+                    }
+                    maxVariantPrice {
+                        amount
+                    }
+                }
+            }
+        }
+    }
+}
+
+query GetProduct($id: ID!) {
+    product(id: $id) {
+        description
+        variants(first: 10) {
+            nodes {
+                price
+                image {
+                    url
+                }
+            }
+        }
+        priceRangeV2 {
+            minVariantPrice {
+                amount
+            }
+            maxVariantPrice {
+                amount
+            }
+        }
+        media(first: 10) {
+            nodes {
+                preview {
+                    image {
+                        url
+                    }
+                }
+            }
         }
     }
 }

@@ -7,11 +7,27 @@ package self_service
 import (
 	"context"
 	"fmt"
+	"lavanilla/graphql/self-service/model"
+	"lavanilla/service/shopify"
 )
 
 // Ok is the resolver for the ok field.
 func (r *queryResolver) Ok(ctx context.Context) (bool, error) {
 	panic(fmt.Errorf("not implemented: Ok - ok"))
+}
+
+// Products is the resolver for the products field.
+func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
+	client := shopify.NewClient()
+	a, err := client.GetProductsSelfService(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var result []*model.Product
+	for _, i2 := range a.Products.Edges {
+		result = append(result, &model.Product{Description: &i2.Node.Description})
+	}
+	return result, nil
 }
 
 // Query returns QueryResolver implementation.

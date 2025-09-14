@@ -2,5 +2,9 @@
 
 package model
 
+type Product struct {
+	Description *string `json:"description,omitempty"`
+}
+
 type Query struct {
 }

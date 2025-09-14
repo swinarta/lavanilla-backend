@@ -4,6 +4,8 @@ package shopify
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -2023,255 +2025,686 @@ type GetFulfillmentResponse struct {
 // GetFulfillment returns GetFulfillmentResponse.Fulfillment, and is useful for accessing the field via an interface.
 func (v *GetFulfillmentResponse) GetFulfillment() GetFulfillmentFulfillment { return v.Fulfillment }
 
-// GetLocationLocation includes the requested fields of the GraphQL type Location.
+// GetProductProduct includes the requested fields of the GraphQL type Product.
 // The GraphQL type's documentation follows.
 //
-// Represents the location where the physical good resides. You can stock inventory at active locations. Active
-// locations that have `fulfills_online_orders: true` and are configured with a shipping rate, pickup enabled or
-// local delivery will be able to sell from their storefront.
-type GetLocationLocation struct {
-	// A globally-unique ID.
-	Id string `json:"id"`
-	// The name of the location.
-	Name string `json:"name"`
-	// Whether the location is active. A deactivated location can be activated (change `isActive: true`) if it has
-	// `activatable` set to `true` by calling the
-	// [`locationActivate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/locationActivate)
-	// mutation.
-	IsActive bool `json:"isActive"`
-	// The address of this location.
-	Address GetLocationLocationAddress `json:"address"`
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can
+// include various details such as title, description, price, images, and options
+// such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
+// to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductProduct struct {
+	// A single-line description of the product,
+	// with [HTML tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
+	Description string `json:"description"`
+	// A list of [variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) associated with the product.
+	// If querying a single product at the root, you can fetch up to 2000 variants.
+	Variants GetProductProductVariantsProductVariantConnection `json:"variants"`
+	// The minimum and maximum prices of a product, expressed in decimal numbers.
+	// For example, if the product is priced between $10.00 and $50.00,
+	// then the price range is $10.00 - $50.00.
+	PriceRangeV2 GetProductProductPriceRangeV2 `json:"priceRangeV2"`
+	// The [media](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// associated with the product. Valid media are images, 3D models, videos.
+	Media GetProductProductMediaMediaConnection `json:"media"`
 }
 
-// GetId returns GetLocationLocation.Id, and is useful for accessing the field via an interface.
-func (v *GetLocationLocation) GetId() string { return v.Id }
+// GetDescription returns GetProductProduct.Description, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetDescription() string { return v.Description }
 
-// GetName returns GetLocationLocation.Name, and is useful for accessing the field via an interface.
-func (v *GetLocationLocation) GetName() string { return v.Name }
+// GetVariants returns GetProductProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetVariants() GetProductProductVariantsProductVariantConnection {
+	return v.Variants
+}
 
-// GetIsActive returns GetLocationLocation.IsActive, and is useful for accessing the field via an interface.
-func (v *GetLocationLocation) GetIsActive() bool { return v.IsActive }
+// GetPriceRangeV2 returns GetProductProduct.PriceRangeV2, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetPriceRangeV2() GetProductProductPriceRangeV2 { return v.PriceRangeV2 }
 
-// GetAddress returns GetLocationLocation.Address, and is useful for accessing the field via an interface.
-func (v *GetLocationLocation) GetAddress() GetLocationLocationAddress { return v.Address }
+// GetMedia returns GetProductProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetMedia() GetProductProductMediaMediaConnection { return v.Media }
 
-// GetLocationLocationAddress includes the requested fields of the GraphQL type LocationAddress.
+// GetProductProductMediaMediaConnection includes the requested fields of the GraphQL type MediaConnection.
 // The GraphQL type's documentation follows.
 //
-// Represents the address of a location.
-type GetLocationLocationAddress struct {
-	// The first line of the address for the location.
-	Address1 string `json:"address1"`
-	// The second line of the address for the location.
-	Address2 string `json:"address2"`
-	// The city of the location.
-	City string `json:"city"`
-	// The country code of the location.
-	CountryCode string `json:"countryCode"`
-	// The phone number of the location.
-	Phone string `json:"phone"`
-	// The province of the location.
-	Province string `json:"province"`
-	// The ZIP code of the location.
-	Zip string `json:"zip"`
+// An auto-generated type for paginating through multiple Media.
+type GetProductProductMediaMediaConnection struct {
+	// A list of nodes that are contained in MediaEdge. You can fetch data about an
+	// individual node, or you can follow the edges to fetch data about a collection
+	// of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductProductMediaMediaConnectionNodesMedia `json:"-"`
 }
 
-// GetAddress1 returns GetLocationLocationAddress.Address1, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetAddress1() string { return v.Address1 }
-
-// GetAddress2 returns GetLocationLocationAddress.Address2, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetAddress2() string { return v.Address2 }
-
-// GetCity returns GetLocationLocationAddress.City, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetCity() string { return v.City }
-
-// GetCountryCode returns GetLocationLocationAddress.CountryCode, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetCountryCode() string { return v.CountryCode }
-
-// GetPhone returns GetLocationLocationAddress.Phone, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetPhone() string { return v.Phone }
-
-// GetProvince returns GetLocationLocationAddress.Province, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetProvince() string { return v.Province }
-
-// GetZip returns GetLocationLocationAddress.Zip, and is useful for accessing the field via an interface.
-func (v *GetLocationLocationAddress) GetZip() string { return v.Zip }
-
-// GetLocationResponse is returned by GetLocation on success.
-type GetLocationResponse struct {
-	// Returns an inventory Location resource by ID.
-	Location GetLocationLocation `json:"location"`
-}
-
-// GetLocation returns GetLocationResponse.Location, and is useful for accessing the field via an interface.
-func (v *GetLocationResponse) GetLocation() GetLocationLocation { return v.Location }
-
-// GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnection includes the requested fields of the GraphQL type LocationConnection.
-// The GraphQL type's documentation follows.
-//
-// An auto-generated type for paginating through multiple Locations.
-type GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnection struct {
-	// A list of nodes that are contained in LocationEdge. You can fetch data about
-	// an individual node, or you can follow the edges to fetch data about a
-	// collection of related nodes. At each node, you specify the fields that you
-	// want to retrieve.
-	Nodes []GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation `json:"nodes"`
-}
-
-// GetNodes returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnection.Nodes, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnection) GetNodes() []GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation {
+// GetNodes returns GetProductProductMediaMediaConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnection) GetNodes() []GetProductProductMediaMediaConnectionNodesMedia {
 	return v.Nodes
 }
 
-// GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation includes the requested fields of the GraphQL type Location.
+func (v *GetProductProductMediaMediaConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductProductMediaMediaConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductProductMediaMediaConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]GetProductProductMediaMediaConnectionNodesMedia,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalGetProductProductMediaMediaConnectionNodesMedia(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal GetProductProductMediaMediaConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetProductProductMediaMediaConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+}
+
+func (v *GetProductProductMediaMediaConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductProductMediaMediaConnection) __premarshalJSON() (*__premarshalGetProductProductMediaMediaConnection, error) {
+	var retval __premarshalGetProductProductMediaMediaConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalGetProductProductMediaMediaConnectionNodesMedia(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal GetProductProductMediaMediaConnection.Nodes: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// GetProductProductMediaMediaConnectionNodesExternalVideo includes the requested fields of the GraphQL type ExternalVideo.
 // The GraphQL type's documentation follows.
 //
-// Represents the location where the physical good resides. You can stock inventory at active locations. Active
-// locations that have `fulfills_online_orders: true` and are configured with a shipping rate, pickup enabled or
-// local delivery will be able to sell from their storefront.
-type GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation struct {
-	// A globally-unique ID.
-	Id string `json:"id"`
-	// The name of the location.
-	Name string `json:"name"`
-	// Whether the location is active. A deactivated location can be activated (change `isActive: true`) if it has
-	// `activatable` set to `true` by calling the
-	// [`locationActivate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/locationActivate)
-	// mutation.
-	IsActive bool `json:"isActive"`
-	// The address of this location.
-	Address GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress `json:"address"`
+// Represents a video hosted outside of Shopify.
+type GetProductProductMediaMediaConnectionNodesExternalVideo struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
 }
 
-// GetId returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation.Id, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation) GetId() string {
-	return v.Id
+// GetTypename returns GetProductProductMediaMediaConnectionNodesExternalVideo.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesExternalVideo) GetTypename() string {
+	return v.Typename
 }
 
-// GetName returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation.Name, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation) GetName() string {
-	return v.Name
+// GetPreview returns GetProductProductMediaMediaConnectionNodesExternalVideo.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesExternalVideo) GetPreview() GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
 }
 
-// GetIsActive returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation.IsActive, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation) GetIsActive() bool {
-	return v.IsActive
-}
-
-// GetAddress returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation.Address, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocation) GetAddress() GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress {
-	return v.Address
-}
-
-// GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress includes the requested fields of the GraphQL type LocationAddress.
+// GetProductProductMediaMediaConnectionNodesMedia includes the requested fields of the GraphQL interface Media.
+//
+// GetProductProductMediaMediaConnectionNodesMedia is implemented by the following types:
+// GetProductProductMediaMediaConnectionNodesExternalVideo
+// GetProductProductMediaMediaConnectionNodesMediaImage
+// GetProductProductMediaMediaConnectionNodesModel3d
+// GetProductProductMediaMediaConnectionNodesVideo
 // The GraphQL type's documentation follows.
 //
-// Represents the address of a location.
-type GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress struct {
-	// The first line of the address for the location.
-	Address1 string `json:"address1"`
-	// The second line of the address for the location.
-	Address2 string `json:"address2"`
-	// The city of the location.
-	City string `json:"city"`
-	// The country code of the location.
-	CountryCode string `json:"countryCode"`
-	// The phone number of the location.
-	Phone string `json:"phone"`
-	// The province of the location.
-	Province string `json:"province"`
-	// The ZIP code of the location.
-	Zip string `json:"zip"`
+// Represents a media interface.
+type GetProductProductMediaMediaConnectionNodesMedia interface {
+	implementsGraphQLInterfaceGetProductProductMediaMediaConnectionNodesMedia()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+	// GetPreview returns the interface-field "preview" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The preview image for the media.
+	GetPreview() GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage
 }
 
-// GetAddress1 returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.Address1, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetAddress1() string {
-	return v.Address1
+func (v *GetProductProductMediaMediaConnectionNodesExternalVideo) implementsGraphQLInterfaceGetProductProductMediaMediaConnectionNodesMedia() {
+}
+func (v *GetProductProductMediaMediaConnectionNodesMediaImage) implementsGraphQLInterfaceGetProductProductMediaMediaConnectionNodesMedia() {
+}
+func (v *GetProductProductMediaMediaConnectionNodesModel3d) implementsGraphQLInterfaceGetProductProductMediaMediaConnectionNodesMedia() {
+}
+func (v *GetProductProductMediaMediaConnectionNodesVideo) implementsGraphQLInterfaceGetProductProductMediaMediaConnectionNodesMedia() {
 }
 
-// GetAddress2 returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.Address2, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetAddress2() string {
-	return v.Address2
+func __unmarshalGetProductProductMediaMediaConnectionNodesMedia(b []byte, v *GetProductProductMediaMediaConnectionNodesMedia) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "ExternalVideo":
+		*v = new(GetProductProductMediaMediaConnectionNodesExternalVideo)
+		return json.Unmarshal(b, *v)
+	case "MediaImage":
+		*v = new(GetProductProductMediaMediaConnectionNodesMediaImage)
+		return json.Unmarshal(b, *v)
+	case "Model3d":
+		*v = new(GetProductProductMediaMediaConnectionNodesModel3d)
+		return json.Unmarshal(b, *v)
+	case "Video":
+		*v = new(GetProductProductMediaMediaConnectionNodesVideo)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Media.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetProductProductMediaMediaConnectionNodesMedia: "%v"`, tn.TypeName)
+	}
 }
 
-// GetCity returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.City, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetCity() string {
-	return v.City
+func __marshalGetProductProductMediaMediaConnectionNodesMedia(v *GetProductProductMediaMediaConnectionNodesMedia) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetProductProductMediaMediaConnectionNodesExternalVideo:
+		typename = "ExternalVideo"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductProductMediaMediaConnectionNodesExternalVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetProductProductMediaMediaConnectionNodesMediaImage:
+		typename = "MediaImage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductProductMediaMediaConnectionNodesMediaImage
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetProductProductMediaMediaConnectionNodesModel3d:
+		typename = "Model3d"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductProductMediaMediaConnectionNodesModel3d
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetProductProductMediaMediaConnectionNodesVideo:
+		typename = "Video"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetProductProductMediaMediaConnectionNodesVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetProductProductMediaMediaConnectionNodesMedia: "%T"`, v)
+	}
 }
 
-// GetCountryCode returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.CountryCode, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetCountryCode() string {
-	return v.CountryCode
-}
-
-// GetPhone returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.Phone, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetPhone() string {
-	return v.Phone
-}
-
-// GetProvince returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.Province, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetProvince() string {
-	return v.Province
-}
-
-// GetZip returns GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress.Zip, and is useful for accessing the field via an interface.
-func (v *GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnectionNodesLocationAddress) GetZip() string {
-	return v.Zip
-}
-
-// GetLocationsResponse is returned by GetLocations on success.
-type GetLocationsResponse struct {
-	// Returns a list of all origin locations available for a delivery profile.
-	LocationsAvailableForDeliveryProfilesConnection GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnection `json:"locationsAvailableForDeliveryProfilesConnection"`
-}
-
-// GetLocationsAvailableForDeliveryProfilesConnection returns GetLocationsResponse.LocationsAvailableForDeliveryProfilesConnection, and is useful for accessing the field via an interface.
-func (v *GetLocationsResponse) GetLocationsAvailableForDeliveryProfilesConnection() GetLocationsLocationsAvailableForDeliveryProfilesConnectionLocationConnection {
-	return v.LocationsAvailableForDeliveryProfilesConnection
-}
-
-// MyShopResponse is returned by MyShop on success.
-type MyShopResponse struct {
-	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
-	// business and store management settings for the shop.
-	Shop MyShopShop `json:"shop"`
-}
-
-// GetShop returns MyShopResponse.Shop, and is useful for accessing the field via an interface.
-func (v *MyShopResponse) GetShop() MyShopShop { return v.Shop }
-
-// MyShopShop includes the requested fields of the GraphQL type Shop.
+// GetProductProductMediaMediaConnectionNodesMediaImage includes the requested fields of the GraphQL type MediaImage.
 // The GraphQL type's documentation follows.
 //
-// Represents a collection of general settings and information about the shop.
-type MyShopShop struct {
-	// The shop's name.
-	Name string `json:"name"`
-	// The shop owner's email address.
-	// Shopify will use this email address to communicate with the shop owner.
-	Email string `json:"email"`
-	// The prefix that appears before order numbers.
-	OrderNumberFormatPrefix string `json:"orderNumberFormatPrefix"`
-	// The suffix that appears after order numbers.
-	OrderNumberFormatSuffix string `json:"orderNumberFormatSuffix"`
-	// The three letter code for the currency that the shop sells in.
-	CurrencyCode CurrencyCode `json:"currencyCode"`
+// The `MediaImage` object represents an image hosted on Shopify's
+// [content delivery network (CDN)](https://shopify.dev/docs/storefronts/themes/best-practices/performance/platform#shopify-cdn).
+// Shopify CDN is a content system that serves as the primary way to store,
+// manage, and deliver visual content for products, variants, and other resources across the Shopify platform.
+//
+// The `MediaImage` object provides information to:
+//
+// - Store and display product and variant images across online stores, admin interfaces, and mobile apps.
+// - Retrieve visual branding elements, including logos, banners, favicons, and background images in checkout flows.
+// - Retrieve signed URLs for secure, time-limited access to original image files.
+//
+// Each `MediaImage` object provides both the processed image data (with automatic optimization and CDN delivery)
+// and access to the original source file. The image processing is handled asynchronously, so images
+// might not be immediately available after upload. The
+// [`status`](https://shopify.dev/docs/api/admin-graphql/latest/objects/mediaimage#field-MediaImage.fields.status)
+// field indicates when processing is complete and the image is ready for use.
+//
+// The `MediaImage` object implements the [`Media`](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/Media)
+// interface alongside other media types, like videos and 3D models.
+//
+// Learn about
+// managing media for [products](https://shopify.dev/docs/apps/build/online-store/product-media),
+// [product variants](https://shopify.dev/docs/apps/build/online-store/product-variant-media), and
+// [asynchronous media management](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components#asynchronous-media-management).
+type GetProductProductMediaMediaConnectionNodesMediaImage struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
 }
 
-// GetName returns MyShopShop.Name, and is useful for accessing the field via an interface.
-func (v *MyShopShop) GetName() string { return v.Name }
+// GetTypename returns GetProductProductMediaMediaConnectionNodesMediaImage.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesMediaImage) GetTypename() string {
+	return v.Typename
+}
 
-// GetEmail returns MyShopShop.Email, and is useful for accessing the field via an interface.
-func (v *MyShopShop) GetEmail() string { return v.Email }
+// GetPreview returns GetProductProductMediaMediaConnectionNodesMediaImage.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesMediaImage) GetPreview() GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
+}
 
-// GetOrderNumberFormatPrefix returns MyShopShop.OrderNumberFormatPrefix, and is useful for accessing the field via an interface.
-func (v *MyShopShop) GetOrderNumberFormatPrefix() string { return v.OrderNumberFormatPrefix }
+// GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage includes the requested fields of the GraphQL type MediaPreviewImage.
+// The GraphQL type's documentation follows.
+//
+// Represents the preview image for a media.
+type GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage struct {
+	// The preview image for the media. Returns `null` until `status` is `READY`.
+	Image GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage `json:"image"`
+}
 
-// GetOrderNumberFormatSuffix returns MyShopShop.OrderNumberFormatSuffix, and is useful for accessing the field via an interface.
-func (v *MyShopShop) GetOrderNumberFormatSuffix() string { return v.OrderNumberFormatSuffix }
+// GetImage returns GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage.Image, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage) GetImage() GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage {
+	return v.Image
+}
 
-// GetCurrencyCode returns MyShopShop.CurrencyCode, and is useful for accessing the field via an interface.
-func (v *MyShopShop) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
+// GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage includes the requested fields of the GraphQL type Image.
+// The GraphQL type's documentation follows.
+//
+// Represents an image resource.
+type GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage struct {
+	// The location of the image as a URL.
+	//
+	// If no transform options are specified, then the original image will be preserved including any pre-applied transforms.
+	//
+	// All transformation options are considered "best-effort". Any transformation
+	// that the original image type doesn't support will be ignored.
+	//
+	// If you need multiple variations of the same image, then you can use [GraphQL
+	// aliases](https://graphql.org/learn/queries/#aliases).
+	Url string `json:"url"`
+}
+
+// GetUrl returns GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage.Url, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImageImage) GetUrl() string {
+	return v.Url
+}
+
+// GetProductProductMediaMediaConnectionNodesModel3d includes the requested fields of the GraphQL type Model3d.
+// The GraphQL type's documentation follows.
+//
+// Represents a Shopify hosted 3D model.
+type GetProductProductMediaMediaConnectionNodesModel3d struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
+}
+
+// GetTypename returns GetProductProductMediaMediaConnectionNodesModel3d.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesModel3d) GetTypename() string { return v.Typename }
+
+// GetPreview returns GetProductProductMediaMediaConnectionNodesModel3d.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesModel3d) GetPreview() GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
+}
+
+// GetProductProductMediaMediaConnectionNodesVideo includes the requested fields of the GraphQL type Video.
+// The GraphQL type's documentation follows.
+//
+// Represents a Shopify hosted video.
+type GetProductProductMediaMediaConnectionNodesVideo struct {
+	Typename string `json:"__typename"`
+	// The preview image for the media.
+	Preview GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage `json:"preview"`
+}
+
+// GetTypename returns GetProductProductMediaMediaConnectionNodesVideo.Typename, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesVideo) GetTypename() string { return v.Typename }
+
+// GetPreview returns GetProductProductMediaMediaConnectionNodesVideo.Preview, and is useful for accessing the field via an interface.
+func (v *GetProductProductMediaMediaConnectionNodesVideo) GetPreview() GetProductProductMediaMediaConnectionNodesMediaPreviewMediaPreviewImage {
+	return v.Preview
+}
+
+// GetProductProductPriceRangeV2 includes the requested fields of the GraphQL type ProductPriceRangeV2.
+// The GraphQL type's documentation follows.
+//
+// The price range of the product.
+type GetProductProductPriceRangeV2 struct {
+	// The lowest variant's price.
+	MinVariantPrice GetProductProductPriceRangeV2MinVariantPriceMoneyV2 `json:"minVariantPrice"`
+	// The highest variant's price.
+	MaxVariantPrice GetProductProductPriceRangeV2MaxVariantPriceMoneyV2 `json:"maxVariantPrice"`
+}
+
+// GetMinVariantPrice returns GetProductProductPriceRangeV2.MinVariantPrice, and is useful for accessing the field via an interface.
+func (v *GetProductProductPriceRangeV2) GetMinVariantPrice() GetProductProductPriceRangeV2MinVariantPriceMoneyV2 {
+	return v.MinVariantPrice
+}
+
+// GetMaxVariantPrice returns GetProductProductPriceRangeV2.MaxVariantPrice, and is useful for accessing the field via an interface.
+func (v *GetProductProductPriceRangeV2) GetMaxVariantPrice() GetProductProductPriceRangeV2MaxVariantPriceMoneyV2 {
+	return v.MaxVariantPrice
+}
+
+// GetProductProductPriceRangeV2MaxVariantPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. For example, 12.99 USD.
+type GetProductProductPriceRangeV2MaxVariantPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns GetProductProductPriceRangeV2MaxVariantPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *GetProductProductPriceRangeV2MaxVariantPriceMoneyV2) GetAmount() string { return v.Amount }
+
+// GetProductProductPriceRangeV2MinVariantPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. For example, 12.99 USD.
+type GetProductProductPriceRangeV2MinVariantPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns GetProductProductPriceRangeV2MinVariantPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *GetProductProductPriceRangeV2MinVariantPriceMoneyV2) GetAmount() string { return v.Amount }
+
+// GetProductProductVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type GetProductProductVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data
+	// about an individual node, or you can follow the edges to fetch data about a
+	// collection of related nodes. At each node, you specify the fields that you
+	// want to retrieve.
+	Nodes []GetProductProductVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+}
+
+// GetNodes returns GetProductProductVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnection) GetNodes() []GetProductProductVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetProductProductVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type GetProductProductVariantsProductVariantConnectionNodesProductVariant struct {
+	// The price of the product variant in the default shop currency.
+	Price string `json:"price"`
+	// The featured image for the variant.
+	Image GetProductProductVariantsProductVariantConnectionNodesProductVariantImage `json:"image"`
+}
+
+// GetPrice returns GetProductProductVariantsProductVariantConnectionNodesProductVariant.Price, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnectionNodesProductVariant) GetPrice() string {
+	return v.Price
+}
+
+// GetImage returns GetProductProductVariantsProductVariantConnectionNodesProductVariant.Image, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnectionNodesProductVariant) GetImage() GetProductProductVariantsProductVariantConnectionNodesProductVariantImage {
+	return v.Image
+}
+
+// GetProductProductVariantsProductVariantConnectionNodesProductVariantImage includes the requested fields of the GraphQL type Image.
+// The GraphQL type's documentation follows.
+//
+// Represents an image resource.
+type GetProductProductVariantsProductVariantConnectionNodesProductVariantImage struct {
+	// The location of the image as a URL.
+	//
+	// If no transform options are specified, then the original image will be preserved including any pre-applied transforms.
+	//
+	// All transformation options are considered "best-effort". Any transformation
+	// that the original image type doesn't support will be ignored.
+	//
+	// If you need multiple variations of the same image, then you can use [GraphQL
+	// aliases](https://graphql.org/learn/queries/#aliases).
+	Url string `json:"url"`
+}
+
+// GetUrl returns GetProductProductVariantsProductVariantConnectionNodesProductVariantImage.Url, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnectionNodesProductVariantImage) GetUrl() string {
+	return v.Url
+}
+
+// GetProductResponse is returned by GetProduct on success.
+type GetProductResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product GetProductProduct `json:"product"`
+}
+
+// GetProduct returns GetProductResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductResponse) GetProduct() GetProductProduct { return v.Product }
+
+// GetProductsSelfServiceProductsProductConnection includes the requested fields of the GraphQL type ProductConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Products.
+type GetProductsSelfServiceProductsProductConnection struct {
+	// The connection between the node and its parent. Each edge contains a minimum of the edge's cursor and the node.
+	Edges []GetProductsSelfServiceProductsProductConnectionEdgesProductEdge `json:"edges"`
+}
+
+// GetEdges returns GetProductsSelfServiceProductsProductConnection.Edges, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnection) GetEdges() []GetProductsSelfServiceProductsProductConnectionEdgesProductEdge {
+	return v.Edges
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdge includes the requested fields of the GraphQL type ProductEdge.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type which holds one Product and a cursor during pagination.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdge struct {
+	// The item at the end of ProductEdge.
+	Node GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct `json:"node"`
+}
+
+// GetNode returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdge.Node, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdge) GetNode() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct {
+	return v.Node
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can
+// include various details such as title, description, price, images, and options
+// such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
+// to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct struct {
+	// A single-line description of the product,
+	// with [HTML tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
+	Description string `json:"description"`
+	// The minimum and maximum prices of a product, expressed in decimal numbers.
+	// For example, if the product is priced between $10.00 and $50.00,
+	// then the price range is $10.00 - $50.00.
+	PriceRangeV2 GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 `json:"priceRangeV2"`
+}
+
+// GetDescription returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.Description, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetDescription() string {
+	return v.Description
+}
+
+// GetPriceRangeV2 returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.PriceRangeV2, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetPriceRangeV2() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 {
+	return v.PriceRangeV2
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 includes the requested fields of the GraphQL type ProductPriceRangeV2.
+// The GraphQL type's documentation follows.
+//
+// The price range of the product.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2 struct {
+	// The lowest variant's price.
+	MinVariantPrice GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MinVariantPriceMoneyV2 `json:"minVariantPrice"`
+	// The highest variant's price.
+	MaxVariantPrice GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MaxVariantPriceMoneyV2 `json:"maxVariantPrice"`
+}
+
+// GetMinVariantPrice returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2.MinVariantPrice, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2) GetMinVariantPrice() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MinVariantPriceMoneyV2 {
+	return v.MinVariantPrice
+}
+
+// GetMaxVariantPrice returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2.MaxVariantPrice, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2) GetMaxVariantPrice() GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MaxVariantPriceMoneyV2 {
+	return v.MaxVariantPrice
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MaxVariantPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. For example, 12.99 USD.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MaxVariantPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MaxVariantPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MaxVariantPriceMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MinVariantPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. For example, 12.99 USD.
+type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MinVariantPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MinVariantPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductPriceRangeV2MinVariantPriceMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// GetProductsSelfServiceResponse is returned by GetProductsSelfService on success.
+type GetProductsSelfServiceResponse struct {
+	// Retrieves a list of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// in a store. Products are the items that merchants can sell in their store.
+	//
+	// Use the `products` query when you need to:
+	//
+	// - Build a browsing interface for a product catalog.
+	// - Create product
+	// [searching](https://shopify.dev/docs/api/usage/search-syntax), [sorting](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-sortKey), and [filtering](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-query) experiences.
+	// - Implement product recommendations.
+	// - Sync product data with external systems.
+	//
+	// The `products` query supports [pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+	// to handle large product catalogs and [saved searches](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-savedSearchId)
+	// for frequently used product queries.
+	//
+	// The `products` query returns products with their associated metadata, including:
+	//
+	// - Basic product information (for example, title, description, vendor, and type)
+	// - Product options and product variants, with their prices and inventory
+	// - Media attachments (for example, images and videos)
+	// - SEO metadata
+	// - Product categories and tags
+	// - Product availability and publishing statuses
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Products GetProductsSelfServiceProductsProductConnection `json:"products"`
+}
+
+// GetProducts returns GetProductsSelfServiceResponse.Products, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceResponse) GetProducts() GetProductsSelfServiceProductsProductConnection {
+	return v.Products
+}
 
 // OrderDetailByIdOrder includes the requested fields of the GraphQL type Order.
 // The GraphQL type's documentation follows.
@@ -3892,13 +4325,13 @@ type __GetFulfillmentOrderInput struct {
 // GetId returns __GetFulfillmentOrderInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetFulfillmentOrderInput) GetId() string { return v.Id }
 
-// __GetLocationInput is used internally by genqlient
-type __GetLocationInput struct {
+// __GetProductInput is used internally by genqlient
+type __GetProductInput struct {
 	Id string `json:"id"`
 }
 
-// GetId returns __GetLocationInput.Id, and is useful for accessing the field via an interface.
-func (v *__GetLocationInput) GetId() string { return v.Id }
+// GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductInput) GetId() string { return v.Id }
 
 // __OrderDetailByIdInput is used internally by genqlient
 type __OrderDetailByIdInput struct {
@@ -4135,83 +4568,55 @@ func GetFulfillmentOrder(
 	return data_, err_
 }
 
-// The query executed by GetLocation.
-const GetLocation_Operation = `
-query GetLocation ($id: ID!) {
-	location(id: $id) {
-		id
-		name
-		isActive
-		address {
-			address1
-			address2
-			city
-			countryCode
-			phone
-			province
-			zip
+// The query executed by GetProduct.
+const GetProduct_Operation = `
+query GetProduct ($id: ID!) {
+	product(id: $id) {
+		description
+		variants(first: 10) {
+			nodes {
+				price
+				image {
+					url
+				}
+			}
 		}
-	}
-}
-`
-
-func GetLocation(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	id string,
-) (data_ *GetLocationResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "GetLocation",
-		Query:  GetLocation_Operation,
-		Variables: &__GetLocationInput{
-			Id: id,
-		},
-	}
-
-	data_ = &GetLocationResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The query executed by GetLocations.
-const GetLocations_Operation = `
-query GetLocations {
-	locationsAvailableForDeliveryProfilesConnection(first: 100) {
-		nodes {
-			id
-			name
-			isActive
-			address {
-				address1
-				address2
-				city
-				countryCode
-				phone
-				province
-				zip
+		priceRangeV2 {
+			minVariantPrice {
+				amount
+			}
+			maxVariantPrice {
+				amount
+			}
+		}
+		media(first: 10) {
+			nodes {
+				__typename
+				preview {
+					image {
+						url
+					}
+				}
 			}
 		}
 	}
 }
 `
 
-func GetLocations(
+func GetProduct(
 	ctx_ context.Context,
 	client_ graphql.Client,
-) (data_ *GetLocationsResponse, err_ error) {
+	id string,
+) (data_ *GetProductResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "GetLocations",
-		Query:  GetLocations_Operation,
+		OpName: "GetProduct",
+		Query:  GetProduct_Operation,
+		Variables: &__GetProductInput{
+			Id: id,
+		},
 	}
 
-	data_ = &GetLocationsResponse{}
+	data_ = &GetProductResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -4223,29 +4628,37 @@ func GetLocations(
 	return data_, err_
 }
 
-// The query executed by MyShop.
-const MyShop_Operation = `
-query MyShop {
-	shop {
-		name
-		email
-		orderNumberFormatPrefix
-		orderNumberFormatSuffix
-		currencyCode
+// The query executed by GetProductsSelfService.
+const GetProductsSelfService_Operation = `
+query GetProductsSelfService {
+	products(first: 50) {
+		edges {
+			node {
+				description
+				priceRangeV2 {
+					minVariantPrice {
+						amount
+					}
+					maxVariantPrice {
+						amount
+					}
+				}
+			}
+		}
 	}
 }
 `
 
-func MyShop(
+func GetProductsSelfService(
 	ctx_ context.Context,
 	client_ graphql.Client,
-) (data_ *MyShopResponse, err_ error) {
+) (data_ *GetProductsSelfServiceResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "MyShop",
-		Query:  MyShop_Operation,
+		OpName: "GetProductsSelfService",
+		Query:  GetProductsSelfService_Operation,
 	}
 
-	data_ = &MyShopResponse{}
+	data_ = &GetProductsSelfServiceResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
