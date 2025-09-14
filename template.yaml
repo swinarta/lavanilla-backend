@@ -34,7 +34,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Retain
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${LaVanillaGraphql}"
+      LogGroupName: !Sub "/aws/lambda/${LaVanillaSelfServiceGraphql}"
       RetentionInDays: 7
 
   LaVanillaSelfServiceGraphql:
