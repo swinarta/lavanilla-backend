@@ -35,4 +35,5 @@ jobs:
           --resolve-s3 \
           --stack-name lavanilla-backend-dev \
           --parameter-overrides AppEnv=DEV \
-          --capabilities CAPABILITY_IAM
+          --capabilities CAPABILITY_IAM \
+          --no-confirm-changeset
