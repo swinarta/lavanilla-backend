@@ -36,4 +36,5 @@ jobs:
           --stack-name lavanilla-backend-dev \
           --parameter-overrides AppEnv=DEV \
           --capabilities CAPABILITY_IAM \
-          --no-confirm-changeset
+          --no-confirm-changeset \
+          --no-fail-on-empty-changeset
