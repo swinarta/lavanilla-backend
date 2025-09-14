@@ -31,7 +31,7 @@ jobs:
       - run: sam build
 
       - run: sam deploy \
-          --config-env development \
+          --config-env dev \
           --resolve-s3 \
           --stack-name lavanilla-backend-dev \
           --parameter-overrides AppEnv=DEV \
