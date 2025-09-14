@@ -1,23 +1,13 @@
 package shopify
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
+	"lavanilla/service"
 	"log"
 	"net/http"
 
 	"github.com/Khan/genqlient/graphql"
-)
-
-const (
-	shopId                   = "lvn-dev.myshopify.com"
-	accessToken              = ""
-	shopifyGraphqlApiVersion = "2025-10"
-	headerKeyAccessToken     = "X-Shopify-Access-Token"
-	headerKeyUserAgent       = "User-Agent"
-	headerValueUserAgent     = "lavanilla/1.0"
 )
 
 type customHttpTransport struct {
@@ -25,34 +15,20 @@ type customHttpTransport struct {
 }
 
 func (t *customHttpTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Add(headerKeyUserAgent, headerValueUserAgent)
-	req.Header.Add(headerKeyAccessToken, t.shopifyToken)
-	if req.Body != nil {
-		// Read and copy the body
-		bodyBytes, err := io.ReadAll(req.Body)
-		if err != nil {
-			log.Printf("error reading request body: %v", err)
-		} else {
-			log.Printf("Request Body: %s", string(bodyBytes))
-		}
-
-		// Reconstruct the Body so the transport can still use it
-		req.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-	}
+	req.Header.Add(service.HeaderKeyUserAgent, service.HeaderValueUserAgent)
+	req.Header.Add(service.HeaderKeyAccessToken, t.shopifyToken)
 	return http.DefaultTransport.RoundTrip(req)
 }
 
 type Client struct {
-	AccessToken string
-	graphql     graphql.Client
+	graphql graphql.Client
 }
 
 func NewClient() *Client {
-	endpoint := fmt.Sprintf("https://%v/admin/api/%v/graphql.json", shopId, shopifyGraphqlApiVersion)
-	httpClient := &http.Client{Transport: &customHttpTransport{shopifyToken: accessToken}}
+	endpoint := fmt.Sprintf("https://%v/admin/api/%v/graphql.json", service.ShopId, service.ShopifyGraphqlApiVersion)
+	httpClient := &http.Client{Transport: &customHttpTransport{shopifyToken: service.AccessToken}}
 	return &Client{
-		AccessToken: accessToken,
-		graphql:     graphql.NewClient(endpoint, httpClient),
+		graphql: graphql.NewClient(endpoint, httpClient),
 	}
 }
 
