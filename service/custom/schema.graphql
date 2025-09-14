@@ -1,0 +1,21 @@
+type Mutation {
+    draftOrderCreate(input: DraftOrderInput!): DraftOrderResponse!
+}
+
+type DraftOrderResponse {
+    draftOrder: DraftOrder
+#    userErrors: [UserError!]!
+}
+
+type DraftOrder {
+    id: ID!
+}
+
+input DraftOrderInput {
+    email: String!
+    lineItems: [DraftOrderLineItemInput!]!
+}
+input DraftOrderLineItemInput {
+    variantId: ID!
+    quantity: Int!
+}
