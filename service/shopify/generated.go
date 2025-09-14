@@ -2500,10 +2500,32 @@ func (v *GetProductProductVariantsProductVariantConnection) GetNodes() []GetProd
 //
 // Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
 type GetProductProductVariantsProductVariantConnectionNodesProductVariant struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The title of the product variant.
+	Title string `json:"title"`
+	// A case-sensitive identifier for the product variant in the shop.
+	// Required in order to connect to a fulfillment service.
+	Sku string `json:"sku"`
 	// The price of the product variant in the default shop currency.
 	Price string `json:"price"`
 	// The featured image for the variant.
 	Image GetProductProductVariantsProductVariantConnectionNodesProductVariantImage `json:"image"`
+}
+
+// GetId returns GetProductProductVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.Id
+}
+
+// GetTitle returns GetProductProductVariantsProductVariantConnectionNodesProductVariant.Title, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnectionNodesProductVariant) GetTitle() string {
+	return v.Title
+}
+
+// GetSku returns GetProductProductVariantsProductVariantConnectionNodesProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *GetProductProductVariantsProductVariantConnectionNodesProductVariant) GetSku() string {
+	return v.Sku
 }
 
 // GetPrice returns GetProductProductVariantsProductVariantConnectionNodesProductVariant.Price, and is useful for accessing the field via an interface.
@@ -4929,6 +4951,9 @@ query GetProduct ($id: ID!) {
 		description
 		variants(first: 10) {
 			nodes {
+				id
+				title
+				sku
 				price
 				image {
 					url

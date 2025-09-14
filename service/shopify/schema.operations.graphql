@@ -234,6 +234,9 @@ query GetProduct($id: ID!) {
         description
         variants(first: 10) {
             nodes {
+                id
+                title
+                sku
                 price
                 image {
                     url
