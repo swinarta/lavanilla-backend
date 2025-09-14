@@ -6,18 +6,12 @@ package self_service
 
 import (
 	"context"
-	"fmt"
 	"lavanilla/graphql/self-service/model"
 	"lavanilla/service/shopify"
 	"strconv"
 
 	"github.com/samber/lo"
 )
-
-// Ok is the resolver for the ok field.
-func (r *queryResolver) Ok(ctx context.Context) (bool, error) {
-	panic(fmt.Errorf("not implemented: Ok - ok"))
-}
 
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {

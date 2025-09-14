@@ -1,5 +1,4 @@
 type Query {
-    ok: Boolean!
     products: [Product!]
     product(id: ID!): Product
 }
