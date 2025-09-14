@@ -50,3 +50,7 @@ func (c *Client) AddTag(ctx context.Context, orderId string, tag string) (*TagsA
 func (c *Client) GetProductsSelfService(ctx context.Context) (*GetProductsSelfServiceResponse, error) {
 	return GetProductsSelfService(ctx, c.graphql)
 }
+
+func (c *Client) GetProduct(ctx context.Context, id string) (*GetProductResponse, error) {
+	return GetProduct(ctx, c.graphql, id)
+}

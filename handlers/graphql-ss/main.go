@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"lavanilla/service/shopify"
 	"log"
 	"os"
 
@@ -30,7 +31,9 @@ func ginHandler(ctx context.Context, request events.APIGatewayProxyRequest) (eve
 
 func graphqlHandler() gin.HandlerFunc {
 
-	c := graph.Config{Resolvers: &graph.Resolver{}}
+	c := graph.Config{Resolvers: &graph.Resolver{
+		ShopifyClient: shopify.NewClient(),
+	}}
 
 	h := handler.New(graph.NewExecutableSchema(c))
 	h.AddTransport(transport.Options{})

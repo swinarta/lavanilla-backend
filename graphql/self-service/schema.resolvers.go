@@ -21,8 +21,7 @@ func (r *queryResolver) Ok(ctx context.Context) (bool, error) {
 
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
-	client := shopify.NewClient()
-	productConn, err := client.GetProductsSelfService(ctx)
+	productConn, err := r.ShopifyClient.GetProductsSelfService(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +48,21 @@ func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) 
 		})
 	}
 	return result, nil
+}
+
+// Product is the resolver for the product field.
+func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product, error) {
+	productResp, err := r.ShopifyClient.GetProduct(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Product{
+		ID:          id,
+		Description: productResp.Product.Description,
+		Images: lo.Map(productResp.Product.Media.Nodes, func(imageEdge shopify.GetProductProductMediaMediaConnectionNodesMedia, _ int) string {
+			return imageEdge.GetPreview().Image.Url
+		}),
+	}, nil
 }
 
 // Query returns QueryResolver implementation.
