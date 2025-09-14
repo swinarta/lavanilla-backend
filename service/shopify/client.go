@@ -11,7 +11,7 @@ import (
 
 const (
 	shopId                   = "lvn-dev.myshopify.com"
-	accessToken              = "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"
+	accessToken              = ""
 	shopifyGraphqlApiVersion = "2025-10"
 	headerKeyAccessToken     = "X-Shopify-Access-Token"
 	headerKeyUserAgent       = "User-Agent"
