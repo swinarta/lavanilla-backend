@@ -35,6 +35,6 @@ jobs:
           --resolve-s3 \
           --stack-name lavanilla-backend-dev \
           --parameter-overrides AppEnv=DEV \
-          --capabilities CAPABILITY_IAM \
+          --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
           --no-confirm-changeset \
           --no-fail-on-empty-changeset
