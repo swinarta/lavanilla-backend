@@ -40,7 +40,7 @@ type Product {
     id: ID!
     title: String!
     description: String!
-    priceRange: PriceRange!
+    priceRange: PriceRange
     images: [URL!]
     variants: [ProductVariant!]
 }

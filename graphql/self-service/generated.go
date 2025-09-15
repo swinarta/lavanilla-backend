@@ -691,9 +691,9 @@ func (ec *executionContext) _Product_priceRange(ctx context.Context, field graph
 		ec.fieldContext_Product_priceRange,
 		func(ctx context.Context) (any, error) { return obj.PriceRange, nil },
 		nil,
-		ec.marshalNPriceRange2ᚖlavanillaᚋgraphqlᚋselfᚑserviceᚋmodelᚐPriceRange,
+		ec.marshalOPriceRange2ᚖlavanillaᚋgraphqlᚋselfᚑserviceᚋmodelᚐPriceRange,
 		true,
-		true,
+		false,
 	)
 }
 
@@ -2823,9 +2823,6 @@ func (ec *executionContext) _Product(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "priceRange":
 			out.Values[i] = ec._Product_priceRange(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "images":
 			out.Values[i] = ec._Product_images(ctx, field, obj)
 		case "variants":
@@ -3440,16 +3437,6 @@ func (ec *executionContext) unmarshalNOrderInput2lavanillaᚋgraphqlᚋselfᚑse
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPriceRange2ᚖlavanillaᚋgraphqlᚋselfᚑserviceᚋmodelᚐPriceRange(ctx context.Context, sel ast.SelectionSet, v *model.PriceRange) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._PriceRange(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNProduct2ᚖlavanillaᚋgraphqlᚋselfᚑserviceᚋmodelᚐProduct(ctx context.Context, sel ast.SelectionSet, v *model.Product) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -3800,6 +3787,13 @@ func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel as
 	_ = sel
 	res := graphql.MarshalFloatContext(*v)
 	return graphql.WrapContextMarshaler(ctx, res)
+}
+
+func (ec *executionContext) marshalOPriceRange2ᚖlavanillaᚋgraphqlᚋselfᚑserviceᚋmodelᚐPriceRange(ctx context.Context, sel ast.SelectionSet, v *model.PriceRange) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PriceRange(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOProduct2ᚕᚖlavanillaᚋgraphqlᚋselfᚑserviceᚋmodelᚐProductᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Product) graphql.Marshaler {
