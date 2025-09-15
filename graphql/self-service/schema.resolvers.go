@@ -9,21 +9,12 @@ import (
 	"errors"
 	"lavanilla/graphql/self-service/model"
 	"lavanilla/service/shopify"
+	"lavanilla/utils"
 	"strconv"
 	"strings"
 
 	"github.com/samber/lo"
 )
-
-func normalizePhone(phone string) string {
-	switch {
-	case strings.HasPrefix(phone, "0"):
-		return "+62" + phone[1:]
-	case strings.HasPrefix(phone, "62"):
-		return "+" + phone
-	}
-	return phone
-}
 
 // CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
@@ -37,7 +28,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 	}
 
 	if input.Customer.Phone != nil {
-		norm := normalizePhone(*input.Customer.Phone)
+		norm := utils.NormalizePhone(*input.Customer.Phone)
 		input.Customer.Phone = &norm
 	}
 

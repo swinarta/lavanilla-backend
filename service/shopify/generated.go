@@ -5271,7 +5271,7 @@ func GetCustomer(
 // The query executed by GetDraftOrder.
 const GetDraftOrder_Operation = `
 query GetDraftOrder ($query: String) {
-	draftOrders(first: 50, sortKey: UPDATED_AT, query: $query) {
+	draftOrders(first: 50, sortKey: UPDATED_AT, reverse: true, query: $query) {
 		nodes {
 			id
 			name
