@@ -2,6 +2,10 @@ type Query {
     draftOrderDesigner: [Order!]
 }
 
+type Mutation {
+    draftOrderComplete(id: ID!): Boolean!
+}
+
 type Order{
     id: ID!
     name: String!

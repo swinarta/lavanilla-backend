@@ -20,18 +20,10 @@ mutation TagsAdd($id: ID!, $tag: String!) {
     }
 }
 
-mutation UpdateTrackingInfo($fulfillmentId: ID!, $notifyCustomer: Boolean, $trackingInfoInput: FulfillmentTrackingInput!) {
-    fulfillmentTrackingInfoUpdateV2(fulfillmentId: $fulfillmentId, notifyCustomer: $notifyCustomer, trackingInfoInput: $trackingInfoInput) {
-        fulfillment {
-            trackingInfo {
-                company
-                number
-                url
-            }
-        }
-        userErrors {
-            field
-            message
+mutation DraftOrderComplete($id: ID!) {
+    draftOrderComplete(id: $id){
+        draftOrder {
+            id
         }
     }
 }

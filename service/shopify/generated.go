@@ -1442,6 +1442,85 @@ func (v *DeliveryProfilesResponse) GetDeliveryProfiles() DeliveryProfilesDeliver
 	return v.DeliveryProfiles
 }
 
+// DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload includes the requested fields of the GraphQL type DraftOrderCompletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `draftOrderComplete` mutation.
+type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload struct {
+	// The completed draft order.
+	DraftOrder DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder `json:"draftOrder"`
+}
+
+// GetDraftOrder returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload) GetDraftOrder() DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder {
+	return v.DraftOrder
+}
+
+// DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+// The GraphQL type's documentation follows.
+//
+// An order that a merchant creates on behalf of a customer. Draft orders are
+// useful for merchants that need to do the following tasks:
+//
+// - Create new orders for sales made by phone, in person, by chat, or elsewhere.
+// When a merchant accepts payment for a draft order, an order is created.
+// - Send invoices to customers to pay with a secure checkout link.
+// - Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+// - Re-create orders manually from active sales channels.
+// - Sell products at discount or wholesale rates.
+// - Take pre-orders.
+//
+// For draft orders in multiple currencies `presentment_money` is the source of
+// truth for what a customer is going to be charged and `shop_money` is an estimate
+// of what the merchant might receive in their shop currency.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+//
+// Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
+type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder) GetId() string {
+	return v.Id
+}
+
+// DraftOrderCompleteResponse is returned by DraftOrderComplete on success.
+type DraftOrderCompleteResponse struct {
+	// Completes a [draft order](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder) and
+	// converts it into a [regular order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order).
+	// The order appears in the merchant's orders list, and the customer can be notified about their order.
+	//
+	// Use the `draftOrderComplete` mutation when a merchant is ready to finalize a draft order and create a real
+	// order in their store. The `draftOrderComplete` mutation also supports sales channel attribution for tracking
+	// order sources using the [`sourceName`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/draftOrderComplete#arguments-sourceName)
+	// argument, [cart validation](https://shopify.dev/docs/apps/build/checkout/cart-checkout-validation)
+	// controls for app integrations, and detailed error reporting for failed completions.
+	//
+	// You can complete a draft order with different [payment scenarios](https://help.shopify.com/manual/fulfillment/managing-orders/payments):
+	//
+	// - Mark the order as paid immediately.
+	// - Set the order as payment pending using [payment terms](https://shopify.dev/docs/api/admin-graphql/latest/objects/PaymentTerms).
+	// - Specify a custom payment amount.
+	// - Select a specific payment gateway.
+	//
+	// > Note:
+	// > When completing a draft order, inventory is [reserved](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps#inventory-states)
+	// for the items in the order. This means the items will no longer be available for other customers to purchase.
+	// Make sure to verify inventory availability before completing the draft order.
+	DraftOrderComplete DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload `json:"draftOrderComplete"`
+}
+
+// GetDraftOrderComplete returns DraftOrderCompleteResponse.DraftOrderComplete, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteResponse) GetDraftOrderComplete() DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload {
+	return v.DraftOrderComplete
+}
+
 // FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload includes the requested fields of the GraphQL type FulfillmentCreateV2Payload.
 // The GraphQL type's documentation follows.
 //
@@ -4733,274 +4812,6 @@ var AllTaxExemption = []TaxExemption{
 	TaxExemptionUsDcResellerExemption,
 }
 
-// UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload includes the requested fields of the GraphQL type FulfillmentTrackingInfoUpdateV2Payload.
-// The GraphQL type's documentation follows.
-//
-// Return type for `fulfillmentTrackingInfoUpdateV2` mutation.
-type UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload struct {
-	// The updated fulfillment with tracking information.
-	Fulfillment UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillment `json:"fulfillment"`
-	// The list of errors that occurred from executing the mutation.
-	UserErrors []UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError `json:"userErrors"`
-}
-
-// GetFulfillment returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload.Fulfillment, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload) GetFulfillment() UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillment {
-	return v.Fulfillment
-}
-
-// GetUserErrors returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload.UserErrors, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload) GetUserErrors() []UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError {
-	return v.UserErrors
-}
-
-// UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillment includes the requested fields of the GraphQL type Fulfillment.
-// The GraphQL type's documentation follows.
-//
-// Represents a fulfillment.
-// In Shopify, a fulfillment represents a shipment of one or more items in an order.
-// When an order has been completely fulfilled, it means that all the items that are included
-// in the order have been sent to the customer.
-// There can be more than one fulfillment for an order.
-type UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillment struct {
-	// Tracking information associated with the fulfillment,
-	// such as the tracking company, tracking number, and tracking URL.
-	TrackingInfo []UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo `json:"trackingInfo"`
-}
-
-// GetTrackingInfo returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillment.TrackingInfo, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillment) GetTrackingInfo() []UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo {
-	return v.TrackingInfo
-}
-
-// UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo includes the requested fields of the GraphQL type FulfillmentTrackingInfo.
-// The GraphQL type's documentation follows.
-//
-// Represents the tracking information for a fulfillment.
-type UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo struct {
-	// The name of the tracking company.
-	//
-	// For tracking company names from the list below
-	// Shopify will automatically build tracking URLs for all provided tracking numbers,
-	// which will make the tracking numbers clickable in the interface.
-	//
-	// Additionally, for the tracking companies listed on the
-	// [Shipping Carriers help page](https://help.shopify.com/manual/shipping/understanding-shipping/shipping-carriers#integrated-shipping-carriers)
-	// Shopify will automatically update the fulfillment's `shipment_status` field during the fulfillment process.
-	//
-	// ### Supported tracking companies
-	//
-	// The following tracking companies display for shops located in any country:
-	//
-	// * 4PX
-	// * AGS
-	// * Amazon
-	// * Amazon Logistics UK
-	// * An Post
-	// * Anjun Logistics
-	// * APC
-	// * Asendia USA
-	// * Australia Post
-	// * Bonshaw
-	// * BPost
-	// * BPost International
-	// * Canada Post
-	// * Canpar
-	// * CDL Last Mile
-	// * China Post
-	// * Chronopost
-	// * Chukou1
-	// * Colissimo
-	// * Comingle
-	// * Coordinadora
-	// * Correios
-	// * Correos
-	// * CTT
-	// * CTT Express
-	// * Cyprus Post
-	// * Delnext
-	// * Deutsche Post
-	// * DHL eCommerce
-	// * DHL eCommerce Asia
-	// * DHL Express
-	// * DPD
-	// * DPD Local
-	// * DPD UK
-	// * DTD Express
-	// * DX
-	// * Eagle
-	// * Estes
-	// * Evri
-	// * FedEx
-	// * First Global Logistics
-	// * First Line
-	// * FSC
-	// * Fulfilla
-	// * GLS
-	// * Guangdong Weisuyi Information Technology (WSE)
-	// * Heppner Internationale Spedition GmbH & Co.
-	// * Iceland Post
-	// * IDEX
-	// * Israel Post
-	// * Japan Post (EN)
-	// * Japan Post (JA)
-	// * La Poste Colissimo
-	// * La Poste Burkina Faso
-	// * Lasership
-	// * Latvia Post
-	// * Lietuvos Paštas
-	// * Logisters
-	// * Lone Star Overnight
-	// * M3 Logistics
-	// * Meteor Space
-	// * Mondial Relay
-	// * New Zealand Post
-	// * NinjaVan
-	// * North Russia Supply Chain (Shenzhen) Co.
-	// * OnTrac
-	// * Packeta
-	// * Pago Logistics
-	// * Ping An Da Tengfei Express
-	// * Pitney Bowes
-	// * Portal PostNord
-	// * Poste Italiane
-	// * PostNL
-	// * PostNord DK
-	// * PostNord NO
-	// * PostNord SE
-	// * Purolator
-	// * Qxpress
-	// * Qyun Express
-	// * Royal Mail
-	// * Royal Shipments
-	// * Sagawa (EN)
-	// * Sagawa (JA)
-	// * Sendle
-	// * SF Express
-	// * SFC Fulfillment
-	// * SHREE NANDAN COURIER
-	// * Singapore Post
-	// * Southwest Air Cargo
-	// * StarTrack
-	// * Step Forward Freight
-	// * Swiss Post
-	// * TForce Final Mile
-	// * Tinghao
-	// * TNT
-	// * Toll IPEC
-	// * United Delivery Service
-	// * UPS
-	// * USPS
-	// * Venipak
-	// * We Post
-	// * Whistl
-	// * Wizmo
-	// * WMYC
-	// * Xpedigo
-	// * XPO Logistics
-	// * Yamato (EN)
-	// * Yamato (JA)
-	// * YiFan Express
-	// * YunExpress
-	//
-	// The following tracking companies are displayed for shops located in specific countries:
-	//
-	// * **Australia**: Australia Post, Sendle, Aramex Australia, TNT Australia,
-	// Hunter Express, Couriers Please, Bonds, Allied Express, Direct Couriers,
-	// Northline, GO Logistics
-	// * **Austria**: Österreichische Post
-	// * **Bulgaria**: Speedy
-	// * **Canada**: Intelcom, BoxKnight, Loomis, GLS
-	// * **China**: China Post, DHL eCommerce Asia, WanbExpress, YunExpress, Anjun Logistics, SFC Fulfillment, FSC
-	// * **Czechia**: Zásilkovna
-	// * **Germany**: Deutsche Post (DE), Deutsche Post (EN), DHL, DHL Express, Swiship, Hermes, GLS
-	// * **Spain**: SEUR
-	// * **France**: Colissimo, Mondial Relay, Colis Privé, GLS
-	// * **United Kingdom**: Evri, DPD UK, Parcelforce, Yodel, DHL Parcel, Tuffnells
-	// * **Greece**: ACS Courier
-	// * **Hong Kong SAR**: SF Express
-	// * **Ireland**: Fastway, DPD Ireland
-	// * **India**: DTDC, India Post, Delhivery, Gati KWE, Professional Couriers,
-	// XpressBees, Ecom Express, Ekart, Shadowfax, Bluedart
-	// * **Italy**: BRT, GLS Italy
-	// * **Japan**: エコ配, 西濃運輸, 西濃スーパーエキスプレス, 福山通運, 日本通運, 名鉄運輸, 第一貨物
-	// * **Netherlands**: DHL Parcel, DPD
-	// * **Norway**: Bring
-	// * **Poland**: Inpost
-	// * **Turkey**: PTT, Yurtiçi Kargo, Aras Kargo, Sürat Kargo
-	// * **United States**: GLS, Alliance Air Freight, Pilot Freight, LSO, Old
-	// Dominion, Pandion, R+L Carriers, Southwest Air Cargo
-	// * **South Africa**: Fastway, Skynet.
-	Company string `json:"company"`
-	// The tracking number of the fulfillment.
-	//
-	// The tracking number is clickable in the interface if one of the following applies
-	// (the highest in the list has the highest priority):
-	//
-	// * Tracking url provided in the `url` field.
-	// * [Shopify-known tracking company name](#supported-tracking-companies) specified in the `company` field.
-	// Shopify will build the tracking URL automatically based on the tracking number specified.
-	// * The tracking number has a Shopify-known format.
-	// Shopify will guess the tracking provider and build the tracking url based on the tracking number format.
-	// Not all tracking carriers are supported, and multiple tracking carriers may use similarly formatted tracking numbers.
-	// This can result in an invalid tracking URL.
-	// It is highly recommended that you send the tracking company and the tracking URL.
-	Number string `json:"number"`
-	// The URLs to track the fulfillment.
-	//
-	// The tracking URL is displayed in the merchant's admin on the order page.
-	// The tracking URL is displayed in the shipping confirmation email, which can optionally be sent to the customer.
-	// When accounts are enabled, it's also displayed in the customer's order history.
-	Url string `json:"url"`
-}
-
-// GetCompany returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo.Company, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo) GetCompany() string {
-	return v.Company
-}
-
-// GetNumber returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo.Number, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo) GetNumber() string {
-	return v.Number
-}
-
-// GetUrl returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo.Url, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadFulfillmentTrackingInfo) GetUrl() string {
-	return v.Url
-}
-
-// UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
-// The GraphQL type's documentation follows.
-//
-// Represents an error in the input of a mutation.
-type UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError struct {
-	// The path to the input field that caused the error.
-	Field []string `json:"field"`
-	// The error message.
-	Message string `json:"message"`
-}
-
-// GetField returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError) GetField() []string {
-	return v.Field
-}
-
-// GetMessage returns UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2PayloadUserErrorsUserError) GetMessage() string {
-	return v.Message
-}
-
-// UpdateTrackingInfoResponse is returned by UpdateTrackingInfo on success.
-type UpdateTrackingInfoResponse struct {
-	// Updates tracking information for a fulfillment.
-	FulfillmentTrackingInfoUpdateV2 UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload `json:"fulfillmentTrackingInfoUpdateV2"`
-}
-
-// GetFulfillmentTrackingInfoUpdateV2 returns UpdateTrackingInfoResponse.FulfillmentTrackingInfoUpdateV2, and is useful for accessing the field via an interface.
-func (v *UpdateTrackingInfoResponse) GetFulfillmentTrackingInfoUpdateV2() UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload {
-	return v.FulfillmentTrackingInfoUpdateV2
-}
-
 // Units of measurement for weight.
 type WeightUnit string
 
@@ -5029,6 +4840,14 @@ type __CreateCustomerInput struct {
 
 // GetInput returns __CreateCustomerInput.Input, and is useful for accessing the field via an interface.
 func (v *__CreateCustomerInput) GetInput() CustomerInput { return v.Input }
+
+// __DraftOrderCompleteInput is used internally by genqlient
+type __DraftOrderCompleteInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DraftOrderCompleteInput.Id, and is useful for accessing the field via an interface.
+func (v *__DraftOrderCompleteInput) GetId() string { return v.Id }
 
 // __FulfillmentCreateV2Input is used internally by genqlient
 type __FulfillmentCreateV2Input struct {
@@ -5098,24 +4917,6 @@ func (v *__TagsAddInput) GetId() string { return v.Id }
 // GetTag returns __TagsAddInput.Tag, and is useful for accessing the field via an interface.
 func (v *__TagsAddInput) GetTag() string { return v.Tag }
 
-// __UpdateTrackingInfoInput is used internally by genqlient
-type __UpdateTrackingInfoInput struct {
-	FulfillmentId     string                   `json:"fulfillmentId"`
-	NotifyCustomer    bool                     `json:"notifyCustomer"`
-	TrackingInfoInput FulfillmentTrackingInput `json:"trackingInfoInput"`
-}
-
-// GetFulfillmentId returns __UpdateTrackingInfoInput.FulfillmentId, and is useful for accessing the field via an interface.
-func (v *__UpdateTrackingInfoInput) GetFulfillmentId() string { return v.FulfillmentId }
-
-// GetNotifyCustomer returns __UpdateTrackingInfoInput.NotifyCustomer, and is useful for accessing the field via an interface.
-func (v *__UpdateTrackingInfoInput) GetNotifyCustomer() bool { return v.NotifyCustomer }
-
-// GetTrackingInfoInput returns __UpdateTrackingInfoInput.TrackingInfoInput, and is useful for accessing the field via an interface.
-func (v *__UpdateTrackingInfoInput) GetTrackingInfoInput() FulfillmentTrackingInput {
-	return v.TrackingInfoInput
-}
-
 // The mutation executed by CreateCustomer.
 const CreateCustomer_Operation = `
 mutation CreateCustomer ($input: CustomerInput!) {
@@ -5178,6 +4979,42 @@ func DeliveryProfiles(
 	}
 
 	data_ = &DeliveryProfilesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DraftOrderComplete.
+const DraftOrderComplete_Operation = `
+mutation DraftOrderComplete ($id: ID!) {
+	draftOrderComplete(id: $id) {
+		draftOrder {
+			id
+		}
+	}
+}
+`
+
+func DraftOrderComplete(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DraftOrderCompleteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DraftOrderComplete",
+		Query:  DraftOrderComplete_Operation,
+		Variables: &__DraftOrderCompleteInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DraftOrderCompleteResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -5657,54 +5494,6 @@ func TagsAdd(
 	}
 
 	data_ = &TagsAddResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The mutation executed by UpdateTrackingInfo.
-const UpdateTrackingInfo_Operation = `
-mutation UpdateTrackingInfo ($fulfillmentId: ID!, $notifyCustomer: Boolean, $trackingInfoInput: FulfillmentTrackingInput!) {
-	fulfillmentTrackingInfoUpdateV2(fulfillmentId: $fulfillmentId, notifyCustomer: $notifyCustomer, trackingInfoInput: $trackingInfoInput) {
-		fulfillment {
-			trackingInfo {
-				company
-				number
-				url
-			}
-		}
-		userErrors {
-			field
-			message
-		}
-	}
-}
-`
-
-func UpdateTrackingInfo(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	fulfillmentId string,
-	notifyCustomer bool,
-	trackingInfoInput FulfillmentTrackingInput,
-) (data_ *UpdateTrackingInfoResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "UpdateTrackingInfo",
-		Query:  UpdateTrackingInfo_Operation,
-		Variables: &__UpdateTrackingInfoInput{
-			FulfillmentId:     fulfillmentId,
-			NotifyCustomer:    notifyCustomer,
-			TrackingInfoInput: trackingInfoInput,
-		},
-	}
-
-	data_ = &UpdateTrackingInfoResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

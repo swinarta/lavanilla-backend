@@ -12,6 +12,15 @@ import (
 	"github.com/samber/lo"
 )
 
+// DraftOrderComplete is the resolver for the draftOrderComplete field.
+func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
+	_, err := r.ShopifyClient.DraftOrderComplete(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
 func (r *queryResolver) DraftOrderDesigner(ctx context.Context) ([]*model.Order, error) {
 	orders, err := r.ShopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"))
@@ -26,7 +35,11 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context) ([]*model.Order,
 	}), nil
 }
 
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

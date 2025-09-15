@@ -70,6 +70,10 @@ func (c *Client) CreateCustomer(ctx context.Context, email *string, phone *strin
 	return CreateCustomer(ctx, c.graphql, input)
 }
 
+func (c *Client) DraftOrderComplete(ctx context.Context, id string) (*DraftOrderCompleteResponse, error) {
+	return DraftOrderComplete(ctx, c.graphql, id)
+}
+
 func (c *Client) GetDraftOrders(ctx context.Context, tag *string) (*GetDraftOrderResponse, error) {
 	query := ""
 	if tag != nil {
