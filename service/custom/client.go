@@ -55,5 +55,8 @@ func (c *Client) CreateDraftOrder(ctx context.Context, input model.OrderInput, c
 	if input.Customer.Phone != nil {
 		payload.Phone = *input.Customer.Phone
 	}
+	if input.Note != nil {
+		payload.Note = *input.Note
+	}
 	return CreateDraftOrder(ctx, c.graphql, payload)
 }
