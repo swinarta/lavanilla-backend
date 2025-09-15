@@ -4,16 +4,23 @@ type Query {
 }
 
 type Mutation {
-    createOrder(input: OrderInput!): Boolean!
+    createOrder(input: OrderInput!): Order!
 }
 
 input OrderInput {
+    customer: Customer!
+    note: String
     items: [LineItem!]!
 }
 
 input LineItem {
     variantId: String!
     quantity: Int!
+}
+
+input Customer {
+    email: String
+    phone: String
 }
 
 type PriceRange {
@@ -36,6 +43,11 @@ type Product {
     priceRange: PriceRange!
     images: [URL!]
     variants: [ProductVariant!]
+}
+
+type Order{
+    id: ID!
+    name: String!
 }
 
 scalar URL

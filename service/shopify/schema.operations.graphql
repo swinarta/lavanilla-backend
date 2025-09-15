@@ -11,19 +11,6 @@ mutation FulfillmentCreateV2($fulfillment: FulfillmentV2Input!) {
     }
 }
 
-mutation PerformBulkOperation($query: String!) {
-    bulkOperationRunQuery(query: $query) {
-        bulkOperation {
-            id
-        }
-        userErrors {
-            field
-            message
-            code
-        }
-    }
-}
-
 mutation TagsAdd($id: ID!, $tag: String!) {
     tagsAdd(id: $id, tags: [$tag]) {
         __typename
@@ -46,16 +33,6 @@ mutation UpdateTrackingInfo($fulfillmentId: ID!, $notifyCustomer: Boolean, $trac
             field
             message
         }
-    }
-}
-
-query CurrentBulkOperation {
-    currentBulkOperation {
-        id
-        status
-        url
-        createdAt
-        completedAt
     }
 }
 
@@ -196,6 +173,28 @@ query OrderNames($query: String!) {
                  id
                  name
              }
+        }
+    }
+}
+
+mutation CreateCustomer($input: CustomerInput!) {
+    customerCreate(input: $input) {
+        customer {
+            id
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
+query GetCustomer($query: String!) {
+    customers(first: 1, query: $query) {
+        nodes {
+            id
+            firstName
+            lastName
         }
     }
 }

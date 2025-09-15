@@ -33,14 +33,27 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) CreateDraftOrder(ctx context.Context, input model.OrderInput) (*CreateDraftOrderResponse, error) {
-	return CreateDraftOrder(ctx, c.graphql, DraftOrderInput{
-		Email: "sastraw@gmail.com",
+func (c *Client) CreateDraftOrder(ctx context.Context, input model.OrderInput, customerId string) (*CreateDraftOrderResponse, error) {
+	payload := DraftOrderInput{
+		PurchasingEntity: PurchasingEntityInput{CustomerId: customerId},
 		LineItems: lo.Map(input.Items, func(item *model.LineItem, _ int) DraftOrderLineItemInput {
 			return DraftOrderLineItemInput{
 				VariantId: item.VariantID,
 				Quantity:  item.Quantity,
 			}
 		}),
-	})
+		Tags: []string{
+			"DESAINER",
+		},
+		PaymentTerms: PaymentTermsInput{
+			PaymentTermsTemplateId: "gid://shopify/PaymentTermsTemplate/1",
+		},
+	}
+	if input.Customer.Email != nil {
+		payload.Email = *input.Customer.Email
+	}
+	if input.Customer.Phone != nil {
+		payload.Phone = *input.Customer.Phone
+	}
+	return CreateDraftOrder(ctx, c.graphql, payload)
 }

@@ -2,6 +2,11 @@
 
 package model
 
+type Customer struct {
+	Email *string `json:"email,omitempty"`
+	Phone *string `json:"phone,omitempty"`
+}
+
 type LineItem struct {
 	VariantID string `json:"variantId"`
 	Quantity  int    `json:"quantity"`
@@ -10,8 +15,15 @@ type LineItem struct {
 type Mutation struct {
 }
 
+type Order struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
 type OrderInput struct {
-	Items []*LineItem `json:"items"`
+	Customer *Customer   `json:"customer"`
+	Note     *string     `json:"note,omitempty"`
+	Items    []*LineItem `json:"items"`
 }
 
 type PriceRange struct {

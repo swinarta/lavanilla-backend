@@ -11,53 +11,6 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
-// The valid values for the status of a bulk operation.
-type BulkOperationStatus string
-
-const (
-	// The bulk operation has been canceled.
-	BulkOperationStatusCanceled BulkOperationStatus = "CANCELED"
-	// Cancelation has been initiated on the bulk operation. There may be a short delay from when a cancelation
-	// starts until the operation is actually canceled.
-	BulkOperationStatusCanceling BulkOperationStatus = "CANCELING"
-	// The bulk operation has successfully completed.
-	BulkOperationStatusCompleted BulkOperationStatus = "COMPLETED"
-	// The bulk operation has been created.
-	BulkOperationStatusCreated BulkOperationStatus = "CREATED"
-	// The bulk operation URL has expired.
-	BulkOperationStatusExpired BulkOperationStatus = "EXPIRED"
-	// The bulk operation has failed. For information on why the operation failed, use
-	// [BulkOperation.errorCode](https://shopify.dev/api/admin-graphql/latest/enums/bulkoperationerrorcode).
-	BulkOperationStatusFailed BulkOperationStatus = "FAILED"
-	// The bulk operation is runnning.
-	BulkOperationStatusRunning BulkOperationStatus = "RUNNING"
-)
-
-var AllBulkOperationStatus = []BulkOperationStatus{
-	BulkOperationStatusCanceled,
-	BulkOperationStatusCanceling,
-	BulkOperationStatusCompleted,
-	BulkOperationStatusCreated,
-	BulkOperationStatusExpired,
-	BulkOperationStatusFailed,
-	BulkOperationStatusRunning,
-}
-
-// Possible error codes that can be returned by `BulkOperationUserError`.
-type BulkOperationUserErrorCode string
-
-const (
-	// A bulk operation is already in progress.
-	BulkOperationUserErrorCodeOperationInProgress BulkOperationUserErrorCode = "OPERATION_IN_PROGRESS"
-	// The input value is invalid.
-	BulkOperationUserErrorCodeInvalid BulkOperationUserErrorCode = "INVALID"
-)
-
-var AllBulkOperationUserErrorCode = []BulkOperationUserErrorCode{
-	BulkOperationUserErrorCodeOperationInProgress,
-	BulkOperationUserErrorCodeInvalid,
-}
-
 // The code designating a country/region, which generally follows ISO 3166-1 alpha-2 guidelines.
 // If a territory doesn't have a country code value in the `CountryCode` enum, then it might be considered a subdivision
 // of another country. For example, the territories associated with Spain are represented by the country code `ES`,
@@ -805,6 +758,78 @@ var AllCountryCode = []CountryCode{
 	CountryCodeZz,
 }
 
+// CreateCustomerCustomerCreateCustomerCreatePayload includes the requested fields of the GraphQL type CustomerCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `customerCreate` mutation.
+type CreateCustomerCustomerCreateCustomerCreatePayload struct {
+	// The created customer.
+	Customer CreateCustomerCustomerCreateCustomerCreatePayloadCustomer `json:"customer"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetCustomer returns CreateCustomerCustomerCreateCustomerCreatePayload.Customer, and is useful for accessing the field via an interface.
+func (v *CreateCustomerCustomerCreateCustomerCreatePayload) GetCustomer() CreateCustomerCustomerCreateCustomerCreatePayloadCustomer {
+	return v.Customer
+}
+
+// GetUserErrors returns CreateCustomerCustomerCreateCustomerCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateCustomerCustomerCreateCustomerCreatePayload) GetUserErrors() []CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// CreateCustomerCustomerCreateCustomerCreatePayloadCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type CreateCustomerCustomerCreateCustomerCreatePayloadCustomer struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateCustomerCustomerCreateCustomerCreatePayloadCustomer.Id, and is useful for accessing the field via an interface.
+func (v *CreateCustomerCustomerCreateCustomerCreatePayloadCustomer) GetId() string { return v.Id }
+
+// CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error in the input of a mutation.
+type CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateCustomerCustomerCreateCustomerCreatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateCustomerResponse is returned by CreateCustomer on success.
+type CreateCustomerResponse struct {
+	// Create a new customer. As of API version 2022-10, apps using protected
+	// customer data must meet the protected customer data [requirements](https://shopify.dev/apps/store/data-protection/protected-customer-data).
+	CustomerCreate CreateCustomerCustomerCreateCustomerCreatePayload `json:"customerCreate"`
+}
+
+// GetCustomerCreate returns CreateCustomerResponse.CustomerCreate, and is useful for accessing the field via an interface.
+func (v *CreateCustomerResponse) GetCustomerCreate() CreateCustomerCustomerCreateCustomerCreatePayload {
+	return v.CustomerCreate
+}
+
 // The currency codes that represent the world currencies throughout the Admin API. Currency codes include
 // [standard ISO 4217 codes](https://en.wikipedia.org/wiki/ISO_4217), legacy codes, non-standard codes,
 // digital currency codes.
@@ -1302,55 +1327,230 @@ var AllCurrencyCode = []CurrencyCode{
 	CurrencyCodeXxx,
 }
 
-// CurrentBulkOperationCurrentBulkOperation includes the requested fields of the GraphQL type BulkOperation.
-// The GraphQL type's documentation follows.
-//
-// An asynchronous long-running operation to fetch data in bulk or to bulk import data.
-//
-// Bulk operations are created using the `bulkOperationRunQuery` or `bulkOperationRunMutation` mutation. After
-// they are created, clients should poll the `status` field for updates. When `COMPLETED`, the `url` field contains
-// a link to the data in [JSONL](http://jsonlines.org/) format.
-//
-// Refer to the [bulk operations guide](https://shopify.dev/api/usage/bulk-operations/imports) for more details.
-type CurrentBulkOperationCurrentBulkOperation struct {
-	// A globally-unique ID.
+// Information that describes when a customer consented to
+// receiving marketing material by email.
+type CustomerEmailMarketingConsentInput struct {
+	// The customer opt-in level at the time of subscribing to marketing material.
+	MarketingOptInLevel CustomerMarketingOptInLevel `json:"marketingOptInLevel"`
+	// The current marketing state associated with the customer's email.
+	// If the customer doesn't have an email, then this field is `null`.
+	MarketingState CustomerEmailMarketingState `json:"marketingState"`
+	// The latest date and time when the customer consented or objected to
+	// receiving marketing material by email.
+	ConsentUpdatedAt time.Time `json:"consentUpdatedAt"`
+	// Identifies the location where the customer consented to receiving marketing material by email.
+	SourceLocationId string `json:"sourceLocationId"`
+}
+
+// GetMarketingOptInLevel returns CustomerEmailMarketingConsentInput.MarketingOptInLevel, and is useful for accessing the field via an interface.
+func (v *CustomerEmailMarketingConsentInput) GetMarketingOptInLevel() CustomerMarketingOptInLevel {
+	return v.MarketingOptInLevel
+}
+
+// GetMarketingState returns CustomerEmailMarketingConsentInput.MarketingState, and is useful for accessing the field via an interface.
+func (v *CustomerEmailMarketingConsentInput) GetMarketingState() CustomerEmailMarketingState {
+	return v.MarketingState
+}
+
+// GetConsentUpdatedAt returns CustomerEmailMarketingConsentInput.ConsentUpdatedAt, and is useful for accessing the field via an interface.
+func (v *CustomerEmailMarketingConsentInput) GetConsentUpdatedAt() time.Time {
+	return v.ConsentUpdatedAt
+}
+
+// GetSourceLocationId returns CustomerEmailMarketingConsentInput.SourceLocationId, and is useful for accessing the field via an interface.
+func (v *CustomerEmailMarketingConsentInput) GetSourceLocationId() string { return v.SourceLocationId }
+
+// The possible email marketing states for a customer.
+type CustomerEmailMarketingState string
+
+const (
+	// The customer isn't subscribed to email marketing.
+	CustomerEmailMarketingStateNotSubscribed CustomerEmailMarketingState = "NOT_SUBSCRIBED"
+	// The customer is in the process of subscribing to email marketing.
+	CustomerEmailMarketingStatePending CustomerEmailMarketingState = "PENDING"
+	// The customer is subscribed to email marketing.
+	CustomerEmailMarketingStateSubscribed CustomerEmailMarketingState = "SUBSCRIBED"
+	// The customer isn't currently subscribed to email marketing but was previously subscribed.
+	CustomerEmailMarketingStateUnsubscribed CustomerEmailMarketingState = "UNSUBSCRIBED"
+	// The customer's personal data is erased. This value is internally-set and read-only.
+	CustomerEmailMarketingStateRedacted CustomerEmailMarketingState = "REDACTED"
+	// The customer’s email address marketing state is invalid.
+	CustomerEmailMarketingStateInvalid CustomerEmailMarketingState = "INVALID"
+)
+
+var AllCustomerEmailMarketingState = []CustomerEmailMarketingState{
+	CustomerEmailMarketingStateNotSubscribed,
+	CustomerEmailMarketingStatePending,
+	CustomerEmailMarketingStateSubscribed,
+	CustomerEmailMarketingStateUnsubscribed,
+	CustomerEmailMarketingStateRedacted,
+	CustomerEmailMarketingStateInvalid,
+}
+
+// The input fields and values to use when creating or updating a customer.
+type CustomerInput struct {
+	// The addresses for a customer.
+	Addresses []MailingAddressInput `json:"addresses"`
+	// The unique email address of the customer.
+	Email string `json:"email"`
+	// The customer's first name.
+	FirstName string `json:"firstName"`
+	// The ID of the customer to update.
 	Id string `json:"id"`
-	// Status of the bulk operation.
-	Status BulkOperationStatus `json:"status"`
-	// The URL that points to the response data in [JSONL](http://jsonlines.org/) format.
-	// The URL expires 7 days after the operation completes.
-	Url string `json:"url"`
-	// When the bulk operation was created.
-	CreatedAt time.Time `json:"createdAt"`
-	// When the bulk operation was successfully completed.
-	CompletedAt time.Time `json:"completedAt"`
+	// The customer's last name.
+	LastName string `json:"lastName"`
+	// The customer's locale.
+	Locale string `json:"locale"`
+	// Additional metafields to associate to the customer.
+	Metafields []MetafieldInput `json:"metafields"`
+	// A note about the customer.
+	Note string `json:"note"`
+	// The unique phone number for the customer.
+	Phone string `json:"phone"`
+	// A list of tags to associate with the customer. Can be an array or a
+	// comma-separated list. Example values: `["tag1", "tag2", "tag3"]`, `"tag1, tag2, tag3"`
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the
+	// customer. To add new tags without overwriting
+	// existing tags, use the [tagsAdd](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags"`
+	// Information that describes when the customer consented to receiving marketing
+	// material by email. The `email` field is required when creating a customer with email marketing
+	// consent information.
+	EmailMarketingConsent CustomerEmailMarketingConsentInput `json:"emailMarketingConsent"`
+	// The marketing consent information when the customer consented to receiving marketing
+	// material by SMS. The `phone` field is required when creating a customer with SMS
+	// marketing consent information.
+	SmsMarketingConsent CustomerSmsMarketingConsentInput `json:"smsMarketingConsent"`
+	// Whether the customer is exempt from paying taxes on their order.
+	TaxExempt bool `json:"taxExempt"`
+	// The list of tax exemptions to apply to the customer.
+	TaxExemptions []TaxExemption `json:"taxExemptions"`
 }
 
-// GetId returns CurrentBulkOperationCurrentBulkOperation.Id, and is useful for accessing the field via an interface.
-func (v *CurrentBulkOperationCurrentBulkOperation) GetId() string { return v.Id }
+// GetAddresses returns CustomerInput.Addresses, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetAddresses() []MailingAddressInput { return v.Addresses }
 
-// GetStatus returns CurrentBulkOperationCurrentBulkOperation.Status, and is useful for accessing the field via an interface.
-func (v *CurrentBulkOperationCurrentBulkOperation) GetStatus() BulkOperationStatus { return v.Status }
+// GetEmail returns CustomerInput.Email, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetEmail() string { return v.Email }
 
-// GetUrl returns CurrentBulkOperationCurrentBulkOperation.Url, and is useful for accessing the field via an interface.
-func (v *CurrentBulkOperationCurrentBulkOperation) GetUrl() string { return v.Url }
+// GetFirstName returns CustomerInput.FirstName, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetFirstName() string { return v.FirstName }
 
-// GetCreatedAt returns CurrentBulkOperationCurrentBulkOperation.CreatedAt, and is useful for accessing the field via an interface.
-func (v *CurrentBulkOperationCurrentBulkOperation) GetCreatedAt() time.Time { return v.CreatedAt }
+// GetId returns CustomerInput.Id, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetId() string { return v.Id }
 
-// GetCompletedAt returns CurrentBulkOperationCurrentBulkOperation.CompletedAt, and is useful for accessing the field via an interface.
-func (v *CurrentBulkOperationCurrentBulkOperation) GetCompletedAt() time.Time { return v.CompletedAt }
+// GetLastName returns CustomerInput.LastName, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetLastName() string { return v.LastName }
 
-// CurrentBulkOperationResponse is returned by CurrentBulkOperation on success.
-type CurrentBulkOperationResponse struct {
-	// Returns the current app's most recent BulkOperation. Apps can run one bulk
-	// query and one bulk mutation operation at a time, by shop.
-	CurrentBulkOperation CurrentBulkOperationCurrentBulkOperation `json:"currentBulkOperation"`
+// GetLocale returns CustomerInput.Locale, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetLocale() string { return v.Locale }
+
+// GetMetafields returns CustomerInput.Metafields, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetNote returns CustomerInput.Note, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetNote() string { return v.Note }
+
+// GetPhone returns CustomerInput.Phone, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetPhone() string { return v.Phone }
+
+// GetTags returns CustomerInput.Tags, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetTags() []string { return v.Tags }
+
+// GetEmailMarketingConsent returns CustomerInput.EmailMarketingConsent, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetEmailMarketingConsent() CustomerEmailMarketingConsentInput {
+	return v.EmailMarketingConsent
 }
 
-// GetCurrentBulkOperation returns CurrentBulkOperationResponse.CurrentBulkOperation, and is useful for accessing the field via an interface.
-func (v *CurrentBulkOperationResponse) GetCurrentBulkOperation() CurrentBulkOperationCurrentBulkOperation {
-	return v.CurrentBulkOperation
+// GetSmsMarketingConsent returns CustomerInput.SmsMarketingConsent, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetSmsMarketingConsent() CustomerSmsMarketingConsentInput {
+	return v.SmsMarketingConsent
+}
+
+// GetTaxExempt returns CustomerInput.TaxExempt, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetTaxExempt() bool { return v.TaxExempt }
+
+// GetTaxExemptions returns CustomerInput.TaxExemptions, and is useful for accessing the field via an interface.
+func (v *CustomerInput) GetTaxExemptions() []TaxExemption { return v.TaxExemptions }
+
+// The possible values for the marketing subscription opt-in level enabled at the
+// time the customer consented to receive marketing information.
+//
+// The levels are defined by [the M3AAWG best practices guideline
+// document](https://www.m3aawg.org/sites/maawg/files/news/M3AAWG_Senders_BCP_Ver3-2015-02.pdf).
+type CustomerMarketingOptInLevel string
+
+const (
+	// After providing their information, the customer receives marketing information without any
+	// intermediate steps.
+	CustomerMarketingOptInLevelSingleOptIn CustomerMarketingOptInLevel = "SINGLE_OPT_IN"
+	// After providing their information, the customer receives a confirmation and is required to
+	// perform a intermediate step before receiving marketing information.
+	CustomerMarketingOptInLevelConfirmedOptIn CustomerMarketingOptInLevel = "CONFIRMED_OPT_IN"
+	// The customer receives marketing information but how they were opted in is unknown.
+	CustomerMarketingOptInLevelUnknown CustomerMarketingOptInLevel = "UNKNOWN"
+)
+
+var AllCustomerMarketingOptInLevel = []CustomerMarketingOptInLevel{
+	CustomerMarketingOptInLevelSingleOptIn,
+	CustomerMarketingOptInLevelConfirmedOptIn,
+	CustomerMarketingOptInLevelUnknown,
+}
+
+// The marketing consent information when the customer consented to
+// receiving marketing material by SMS.
+type CustomerSmsMarketingConsentInput struct {
+	// The marketing subscription opt-in level that was set when the customer consented to receive marketing information.
+	MarketingOptInLevel CustomerMarketingOptInLevel `json:"marketingOptInLevel"`
+	// The current SMS marketing state for the customer.
+	MarketingState CustomerSmsMarketingState `json:"marketingState"`
+	// The date and time when the customer consented to receive marketing material by SMS.
+	// If no date is provided, then the date and time when the consent information was sent is used.
+	ConsentUpdatedAt time.Time `json:"consentUpdatedAt"`
+	// Identifies the location where the customer consented to receiving marketing material by SMS.
+	SourceLocationId string `json:"sourceLocationId"`
+}
+
+// GetMarketingOptInLevel returns CustomerSmsMarketingConsentInput.MarketingOptInLevel, and is useful for accessing the field via an interface.
+func (v *CustomerSmsMarketingConsentInput) GetMarketingOptInLevel() CustomerMarketingOptInLevel {
+	return v.MarketingOptInLevel
+}
+
+// GetMarketingState returns CustomerSmsMarketingConsentInput.MarketingState, and is useful for accessing the field via an interface.
+func (v *CustomerSmsMarketingConsentInput) GetMarketingState() CustomerSmsMarketingState {
+	return v.MarketingState
+}
+
+// GetConsentUpdatedAt returns CustomerSmsMarketingConsentInput.ConsentUpdatedAt, and is useful for accessing the field via an interface.
+func (v *CustomerSmsMarketingConsentInput) GetConsentUpdatedAt() time.Time { return v.ConsentUpdatedAt }
+
+// GetSourceLocationId returns CustomerSmsMarketingConsentInput.SourceLocationId, and is useful for accessing the field via an interface.
+func (v *CustomerSmsMarketingConsentInput) GetSourceLocationId() string { return v.SourceLocationId }
+
+// The valid SMS marketing states for a customer’s phone number.
+type CustomerSmsMarketingState string
+
+const (
+	// The customer hasn't subscribed to SMS marketing.
+	CustomerSmsMarketingStateNotSubscribed CustomerSmsMarketingState = "NOT_SUBSCRIBED"
+	// The customer is in the process of subscribing to SMS marketing.
+	CustomerSmsMarketingStatePending CustomerSmsMarketingState = "PENDING"
+	// The customer is subscribed to SMS marketing.
+	CustomerSmsMarketingStateSubscribed CustomerSmsMarketingState = "SUBSCRIBED"
+	// The customer isn't currently subscribed to SMS marketing but was previously subscribed.
+	CustomerSmsMarketingStateUnsubscribed CustomerSmsMarketingState = "UNSUBSCRIBED"
+	// The customer's personal data is erased. This value is internally-set and read-only.
+	CustomerSmsMarketingStateRedacted CustomerSmsMarketingState = "REDACTED"
+)
+
+var AllCustomerSmsMarketingState = []CustomerSmsMarketingState{
+	CustomerSmsMarketingStateNotSubscribed,
+	CustomerSmsMarketingStatePending,
+	CustomerSmsMarketingStateSubscribed,
+	CustomerSmsMarketingStateUnsubscribed,
+	CustomerSmsMarketingStateRedacted,
 }
 
 // DeliveryProfilesDeliveryProfilesDeliveryProfileConnection includes the requested fields of the GraphQL type DeliveryProfileConnection.
@@ -1772,6 +1972,72 @@ func (v *FulfillmentV2Input) GetLineItemsByFulfillmentOrder() []FulfillmentOrder
 
 // GetOriginAddress returns FulfillmentV2Input.OriginAddress, and is useful for accessing the field via an interface.
 func (v *FulfillmentV2Input) GetOriginAddress() FulfillmentOriginAddressInput { return v.OriginAddress }
+
+// GetCustomerCustomersCustomerConnection includes the requested fields of the GraphQL type CustomerConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Customers.
+type GetCustomerCustomersCustomerConnection struct {
+	// A list of nodes that are contained in CustomerEdge. You can fetch data about
+	// an individual node, or you can follow the edges to fetch data about a
+	// collection of related nodes. At each node, you specify the fields that you
+	// want to retrieve.
+	Nodes []GetCustomerCustomersCustomerConnectionNodesCustomer `json:"nodes"`
+}
+
+// GetNodes returns GetCustomerCustomersCustomerConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetCustomerCustomersCustomerConnection) GetNodes() []GetCustomerCustomersCustomerConnectionNodesCustomer {
+	return v.Nodes
+}
+
+// GetCustomerCustomersCustomerConnectionNodesCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type GetCustomerCustomersCustomerConnectionNodesCustomer struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The customer's first name.
+	FirstName string `json:"firstName"`
+	// The customer's last name.
+	LastName string `json:"lastName"`
+}
+
+// GetId returns GetCustomerCustomersCustomerConnectionNodesCustomer.Id, and is useful for accessing the field via an interface.
+func (v *GetCustomerCustomersCustomerConnectionNodesCustomer) GetId() string { return v.Id }
+
+// GetFirstName returns GetCustomerCustomersCustomerConnectionNodesCustomer.FirstName, and is useful for accessing the field via an interface.
+func (v *GetCustomerCustomersCustomerConnectionNodesCustomer) GetFirstName() string {
+	return v.FirstName
+}
+
+// GetLastName returns GetCustomerCustomersCustomerConnectionNodesCustomer.LastName, and is useful for accessing the field via an interface.
+func (v *GetCustomerCustomersCustomerConnectionNodesCustomer) GetLastName() string { return v.LastName }
+
+// GetCustomerResponse is returned by GetCustomer on success.
+type GetCustomerResponse struct {
+	// Returns a list of
+	// [customers](https://shopify.dev/api/admin-graphql/latest/objects/Customer) in
+	// your Shopify store, including key information such as name, email, location,
+	// and purchase history.
+	// Use this query to segment your audience, personalize marketing campaigns, or
+	// analyze customer behavior by applying filters based on location, order
+	// history, marketing preferences and tags.
+	// The `customers` query supports
+	// [pagination](https://shopify.dev/api/usage/pagination-graphql) and [sorting](https://shopify.dev/api/admin-graphql/latest/enums/CustomerSortKeys).
+	Customers GetCustomerCustomersCustomerConnection `json:"customers"`
+}
+
+// GetCustomers returns GetCustomerResponse.Customers, and is useful for accessing the field via an interface.
+func (v *GetCustomerResponse) GetCustomers() GetCustomerCustomersCustomerConnection {
+	return v.Customers
+}
 
 // GetFulfillmentFulfillment includes the requested fields of the GraphQL type Fulfillment.
 // The GraphQL type's documentation follows.
@@ -3090,6 +3356,108 @@ func (v *GetProductsSelfServiceResponse) GetProducts() GetProductsSelfServicePro
 	return v.Products
 }
 
+// The input fields to create or update a mailing address.
+type MailingAddressInput struct {
+	// The first line of the address. Typically the street address or PO Box number.
+	Address1 string `json:"address1"`
+	// The second line of the address. Typically the number of the apartment, suite, or unit.
+	Address2 string `json:"address2"`
+	// The name of the city, district, village, or town.
+	City string `json:"city"`
+	// The name of the customer's company or organization.
+	Company string `json:"company"`
+	// The two-letter code for the country of the address.
+	CountryCode CountryCode `json:"countryCode"`
+	// The first name of the customer.
+	FirstName string `json:"firstName"`
+	// The last name of the customer.
+	LastName string `json:"lastName"`
+	// A unique phone number for the customer.
+	//
+	// Formatted using E.164 standard. For example, _+16135551111_.
+	Phone string `json:"phone"`
+	// The code for the region of the address, such as the province, state, or district.
+	// For example QC for Quebec, Canada.
+	ProvinceCode string `json:"provinceCode"`
+	// The zip or postal code of the address.
+	Zip string `json:"zip"`
+}
+
+// GetAddress1 returns MailingAddressInput.Address1, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetAddress1() string { return v.Address1 }
+
+// GetAddress2 returns MailingAddressInput.Address2, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetAddress2() string { return v.Address2 }
+
+// GetCity returns MailingAddressInput.City, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetCity() string { return v.City }
+
+// GetCompany returns MailingAddressInput.Company, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetCompany() string { return v.Company }
+
+// GetCountryCode returns MailingAddressInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetCountryCode() CountryCode { return v.CountryCode }
+
+// GetFirstName returns MailingAddressInput.FirstName, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetFirstName() string { return v.FirstName }
+
+// GetLastName returns MailingAddressInput.LastName, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetLastName() string { return v.LastName }
+
+// GetPhone returns MailingAddressInput.Phone, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetPhone() string { return v.Phone }
+
+// GetProvinceCode returns MailingAddressInput.ProvinceCode, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetProvinceCode() string { return v.ProvinceCode }
+
+// GetZip returns MailingAddressInput.Zip, and is useful for accessing the field via an interface.
+func (v *MailingAddressInput) GetZip() string { return v.Zip }
+
+// The input fields to use to create or update a metafield through a mutation on the owning resource.
+// An alternative way to create or update a metafield is by using the
+// [metafieldsSet](https://shopify.dev/api/admin-graphql/latest/mutations/metafieldsSet) mutation.
+type MetafieldInput struct {
+	// The unique ID of the metafield. Using `owner_id`, `namespace`, and `key` is preferred for creating and updating.
+	Id string `json:"id"`
+	// The container for a group of metafields that the metafield is or will be associated with. Used in tandem with
+	// `key` to lookup a metafield on a resource, preventing conflicts with other metafields with the same `key`.
+	//
+	// Required when creating a metafield, but optional when updating. Used to help identify the metafield when
+	// updating, but can't be updated itself.
+	//
+	// Must be 3-255 characters long and can contain alphanumeric, hyphen, and underscore characters.
+	Namespace string `json:"namespace"`
+	// The unique identifier for a metafield within its namespace.
+	//
+	// Required when creating a metafield, but optional when updating. Used to help identify the metafield when
+	// updating, but can't be updated itself.
+	//
+	// Must be 2-64 characters long and can contain alphanumeric, hyphen, and underscore characters.
+	Key string `json:"key"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+	// The type of data that is stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	//
+	// Required when creating or updating a metafield without a definition.
+	Type string `json:"type"`
+}
+
+// GetId returns MetafieldInput.Id, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetId() string { return v.Id }
+
+// GetNamespace returns MetafieldInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns MetafieldInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetKey() string { return v.Key }
+
+// GetValue returns MetafieldInput.Value, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetValue() string { return v.Value }
+
+// GetType returns MetafieldInput.Type, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetType() string { return v.Type }
+
 // OrderDetailByIdOrder includes the requested fields of the GraphQL type Order.
 // The GraphQL type's documentation follows.
 //
@@ -4275,88 +4643,6 @@ type OrderNamesResponse struct {
 // GetOrders returns OrderNamesResponse.Orders, and is useful for accessing the field via an interface.
 func (v *OrderNamesResponse) GetOrders() OrderNamesOrdersOrderConnection { return v.Orders }
 
-// PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload includes the requested fields of the GraphQL type BulkOperationRunQueryPayload.
-// The GraphQL type's documentation follows.
-//
-// Return type for `bulkOperationRunQuery` mutation.
-type PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload struct {
-	// The newly created bulk operation.
-	BulkOperation PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadBulkOperation `json:"bulkOperation"`
-	// The list of errors that occurred from executing the mutation.
-	UserErrors []PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError `json:"userErrors"`
-}
-
-// GetBulkOperation returns PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload.BulkOperation, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload) GetBulkOperation() PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadBulkOperation {
-	return v.BulkOperation
-}
-
-// GetUserErrors returns PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload.UserErrors, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload) GetUserErrors() []PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError {
-	return v.UserErrors
-}
-
-// PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadBulkOperation includes the requested fields of the GraphQL type BulkOperation.
-// The GraphQL type's documentation follows.
-//
-// An asynchronous long-running operation to fetch data in bulk or to bulk import data.
-//
-// Bulk operations are created using the `bulkOperationRunQuery` or `bulkOperationRunMutation` mutation. After
-// they are created, clients should poll the `status` field for updates. When `COMPLETED`, the `url` field contains
-// a link to the data in [JSONL](http://jsonlines.org/) format.
-//
-// Refer to the [bulk operations guide](https://shopify.dev/api/usage/bulk-operations/imports) for more details.
-type PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadBulkOperation struct {
-	// A globally-unique ID.
-	Id string `json:"id"`
-}
-
-// GetId returns PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadBulkOperation.Id, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadBulkOperation) GetId() string {
-	return v.Id
-}
-
-// PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError includes the requested fields of the GraphQL type BulkOperationUserError.
-// The GraphQL type's documentation follows.
-//
-// Represents an error in the input of a mutation.
-type PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError struct {
-	// The path to the input field that caused the error.
-	Field []string `json:"field"`
-	// The error message.
-	Message string `json:"message"`
-	// The error code.
-	Code BulkOperationUserErrorCode `json:"code"`
-}
-
-// GetField returns PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError.Field, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError) GetField() []string {
-	return v.Field
-}
-
-// GetMessage returns PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError.Message, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError) GetMessage() string {
-	return v.Message
-}
-
-// GetCode returns PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError.Code, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayloadUserErrorsBulkOperationUserError) GetCode() BulkOperationUserErrorCode {
-	return v.Code
-}
-
-// PerformBulkOperationResponse is returned by PerformBulkOperation on success.
-type PerformBulkOperationResponse struct {
-	// Creates and runs a bulk operation query.
-	//
-	// See the [bulk operations guide](https://shopify.dev/api/usage/bulk-operations/queries) for more details.
-	BulkOperationRunQuery PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload `json:"bulkOperationRunQuery"`
-}
-
-// GetBulkOperationRunQuery returns PerformBulkOperationResponse.BulkOperationRunQuery, and is useful for accessing the field via an interface.
-func (v *PerformBulkOperationResponse) GetBulkOperationRunQuery() PerformBulkOperationBulkOperationRunQueryBulkOperationRunQueryPayload {
-	return v.BulkOperationRunQuery
-}
-
 // TagsAddResponse is returned by TagsAdd on success.
 type TagsAddResponse struct {
 	// Add tags to an order, a draft order, a customer, a product, or an online store article.
@@ -4395,6 +4681,232 @@ type TagsAddTagsAddTagsAddPayloadUserErrorsUserError struct {
 
 // GetMessage returns TagsAddTagsAddTagsAddPayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
 func (v *TagsAddTagsAddTagsAddPayloadUserErrorsUserError) GetMessage() string { return v.Message }
+
+// Available customer tax exemptions.
+type TaxExemption string
+
+const (
+	// This customer is exempt from specific taxes for holding a valid STATUS_CARD_EXEMPTION in Canada.
+	TaxExemptionCaStatusCardExemption TaxExemption = "CA_STATUS_CARD_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in British Columbia.
+	TaxExemptionCaBcResellerExemption TaxExemption = "CA_BC_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Manitoba.
+	TaxExemptionCaMbResellerExemption TaxExemption = "CA_MB_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Saskatchewan.
+	TaxExemptionCaSkResellerExemption TaxExemption = "CA_SK_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid DIPLOMAT_EXEMPTION in Canada.
+	TaxExemptionCaDiplomatExemption TaxExemption = "CA_DIPLOMAT_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid COMMERCIAL_FISHERY_EXEMPTION in British Columbia.
+	TaxExemptionCaBcCommercialFisheryExemption TaxExemption = "CA_BC_COMMERCIAL_FISHERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid COMMERCIAL_FISHERY_EXEMPTION in Manitoba.
+	TaxExemptionCaMbCommercialFisheryExemption TaxExemption = "CA_MB_COMMERCIAL_FISHERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid COMMERCIAL_FISHERY_EXEMPTION in Nova Scotia.
+	TaxExemptionCaNsCommercialFisheryExemption TaxExemption = "CA_NS_COMMERCIAL_FISHERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid COMMERCIAL_FISHERY_EXEMPTION in Prince Edward Island.
+	TaxExemptionCaPeCommercialFisheryExemption TaxExemption = "CA_PE_COMMERCIAL_FISHERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid COMMERCIAL_FISHERY_EXEMPTION in Saskatchewan.
+	TaxExemptionCaSkCommercialFisheryExemption TaxExemption = "CA_SK_COMMERCIAL_FISHERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid PRODUCTION_AND_MACHINERY_EXEMPTION in British Columbia.
+	TaxExemptionCaBcProductionAndMachineryExemption TaxExemption = "CA_BC_PRODUCTION_AND_MACHINERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid PRODUCTION_AND_MACHINERY_EXEMPTION in Saskatchewan.
+	TaxExemptionCaSkProductionAndMachineryExemption TaxExemption = "CA_SK_PRODUCTION_AND_MACHINERY_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid SUB_CONTRACTOR_EXEMPTION in British Columbia.
+	TaxExemptionCaBcSubContractorExemption TaxExemption = "CA_BC_SUB_CONTRACTOR_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid SUB_CONTRACTOR_EXEMPTION in Saskatchewan.
+	TaxExemptionCaSkSubContractorExemption TaxExemption = "CA_SK_SUB_CONTRACTOR_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid CONTRACTOR_EXEMPTION in British Columbia.
+	TaxExemptionCaBcContractorExemption TaxExemption = "CA_BC_CONTRACTOR_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid CONTRACTOR_EXEMPTION in Saskatchewan.
+	TaxExemptionCaSkContractorExemption TaxExemption = "CA_SK_CONTRACTOR_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid PURCHASE_EXEMPTION in Ontario.
+	TaxExemptionCaOnPurchaseExemption TaxExemption = "CA_ON_PURCHASE_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid FARMER_EXEMPTION in Manitoba.
+	TaxExemptionCaMbFarmerExemption TaxExemption = "CA_MB_FARMER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid FARMER_EXEMPTION in Nova Scotia.
+	TaxExemptionCaNsFarmerExemption TaxExemption = "CA_NS_FARMER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid FARMER_EXEMPTION in Saskatchewan.
+	TaxExemptionCaSkFarmerExemption TaxExemption = "CA_SK_FARMER_EXEMPTION"
+	// This customer is exempt from VAT for purchases within the EU that is shipping
+	// from outside of customer's country, as well as purchases from the EU to the UK.
+	TaxExemptionEuReverseChargeExemptionRule TaxExemption = "EU_REVERSE_CHARGE_EXEMPTION_RULE"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Alabama.
+	TaxExemptionUsAlResellerExemption TaxExemption = "US_AL_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Alaska.
+	TaxExemptionUsAkResellerExemption TaxExemption = "US_AK_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Arizona.
+	TaxExemptionUsAzResellerExemption TaxExemption = "US_AZ_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Arkansas.
+	TaxExemptionUsArResellerExemption TaxExemption = "US_AR_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in California.
+	TaxExemptionUsCaResellerExemption TaxExemption = "US_CA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Colorado.
+	TaxExemptionUsCoResellerExemption TaxExemption = "US_CO_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Connecticut.
+	TaxExemptionUsCtResellerExemption TaxExemption = "US_CT_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Delaware.
+	TaxExemptionUsDeResellerExemption TaxExemption = "US_DE_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Florida.
+	TaxExemptionUsFlResellerExemption TaxExemption = "US_FL_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Georgia.
+	TaxExemptionUsGaResellerExemption TaxExemption = "US_GA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Hawaii.
+	TaxExemptionUsHiResellerExemption TaxExemption = "US_HI_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Idaho.
+	TaxExemptionUsIdResellerExemption TaxExemption = "US_ID_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Illinois.
+	TaxExemptionUsIlResellerExemption TaxExemption = "US_IL_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Indiana.
+	TaxExemptionUsInResellerExemption TaxExemption = "US_IN_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Iowa.
+	TaxExemptionUsIaResellerExemption TaxExemption = "US_IA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Kansas.
+	TaxExemptionUsKsResellerExemption TaxExemption = "US_KS_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Kentucky.
+	TaxExemptionUsKyResellerExemption TaxExemption = "US_KY_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Louisiana.
+	TaxExemptionUsLaResellerExemption TaxExemption = "US_LA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Maine.
+	TaxExemptionUsMeResellerExemption TaxExemption = "US_ME_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Maryland.
+	TaxExemptionUsMdResellerExemption TaxExemption = "US_MD_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Massachusetts.
+	TaxExemptionUsMaResellerExemption TaxExemption = "US_MA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Michigan.
+	TaxExemptionUsMiResellerExemption TaxExemption = "US_MI_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Minnesota.
+	TaxExemptionUsMnResellerExemption TaxExemption = "US_MN_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Mississippi.
+	TaxExemptionUsMsResellerExemption TaxExemption = "US_MS_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Missouri.
+	TaxExemptionUsMoResellerExemption TaxExemption = "US_MO_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Montana.
+	TaxExemptionUsMtResellerExemption TaxExemption = "US_MT_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Nebraska.
+	TaxExemptionUsNeResellerExemption TaxExemption = "US_NE_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Nevada.
+	TaxExemptionUsNvResellerExemption TaxExemption = "US_NV_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in New Hampshire.
+	TaxExemptionUsNhResellerExemption TaxExemption = "US_NH_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in New Jersey.
+	TaxExemptionUsNjResellerExemption TaxExemption = "US_NJ_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in New Mexico.
+	TaxExemptionUsNmResellerExemption TaxExemption = "US_NM_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in New York.
+	TaxExemptionUsNyResellerExemption TaxExemption = "US_NY_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in North Carolina.
+	TaxExemptionUsNcResellerExemption TaxExemption = "US_NC_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in North Dakota.
+	TaxExemptionUsNdResellerExemption TaxExemption = "US_ND_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Ohio.
+	TaxExemptionUsOhResellerExemption TaxExemption = "US_OH_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Oklahoma.
+	TaxExemptionUsOkResellerExemption TaxExemption = "US_OK_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Oregon.
+	TaxExemptionUsOrResellerExemption TaxExemption = "US_OR_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Pennsylvania.
+	TaxExemptionUsPaResellerExemption TaxExemption = "US_PA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Rhode Island.
+	TaxExemptionUsRiResellerExemption TaxExemption = "US_RI_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in South Carolina.
+	TaxExemptionUsScResellerExemption TaxExemption = "US_SC_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in South Dakota.
+	TaxExemptionUsSdResellerExemption TaxExemption = "US_SD_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Tennessee.
+	TaxExemptionUsTnResellerExemption TaxExemption = "US_TN_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Texas.
+	TaxExemptionUsTxResellerExemption TaxExemption = "US_TX_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Utah.
+	TaxExemptionUsUtResellerExemption TaxExemption = "US_UT_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Vermont.
+	TaxExemptionUsVtResellerExemption TaxExemption = "US_VT_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Virginia.
+	TaxExemptionUsVaResellerExemption TaxExemption = "US_VA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Washington.
+	TaxExemptionUsWaResellerExemption TaxExemption = "US_WA_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in West Virginia.
+	TaxExemptionUsWvResellerExemption TaxExemption = "US_WV_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Wisconsin.
+	TaxExemptionUsWiResellerExemption TaxExemption = "US_WI_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Wyoming.
+	TaxExemptionUsWyResellerExemption TaxExemption = "US_WY_RESELLER_EXEMPTION"
+	// This customer is exempt from specific taxes for holding a valid RESELLER_EXEMPTION in Washington DC.
+	TaxExemptionUsDcResellerExemption TaxExemption = "US_DC_RESELLER_EXEMPTION"
+)
+
+var AllTaxExemption = []TaxExemption{
+	TaxExemptionCaStatusCardExemption,
+	TaxExemptionCaBcResellerExemption,
+	TaxExemptionCaMbResellerExemption,
+	TaxExemptionCaSkResellerExemption,
+	TaxExemptionCaDiplomatExemption,
+	TaxExemptionCaBcCommercialFisheryExemption,
+	TaxExemptionCaMbCommercialFisheryExemption,
+	TaxExemptionCaNsCommercialFisheryExemption,
+	TaxExemptionCaPeCommercialFisheryExemption,
+	TaxExemptionCaSkCommercialFisheryExemption,
+	TaxExemptionCaBcProductionAndMachineryExemption,
+	TaxExemptionCaSkProductionAndMachineryExemption,
+	TaxExemptionCaBcSubContractorExemption,
+	TaxExemptionCaSkSubContractorExemption,
+	TaxExemptionCaBcContractorExemption,
+	TaxExemptionCaSkContractorExemption,
+	TaxExemptionCaOnPurchaseExemption,
+	TaxExemptionCaMbFarmerExemption,
+	TaxExemptionCaNsFarmerExemption,
+	TaxExemptionCaSkFarmerExemption,
+	TaxExemptionEuReverseChargeExemptionRule,
+	TaxExemptionUsAlResellerExemption,
+	TaxExemptionUsAkResellerExemption,
+	TaxExemptionUsAzResellerExemption,
+	TaxExemptionUsArResellerExemption,
+	TaxExemptionUsCaResellerExemption,
+	TaxExemptionUsCoResellerExemption,
+	TaxExemptionUsCtResellerExemption,
+	TaxExemptionUsDeResellerExemption,
+	TaxExemptionUsFlResellerExemption,
+	TaxExemptionUsGaResellerExemption,
+	TaxExemptionUsHiResellerExemption,
+	TaxExemptionUsIdResellerExemption,
+	TaxExemptionUsIlResellerExemption,
+	TaxExemptionUsInResellerExemption,
+	TaxExemptionUsIaResellerExemption,
+	TaxExemptionUsKsResellerExemption,
+	TaxExemptionUsKyResellerExemption,
+	TaxExemptionUsLaResellerExemption,
+	TaxExemptionUsMeResellerExemption,
+	TaxExemptionUsMdResellerExemption,
+	TaxExemptionUsMaResellerExemption,
+	TaxExemptionUsMiResellerExemption,
+	TaxExemptionUsMnResellerExemption,
+	TaxExemptionUsMsResellerExemption,
+	TaxExemptionUsMoResellerExemption,
+	TaxExemptionUsMtResellerExemption,
+	TaxExemptionUsNeResellerExemption,
+	TaxExemptionUsNvResellerExemption,
+	TaxExemptionUsNhResellerExemption,
+	TaxExemptionUsNjResellerExemption,
+	TaxExemptionUsNmResellerExemption,
+	TaxExemptionUsNyResellerExemption,
+	TaxExemptionUsNcResellerExemption,
+	TaxExemptionUsNdResellerExemption,
+	TaxExemptionUsOhResellerExemption,
+	TaxExemptionUsOkResellerExemption,
+	TaxExemptionUsOrResellerExemption,
+	TaxExemptionUsPaResellerExemption,
+	TaxExemptionUsRiResellerExemption,
+	TaxExemptionUsScResellerExemption,
+	TaxExemptionUsSdResellerExemption,
+	TaxExemptionUsTnResellerExemption,
+	TaxExemptionUsTxResellerExemption,
+	TaxExemptionUsUtResellerExemption,
+	TaxExemptionUsVtResellerExemption,
+	TaxExemptionUsVaResellerExemption,
+	TaxExemptionUsWaResellerExemption,
+	TaxExemptionUsWvResellerExemption,
+	TaxExemptionUsWiResellerExemption,
+	TaxExemptionUsWyResellerExemption,
+	TaxExemptionUsDcResellerExemption,
+}
 
 // UpdateTrackingInfoFulfillmentTrackingInfoUpdateV2FulfillmentTrackingInfoUpdateV2Payload includes the requested fields of the GraphQL type FulfillmentTrackingInfoUpdateV2Payload.
 // The GraphQL type's documentation follows.
@@ -4685,6 +5197,14 @@ var AllWeightUnit = []WeightUnit{
 	WeightUnitOunces,
 }
 
+// __CreateCustomerInput is used internally by genqlient
+type __CreateCustomerInput struct {
+	Input CustomerInput `json:"input"`
+}
+
+// GetInput returns __CreateCustomerInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateCustomerInput) GetInput() CustomerInput { return v.Input }
+
 // __FulfillmentCreateV2Input is used internally by genqlient
 type __FulfillmentCreateV2Input struct {
 	Fulfillment FulfillmentV2Input `json:"fulfillment"`
@@ -4692,6 +5212,14 @@ type __FulfillmentCreateV2Input struct {
 
 // GetFulfillment returns __FulfillmentCreateV2Input.Fulfillment, and is useful for accessing the field via an interface.
 func (v *__FulfillmentCreateV2Input) GetFulfillment() FulfillmentV2Input { return v.Fulfillment }
+
+// __GetCustomerInput is used internally by genqlient
+type __GetCustomerInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __GetCustomerInput.Query, and is useful for accessing the field via an interface.
+func (v *__GetCustomerInput) GetQuery() string { return v.Query }
 
 // __GetFulfillmentInput is used internally by genqlient
 type __GetFulfillmentInput struct {
@@ -4733,14 +5261,6 @@ type __OrderNamesInput struct {
 // GetQuery returns __OrderNamesInput.Query, and is useful for accessing the field via an interface.
 func (v *__OrderNamesInput) GetQuery() string { return v.Query }
 
-// __PerformBulkOperationInput is used internally by genqlient
-type __PerformBulkOperationInput struct {
-	Query string `json:"query"`
-}
-
-// GetQuery returns __PerformBulkOperationInput.Query, and is useful for accessing the field via an interface.
-func (v *__PerformBulkOperationInput) GetQuery() string { return v.Query }
-
 // __TagsAddInput is used internally by genqlient
 type __TagsAddInput struct {
 	Id  string `json:"id"`
@@ -4771,29 +5291,35 @@ func (v *__UpdateTrackingInfoInput) GetTrackingInfoInput() FulfillmentTrackingIn
 	return v.TrackingInfoInput
 }
 
-// The query executed by CurrentBulkOperation.
-const CurrentBulkOperation_Operation = `
-query CurrentBulkOperation {
-	currentBulkOperation {
-		id
-		status
-		url
-		createdAt
-		completedAt
+// The mutation executed by CreateCustomer.
+const CreateCustomer_Operation = `
+mutation CreateCustomer ($input: CustomerInput!) {
+	customerCreate(input: $input) {
+		customer {
+			id
+		}
+		userErrors {
+			field
+			message
+		}
 	}
 }
 `
 
-func CurrentBulkOperation(
+func CreateCustomer(
 	ctx_ context.Context,
 	client_ graphql.Client,
-) (data_ *CurrentBulkOperationResponse, err_ error) {
+	input CustomerInput,
+) (data_ *CreateCustomerResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "CurrentBulkOperation",
-		Query:  CurrentBulkOperation_Operation,
+		OpName: "CreateCustomer",
+		Query:  CreateCustomer_Operation,
+		Variables: &__CreateCustomerInput{
+			Input: input,
+		},
 	}
 
-	data_ = &CurrentBulkOperationResponse{}
+	data_ = &CreateCustomerResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -4868,6 +5394,44 @@ func FulfillmentCreateV2(
 	}
 
 	data_ = &FulfillmentCreateV2Response{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCustomer.
+const GetCustomer_Operation = `
+query GetCustomer ($query: String!) {
+	customers(first: 1, query: $query) {
+		nodes {
+			id
+			firstName
+			lastName
+		}
+	}
+}
+`
+
+func GetCustomer(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *GetCustomerResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCustomer",
+		Query:  GetCustomer_Operation,
+		Variables: &__GetCustomerInput{
+			Query: query,
+		},
+	}
+
+	data_ = &GetCustomerResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -5229,47 +5793,6 @@ func OrderNames(
 	}
 
 	data_ = &OrderNamesResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The mutation executed by PerformBulkOperation.
-const PerformBulkOperation_Operation = `
-mutation PerformBulkOperation ($query: String!) {
-	bulkOperationRunQuery(query: $query) {
-		bulkOperation {
-			id
-		}
-		userErrors {
-			field
-			message
-			code
-		}
-	}
-}
-`
-
-func PerformBulkOperation(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	query string,
-) (data_ *PerformBulkOperationResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "PerformBulkOperation",
-		Query:  PerformBulkOperation_Operation,
-		Variables: &__PerformBulkOperationInput{
-			Query: query,
-		},
-	}
-
-	data_ = &PerformBulkOperationResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

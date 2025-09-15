@@ -4,17 +4,37 @@ type Mutation {
 
 type DraftOrderResponse {
     draftOrder: DraftOrder
-#    userErrors: [UserError!]!
+    userErrors: [UserError!]!
 }
 
 type DraftOrder {
     id: ID!
+    name: String!
+}
+
+type UserError {
+    field: [String!]
+    message: String!
 }
 
 input DraftOrderInput {
-    email: String!
+    email: String
+    phone: String
+    note: String
     lineItems: [DraftOrderLineItemInput!]!
+    tags: [String!]
+    paymentTerms: PaymentTermsInput!
+    purchasingEntity: PurchasingEntityInput!
 }
+
+input PurchasingEntityInput {
+    customerId: String!
+}
+
+input PaymentTermsInput {
+    paymentTermsTemplateId: String!
+}
+
 input DraftOrderLineItemInput {
     variantId: ID!
     quantity: Int!

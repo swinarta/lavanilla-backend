@@ -10,7 +10,8 @@ import (
 
 // CreateDraftOrderDraftOrderCreateDraftOrderResponse includes the requested fields of the GraphQL type DraftOrderResponse.
 type CreateDraftOrderDraftOrderCreateDraftOrderResponse struct {
-	DraftOrder CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder `json:"draftOrder"`
+	DraftOrder CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder            `json:"draftOrder"`
+	UserErrors []CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError `json:"userErrors"`
 }
 
 // GetDraftOrder returns CreateDraftOrderDraftOrderCreateDraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
@@ -18,13 +19,40 @@ func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponse) GetDraftOrder() Cre
 	return v.DraftOrder
 }
 
+// GetUserErrors returns CreateDraftOrderDraftOrderCreateDraftOrderResponse.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponse) GetUserErrors() []CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError {
+	return v.UserErrors
+}
+
 // CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder includes the requested fields of the GraphQL type DraftOrder.
 type CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder struct {
-	Id string `json:"id"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 // GetId returns CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder.Id, and is useful for accessing the field via an interface.
 func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder) GetId() string { return v.Id }
+
+// GetName returns CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder) GetName() string {
+	return v.Name
+}
+
+// CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+type CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError struct {
+	Field   []string `json:"field"`
+	Message string   `json:"message"`
+}
+
+// GetField returns CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
 
 // CreateDraftOrderResponse is returned by CreateDraftOrder on success.
 type CreateDraftOrderResponse struct {
@@ -37,15 +65,35 @@ func (v *CreateDraftOrderResponse) GetDraftOrderCreate() CreateDraftOrderDraftOr
 }
 
 type DraftOrderInput struct {
-	Email     string                    `json:"email"`
-	LineItems []DraftOrderLineItemInput `json:"lineItems"`
+	Email            string                    `json:"email"`
+	Phone            string                    `json:"phone"`
+	Note             string                    `json:"note"`
+	LineItems        []DraftOrderLineItemInput `json:"lineItems"`
+	Tags             []string                  `json:"tags"`
+	PaymentTerms     PaymentTermsInput         `json:"paymentTerms"`
+	PurchasingEntity PurchasingEntityInput     `json:"purchasingEntity"`
 }
 
 // GetEmail returns DraftOrderInput.Email, and is useful for accessing the field via an interface.
 func (v *DraftOrderInput) GetEmail() string { return v.Email }
 
+// GetPhone returns DraftOrderInput.Phone, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPhone() string { return v.Phone }
+
+// GetNote returns DraftOrderInput.Note, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetNote() string { return v.Note }
+
 // GetLineItems returns DraftOrderInput.LineItems, and is useful for accessing the field via an interface.
 func (v *DraftOrderInput) GetLineItems() []DraftOrderLineItemInput { return v.LineItems }
+
+// GetTags returns DraftOrderInput.Tags, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetTags() []string { return v.Tags }
+
+// GetPaymentTerms returns DraftOrderInput.PaymentTerms, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPaymentTerms() PaymentTermsInput { return v.PaymentTerms }
+
+// GetPurchasingEntity returns DraftOrderInput.PurchasingEntity, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPurchasingEntity() PurchasingEntityInput { return v.PurchasingEntity }
 
 type DraftOrderLineItemInput struct {
 	VariantId string `json:"variantId"`
@@ -57,6 +105,20 @@ func (v *DraftOrderLineItemInput) GetVariantId() string { return v.VariantId }
 
 // GetQuantity returns DraftOrderLineItemInput.Quantity, and is useful for accessing the field via an interface.
 func (v *DraftOrderLineItemInput) GetQuantity() int { return v.Quantity }
+
+type PaymentTermsInput struct {
+	PaymentTermsTemplateId string `json:"paymentTermsTemplateId"`
+}
+
+// GetPaymentTermsTemplateId returns PaymentTermsInput.PaymentTermsTemplateId, and is useful for accessing the field via an interface.
+func (v *PaymentTermsInput) GetPaymentTermsTemplateId() string { return v.PaymentTermsTemplateId }
+
+type PurchasingEntityInput struct {
+	CustomerId string `json:"customerId"`
+}
+
+// GetCustomerId returns PurchasingEntityInput.CustomerId, and is useful for accessing the field via an interface.
+func (v *PurchasingEntityInput) GetCustomerId() string { return v.CustomerId }
 
 // __CreateDraftOrderInput is used internally by genqlient
 type __CreateDraftOrderInput struct {
@@ -72,6 +134,11 @@ mutation CreateDraftOrder ($input: DraftOrderInput!) {
 	draftOrderCreate(input: $input) {
 		draftOrder {
 			id
+			name
+		}
+		userErrors {
+			field
+			message
 		}
 	}
 }

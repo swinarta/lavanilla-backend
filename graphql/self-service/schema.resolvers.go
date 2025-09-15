@@ -6,8 +6,8 @@ package self_service
 
 import (
 	"context"
+	"errors"
 	"lavanilla/graphql/self-service/model"
-	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
 	"strconv"
 
@@ -15,13 +15,39 @@ import (
 )
 
 // CreateOrder is the resolver for the createOrder field.
-func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (bool, error) {
-	client := custom.NewClient()
-	_, err := client.CreateDraftOrder(ctx, input)
-	if err != nil {
-		return false, err
+func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
+	if input.Customer.Email == nil && input.Customer.Phone == nil {
+		return nil, errors.New("customer email or phone is required")
 	}
-	return true, nil
+
+	customerResp, err := r.ShopifyClient.GetCustomer(ctx, input.Customer.Email, input.Customer.Phone)
+	if err != nil {
+		return nil, err
+	}
+
+	var customerId string
+
+	if len(customerResp.Customers.Nodes) > 0 {
+		customerId = customerResp.Customers.Nodes[0].Id
+	} else {
+		customerCreateResp, err := r.ShopifyClient.CreateCustomer(ctx, input.Customer.Email, input.Customer.Phone)
+		if err != nil {
+			return nil, err
+		}
+		customerId = customerCreateResp.CustomerCreate.Customer.Id
+	}
+
+	resp, err := r.CustomClient.CreateDraftOrder(ctx, input, customerId)
+	if err != nil {
+		return nil, err
+	}
+	if len(resp.DraftOrderCreate.UserErrors) > 0 {
+		return nil, errors.New(resp.DraftOrderCreate.UserErrors[0].Message)
+	}
+	return &model.Order{
+		ID:   resp.DraftOrderCreate.DraftOrder.Id,
+		Name: resp.DraftOrderCreate.DraftOrder.Name,
+	}, nil
 }
 
 // Products is the resolver for the products field.
@@ -51,7 +77,6 @@ func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) 
 			Images: lo.Map(product.Node.Media.Nodes, func(imageEdge shopify.GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia, _ int) string {
 				return imageEdge.GetPreview().Image.Url
 			}),
-			// Variants: lo.Map(product.Node.Media),
 		})
 	}
 	return result, nil
