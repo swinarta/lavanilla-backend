@@ -10,14 +10,35 @@ import (
 	"lavanilla/graphql/self-service/model"
 	"lavanilla/service/shopify"
 	"strconv"
+	"strings"
 
 	"github.com/samber/lo"
 )
+
+func normalizePhone(phone string) string {
+	switch {
+	case strings.HasPrefix(phone, "0"):
+		return "+62" + phone[1:]
+	case strings.HasPrefix(phone, "62"):
+		return "+" + phone
+	}
+	return phone
+}
 
 // CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
 	if input.Customer.Email == nil && input.Customer.Phone == nil {
 		return nil, errors.New("customer email or phone is required")
+	}
+
+	if input.Customer.Email != nil {
+		lower := strings.ToLower(*input.Customer.Email)
+		input.Customer.Email = &lower
+	}
+
+	if input.Customer.Phone != nil {
+		norm := normalizePhone(*input.Customer.Phone)
+		input.Customer.Phone = &norm
 	}
 
 	customerResp, err := r.ShopifyClient.GetCustomer(ctx, input.Customer.Email, input.Customer.Phone)
