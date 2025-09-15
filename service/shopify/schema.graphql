@@ -15784,10 +15784,7 @@ input CustomerInput {
 
   """The customer's first name."""
   firstName: String
-
-  """The ID of the customer to update."""
-  id: ID
-
+    
   """The customer's last name."""
   lastName: String
 
@@ -15813,20 +15810,6 @@ input CustomerInput {
   mutation.
   """
   tags: [String!]
-
-  """
-  Information that describes when the customer consented to receiving marketing
-          material by email. The `email` field is required when creating a customer with email marketing
-          consent information.
-  """
-  emailMarketingConsent: CustomerEmailMarketingConsentInput
-
-  """
-  The marketing consent information when the customer consented to receiving marketing
-          material by SMS. The `phone` field is required when creating a customer with SMS
-          marketing consent information.
-  """
-  smsMarketingConsent: CustomerSmsMarketingConsentInput
 
   """Whether the customer is exempt from paying taxes on their order."""
   taxExempt: Boolean

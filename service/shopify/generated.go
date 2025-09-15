@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/Khan/genqlient/graphql"
 )
@@ -1327,66 +1326,6 @@ var AllCurrencyCode = []CurrencyCode{
 	CurrencyCodeXxx,
 }
 
-// Information that describes when a customer consented to
-// receiving marketing material by email.
-type CustomerEmailMarketingConsentInput struct {
-	// The customer opt-in level at the time of subscribing to marketing material.
-	MarketingOptInLevel CustomerMarketingOptInLevel `json:"marketingOptInLevel"`
-	// The current marketing state associated with the customer's email.
-	// If the customer doesn't have an email, then this field is `null`.
-	MarketingState CustomerEmailMarketingState `json:"marketingState"`
-	// The latest date and time when the customer consented or objected to
-	// receiving marketing material by email.
-	ConsentUpdatedAt time.Time `json:"consentUpdatedAt"`
-	// Identifies the location where the customer consented to receiving marketing material by email.
-	SourceLocationId string `json:"sourceLocationId"`
-}
-
-// GetMarketingOptInLevel returns CustomerEmailMarketingConsentInput.MarketingOptInLevel, and is useful for accessing the field via an interface.
-func (v *CustomerEmailMarketingConsentInput) GetMarketingOptInLevel() CustomerMarketingOptInLevel {
-	return v.MarketingOptInLevel
-}
-
-// GetMarketingState returns CustomerEmailMarketingConsentInput.MarketingState, and is useful for accessing the field via an interface.
-func (v *CustomerEmailMarketingConsentInput) GetMarketingState() CustomerEmailMarketingState {
-	return v.MarketingState
-}
-
-// GetConsentUpdatedAt returns CustomerEmailMarketingConsentInput.ConsentUpdatedAt, and is useful for accessing the field via an interface.
-func (v *CustomerEmailMarketingConsentInput) GetConsentUpdatedAt() time.Time {
-	return v.ConsentUpdatedAt
-}
-
-// GetSourceLocationId returns CustomerEmailMarketingConsentInput.SourceLocationId, and is useful for accessing the field via an interface.
-func (v *CustomerEmailMarketingConsentInput) GetSourceLocationId() string { return v.SourceLocationId }
-
-// The possible email marketing states for a customer.
-type CustomerEmailMarketingState string
-
-const (
-	// The customer isn't subscribed to email marketing.
-	CustomerEmailMarketingStateNotSubscribed CustomerEmailMarketingState = "NOT_SUBSCRIBED"
-	// The customer is in the process of subscribing to email marketing.
-	CustomerEmailMarketingStatePending CustomerEmailMarketingState = "PENDING"
-	// The customer is subscribed to email marketing.
-	CustomerEmailMarketingStateSubscribed CustomerEmailMarketingState = "SUBSCRIBED"
-	// The customer isn't currently subscribed to email marketing but was previously subscribed.
-	CustomerEmailMarketingStateUnsubscribed CustomerEmailMarketingState = "UNSUBSCRIBED"
-	// The customer's personal data is erased. This value is internally-set and read-only.
-	CustomerEmailMarketingStateRedacted CustomerEmailMarketingState = "REDACTED"
-	// The customer’s email address marketing state is invalid.
-	CustomerEmailMarketingStateInvalid CustomerEmailMarketingState = "INVALID"
-)
-
-var AllCustomerEmailMarketingState = []CustomerEmailMarketingState{
-	CustomerEmailMarketingStateNotSubscribed,
-	CustomerEmailMarketingStatePending,
-	CustomerEmailMarketingStateSubscribed,
-	CustomerEmailMarketingStateUnsubscribed,
-	CustomerEmailMarketingStateRedacted,
-	CustomerEmailMarketingStateInvalid,
-}
-
 // The input fields and values to use when creating or updating a customer.
 type CustomerInput struct {
 	// The addresses for a customer.
@@ -1395,8 +1334,6 @@ type CustomerInput struct {
 	Email string `json:"email"`
 	// The customer's first name.
 	FirstName string `json:"firstName"`
-	// The ID of the customer to update.
-	Id string `json:"id"`
 	// The customer's last name.
 	LastName string `json:"lastName"`
 	// The customer's locale.
@@ -1415,14 +1352,6 @@ type CustomerInput struct {
 	// existing tags, use the [tagsAdd](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
 	// mutation.
 	Tags []string `json:"tags"`
-	// Information that describes when the customer consented to receiving marketing
-	// material by email. The `email` field is required when creating a customer with email marketing
-	// consent information.
-	EmailMarketingConsent CustomerEmailMarketingConsentInput `json:"emailMarketingConsent"`
-	// The marketing consent information when the customer consented to receiving marketing
-	// material by SMS. The `phone` field is required when creating a customer with SMS
-	// marketing consent information.
-	SmsMarketingConsent CustomerSmsMarketingConsentInput `json:"smsMarketingConsent"`
 	// Whether the customer is exempt from paying taxes on their order.
 	TaxExempt bool `json:"taxExempt"`
 	// The list of tax exemptions to apply to the customer.
@@ -1437,9 +1366,6 @@ func (v *CustomerInput) GetEmail() string { return v.Email }
 
 // GetFirstName returns CustomerInput.FirstName, and is useful for accessing the field via an interface.
 func (v *CustomerInput) GetFirstName() string { return v.FirstName }
-
-// GetId returns CustomerInput.Id, and is useful for accessing the field via an interface.
-func (v *CustomerInput) GetId() string { return v.Id }
 
 // GetLastName returns CustomerInput.LastName, and is useful for accessing the field via an interface.
 func (v *CustomerInput) GetLastName() string { return v.LastName }
@@ -1459,99 +1385,11 @@ func (v *CustomerInput) GetPhone() string { return v.Phone }
 // GetTags returns CustomerInput.Tags, and is useful for accessing the field via an interface.
 func (v *CustomerInput) GetTags() []string { return v.Tags }
 
-// GetEmailMarketingConsent returns CustomerInput.EmailMarketingConsent, and is useful for accessing the field via an interface.
-func (v *CustomerInput) GetEmailMarketingConsent() CustomerEmailMarketingConsentInput {
-	return v.EmailMarketingConsent
-}
-
-// GetSmsMarketingConsent returns CustomerInput.SmsMarketingConsent, and is useful for accessing the field via an interface.
-func (v *CustomerInput) GetSmsMarketingConsent() CustomerSmsMarketingConsentInput {
-	return v.SmsMarketingConsent
-}
-
 // GetTaxExempt returns CustomerInput.TaxExempt, and is useful for accessing the field via an interface.
 func (v *CustomerInput) GetTaxExempt() bool { return v.TaxExempt }
 
 // GetTaxExemptions returns CustomerInput.TaxExemptions, and is useful for accessing the field via an interface.
 func (v *CustomerInput) GetTaxExemptions() []TaxExemption { return v.TaxExemptions }
-
-// The possible values for the marketing subscription opt-in level enabled at the
-// time the customer consented to receive marketing information.
-//
-// The levels are defined by [the M3AAWG best practices guideline
-// document](https://www.m3aawg.org/sites/maawg/files/news/M3AAWG_Senders_BCP_Ver3-2015-02.pdf).
-type CustomerMarketingOptInLevel string
-
-const (
-	// After providing their information, the customer receives marketing information without any
-	// intermediate steps.
-	CustomerMarketingOptInLevelSingleOptIn CustomerMarketingOptInLevel = "SINGLE_OPT_IN"
-	// After providing their information, the customer receives a confirmation and is required to
-	// perform a intermediate step before receiving marketing information.
-	CustomerMarketingOptInLevelConfirmedOptIn CustomerMarketingOptInLevel = "CONFIRMED_OPT_IN"
-	// The customer receives marketing information but how they were opted in is unknown.
-	CustomerMarketingOptInLevelUnknown CustomerMarketingOptInLevel = "UNKNOWN"
-)
-
-var AllCustomerMarketingOptInLevel = []CustomerMarketingOptInLevel{
-	CustomerMarketingOptInLevelSingleOptIn,
-	CustomerMarketingOptInLevelConfirmedOptIn,
-	CustomerMarketingOptInLevelUnknown,
-}
-
-// The marketing consent information when the customer consented to
-// receiving marketing material by SMS.
-type CustomerSmsMarketingConsentInput struct {
-	// The marketing subscription opt-in level that was set when the customer consented to receive marketing information.
-	MarketingOptInLevel CustomerMarketingOptInLevel `json:"marketingOptInLevel"`
-	// The current SMS marketing state for the customer.
-	MarketingState CustomerSmsMarketingState `json:"marketingState"`
-	// The date and time when the customer consented to receive marketing material by SMS.
-	// If no date is provided, then the date and time when the consent information was sent is used.
-	ConsentUpdatedAt time.Time `json:"consentUpdatedAt"`
-	// Identifies the location where the customer consented to receiving marketing material by SMS.
-	SourceLocationId string `json:"sourceLocationId"`
-}
-
-// GetMarketingOptInLevel returns CustomerSmsMarketingConsentInput.MarketingOptInLevel, and is useful for accessing the field via an interface.
-func (v *CustomerSmsMarketingConsentInput) GetMarketingOptInLevel() CustomerMarketingOptInLevel {
-	return v.MarketingOptInLevel
-}
-
-// GetMarketingState returns CustomerSmsMarketingConsentInput.MarketingState, and is useful for accessing the field via an interface.
-func (v *CustomerSmsMarketingConsentInput) GetMarketingState() CustomerSmsMarketingState {
-	return v.MarketingState
-}
-
-// GetConsentUpdatedAt returns CustomerSmsMarketingConsentInput.ConsentUpdatedAt, and is useful for accessing the field via an interface.
-func (v *CustomerSmsMarketingConsentInput) GetConsentUpdatedAt() time.Time { return v.ConsentUpdatedAt }
-
-// GetSourceLocationId returns CustomerSmsMarketingConsentInput.SourceLocationId, and is useful for accessing the field via an interface.
-func (v *CustomerSmsMarketingConsentInput) GetSourceLocationId() string { return v.SourceLocationId }
-
-// The valid SMS marketing states for a customer’s phone number.
-type CustomerSmsMarketingState string
-
-const (
-	// The customer hasn't subscribed to SMS marketing.
-	CustomerSmsMarketingStateNotSubscribed CustomerSmsMarketingState = "NOT_SUBSCRIBED"
-	// The customer is in the process of subscribing to SMS marketing.
-	CustomerSmsMarketingStatePending CustomerSmsMarketingState = "PENDING"
-	// The customer is subscribed to SMS marketing.
-	CustomerSmsMarketingStateSubscribed CustomerSmsMarketingState = "SUBSCRIBED"
-	// The customer isn't currently subscribed to SMS marketing but was previously subscribed.
-	CustomerSmsMarketingStateUnsubscribed CustomerSmsMarketingState = "UNSUBSCRIBED"
-	// The customer's personal data is erased. This value is internally-set and read-only.
-	CustomerSmsMarketingStateRedacted CustomerSmsMarketingState = "REDACTED"
-)
-
-var AllCustomerSmsMarketingState = []CustomerSmsMarketingState{
-	CustomerSmsMarketingStateNotSubscribed,
-	CustomerSmsMarketingStatePending,
-	CustomerSmsMarketingStateSubscribed,
-	CustomerSmsMarketingStateUnsubscribed,
-	CustomerSmsMarketingStateRedacted,
-}
 
 // DeliveryProfilesDeliveryProfilesDeliveryProfileConnection includes the requested fields of the GraphQL type DeliveryProfileConnection.
 // The GraphQL type's documentation follows.
@@ -2037,6 +1875,85 @@ type GetCustomerResponse struct {
 // GetCustomers returns GetCustomerResponse.Customers, and is useful for accessing the field via an interface.
 func (v *GetCustomerResponse) GetCustomers() GetCustomerCustomersCustomerConnection {
 	return v.Customers
+}
+
+// GetDraftOrderDraftOrdersDraftOrderConnection includes the requested fields of the GraphQL type DraftOrderConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DraftOrders.
+type GetDraftOrderDraftOrdersDraftOrderConnection struct {
+	// A list of nodes that are contained in DraftOrderEdge. You can fetch data about
+	// an individual node, or you can follow the edges to fetch data about a
+	// collection of related nodes. At each node, you specify the fields that you
+	// want to retrieve.
+	Nodes []GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder `json:"nodes"`
+}
+
+// GetNodes returns GetDraftOrderDraftOrdersDraftOrderConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrdersDraftOrderConnection) GetNodes() []GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder {
+	return v.Nodes
+}
+
+// GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+// The GraphQL type's documentation follows.
+//
+// An order that a merchant creates on behalf of a customer. Draft orders are
+// useful for merchants that need to do the following tasks:
+//
+// - Create new orders for sales made by phone, in person, by chat, or elsewhere.
+// When a merchant accepts payment for a draft order, an order is created.
+// - Send invoices to customers to pay with a secure checkout link.
+// - Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+// - Re-create orders manually from active sales channels.
+// - Sell products at discount or wholesale rates.
+// - Take pre-orders.
+//
+// For draft orders in multiple currencies `presentment_money` is the source of
+// truth for what a customer is going to be charged and `shop_money` is an estimate
+// of what the merchant might receive in their shop currency.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+//
+// Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
+type GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The identifier for the draft order, which is unique within the store. For example, _#D1223_.
+	Name string `json:"name"`
+	// The email address of the customer, which is used to send notifications.
+	Email string `json:"email"`
+	// The assigned phone number.
+	Phone string `json:"phone"`
+}
+
+// GetId returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetId() string { return v.Id }
+
+// GetName returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetName() string { return v.Name }
+
+// GetEmail returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Email, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetEmail() string {
+	return v.Email
+}
+
+// GetPhone returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Phone, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetPhone() string {
+	return v.Phone
+}
+
+// GetDraftOrderResponse is returned by GetDraftOrder on success.
+type GetDraftOrderResponse struct {
+	// List of saved draft orders.
+	DraftOrders GetDraftOrderDraftOrdersDraftOrderConnection `json:"draftOrders"`
+}
+
+// GetDraftOrders returns GetDraftOrderResponse.DraftOrders, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderResponse) GetDraftOrders() GetDraftOrderDraftOrdersDraftOrderConnection {
+	return v.DraftOrders
 }
 
 // GetFulfillmentFulfillment includes the requested fields of the GraphQL type Fulfillment.
@@ -4551,98 +4468,6 @@ type OrderDetailByIdResponse struct {
 // GetOrder returns OrderDetailByIdResponse.Order, and is useful for accessing the field via an interface.
 func (v *OrderDetailByIdResponse) GetOrder() OrderDetailByIdOrder { return v.Order }
 
-// OrderNamesOrdersOrderConnection includes the requested fields of the GraphQL type OrderConnection.
-// The GraphQL type's documentation follows.
-//
-// An auto-generated type for paginating through multiple Orders.
-type OrderNamesOrdersOrderConnection struct {
-	// The connection between the node and its parent. Each edge contains a minimum of the edge's cursor and the node.
-	Edges []OrderNamesOrdersOrderConnectionEdgesOrderEdge `json:"edges"`
-}
-
-// GetEdges returns OrderNamesOrdersOrderConnection.Edges, and is useful for accessing the field via an interface.
-func (v *OrderNamesOrdersOrderConnection) GetEdges() []OrderNamesOrdersOrderConnectionEdgesOrderEdge {
-	return v.Edges
-}
-
-// OrderNamesOrdersOrderConnectionEdgesOrderEdge includes the requested fields of the GraphQL type OrderEdge.
-// The GraphQL type's documentation follows.
-//
-// An auto-generated type which holds one Order and a cursor during pagination.
-type OrderNamesOrdersOrderConnectionEdgesOrderEdge struct {
-	// The item at the end of OrderEdge.
-	Node OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder `json:"node"`
-}
-
-// GetNode returns OrderNamesOrdersOrderConnectionEdgesOrderEdge.Node, and is useful for accessing the field via an interface.
-func (v *OrderNamesOrdersOrderConnectionEdgesOrderEdge) GetNode() OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder {
-	return v.Node
-}
-
-// OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder includes the requested fields of the GraphQL type Order.
-// The GraphQL type's documentation follows.
-//
-// The `Order` object represents a customer's request to purchase one or more
-// products from a store. Use the `Order` object to handle the complete purchase
-// lifecycle from checkout to fulfillment.
-//
-// Use the `Order` object when you need to:
-//
-// - Display order details on customer account pages or admin dashboards.
-// - Create orders for phone sales, wholesale customers, or subscription services.
-// - Update order information like shipping addresses, notes, or fulfillment status.
-// - Process returns, exchanges, and partial refunds.
-// - Generate invoices, receipts, and shipping labels.
-//
-// The `Order` object serves as the central hub connecting customer information,
-// product details, payment processing, and fulfillment data within the GraphQL
-// Admin API schema.
-//
-// > Note:
-// > Only the last 60 days' worth of orders from a store are accessible from the
-// `Order` object by default. If you want to access older records,
-// > then you need to [request access to all
-// orders](https://shopify.dev/docs/api/usage/access-scopes#orders-permissions). If
-// your app is granted
-// > access, then you can add the `read_all_orders`, `read_orders`, and `write_orders` scopes.
-//
-// > Caution:
-// > Only use orders data if it's required for your app's functionality. Shopify
-// will restrict [access to scopes](https://shopify.dev/docs/api/usage/access-scopes#requesting-specific-permissions)
-// for apps that don't have a legitimate use for the associated data.
-//
-// Learn more about [building apps for orders and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment).
-type OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder struct {
-	// A globally-unique ID.
-	Id string `json:"id"`
-	// The unique identifier for the order that appears on the order page in the Shopify admin and the **Order status** page.
-	// For example, "#1001", "EN1001", or "1001-A".
-	// This value isn't unique across multiple stores. Use this field to identify
-	// orders in the Shopify admin and for order tracking.
-	Name string `json:"name"`
-}
-
-// GetId returns OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder.Id, and is useful for accessing the field via an interface.
-func (v *OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder) GetId() string { return v.Id }
-
-// GetName returns OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder.Name, and is useful for accessing the field via an interface.
-func (v *OrderNamesOrdersOrderConnectionEdgesOrderEdgeNodeOrder) GetName() string { return v.Name }
-
-// OrderNamesResponse is returned by OrderNames on success.
-type OrderNamesResponse struct {
-	// Returns a list of
-	// [orders](https://shopify.dev/api/admin-graphql/latest/objects/Order) placed in
-	// the store, including data such as order status, customer, and line item details.
-	// Use the `orders` query to build reports, analyze sales performance, or
-	// automate fulfillment workflows. The `orders` query supports
-	// [pagination](https://shopify.dev/docs/api/usage/pagination-graphql),
-	// [sorting](https://shopify.dev/docs/api/admin-graphql/latest/queries/orders#argument-sortkey), and [filtering](https://shopify.dev/docs/api/admin-graphql/latest/queries/orders#argument-query).
-	Orders OrderNamesOrdersOrderConnection `json:"orders"`
-}
-
-// GetOrders returns OrderNamesResponse.Orders, and is useful for accessing the field via an interface.
-func (v *OrderNamesResponse) GetOrders() OrderNamesOrdersOrderConnection { return v.Orders }
-
 // TagsAddResponse is returned by TagsAdd on success.
 type TagsAddResponse struct {
 	// Add tags to an order, a draft order, a customer, a product, or an online store article.
@@ -5221,6 +5046,14 @@ type __GetCustomerInput struct {
 // GetQuery returns __GetCustomerInput.Query, and is useful for accessing the field via an interface.
 func (v *__GetCustomerInput) GetQuery() string { return v.Query }
 
+// __GetDraftOrderInput is used internally by genqlient
+type __GetDraftOrderInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __GetDraftOrderInput.Query, and is useful for accessing the field via an interface.
+func (v *__GetDraftOrderInput) GetQuery() string { return v.Query }
+
 // __GetFulfillmentInput is used internally by genqlient
 type __GetFulfillmentInput struct {
 	Id string `json:"id"`
@@ -5252,14 +5085,6 @@ type __OrderDetailByIdInput struct {
 
 // GetId returns __OrderDetailByIdInput.Id, and is useful for accessing the field via an interface.
 func (v *__OrderDetailByIdInput) GetId() string { return v.Id }
-
-// __OrderNamesInput is used internally by genqlient
-type __OrderNamesInput struct {
-	Query string `json:"query"`
-}
-
-// GetQuery returns __OrderNamesInput.Query, and is useful for accessing the field via an interface.
-func (v *__OrderNamesInput) GetQuery() string { return v.Query }
 
 // __TagsAddInput is used internally by genqlient
 type __TagsAddInput struct {
@@ -5432,6 +5257,45 @@ func GetCustomer(
 	}
 
 	data_ = &GetCustomerResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDraftOrder.
+const GetDraftOrder_Operation = `
+query GetDraftOrder ($query: String) {
+	draftOrders(first: 50, sortKey: UPDATED_AT, query: $query) {
+		nodes {
+			id
+			name
+			email
+			phone
+		}
+	}
+}
+`
+
+func GetDraftOrder(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *GetDraftOrderResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDraftOrder",
+		Query:  GetDraftOrder_Operation,
+		Variables: &__GetDraftOrderInput{
+			Query: query,
+		},
+	}
+
+	data_ = &GetDraftOrderResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -5754,45 +5618,6 @@ func OrderDetailById(
 	}
 
 	data_ = &OrderDetailByIdResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The query executed by OrderNames.
-const OrderNames_Operation = `
-query OrderNames ($query: String!) {
-	orders(query: $query, first: 50) {
-		edges {
-			node {
-				id
-				name
-			}
-		}
-	}
-}
-`
-
-func OrderNames(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	query string,
-) (data_ *OrderNamesResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "OrderNames",
-		Query:  OrderNames_Operation,
-		Variables: &__OrderNamesInput{
-			Query: query,
-		},
-	}
-
-	data_ = &OrderNamesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

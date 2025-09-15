@@ -69,3 +69,7 @@ func (c *Client) CreateCustomer(ctx context.Context, email *string, phone *strin
 	}
 	return CreateCustomer(ctx, c.graphql, input)
 }
+
+func (c *Client) GetDraftOrders(ctx context.Context, id string) (*GetProductResponse, error) {
+	return GetProduct(ctx, c.graphql, id)
+}

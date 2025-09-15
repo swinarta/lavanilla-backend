@@ -166,13 +166,13 @@ query OrderDetailById($id: ID!) {
     }
 }
 
-query OrderNames($query: String!) {
-    orders(query: $query, first: 50) {
-        edges {
-             node {
-                 id
-                 name
-             }
+query GetDraftOrder($query: String) {
+    draftOrders(first: 50, sortKey: UPDATED_AT, query: $query) {
+        nodes {
+            id
+            name
+            email
+            phone
         }
     }
 }

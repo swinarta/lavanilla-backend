@@ -26,8 +26,6 @@ jobs:
         run: |
           pip install aws-sam-cli
 
-      - run: make all
-
       - run: sam build
 
       - run: sam deploy --stack-name lavanilla-backend-dev --config-env dev --resolve-s3 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides AppEnv=DEV --no-confirm-changeset --no-fail-on-empty-changeset

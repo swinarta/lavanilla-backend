@@ -1,0 +1,8 @@
+type Query {
+    draftOrderDesigner: [Order!]
+}
+
+type Order{
+    id: ID!
+    name: String!
+}

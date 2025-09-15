@@ -2,10 +2,10 @@
 
 generate:
 	cd graphql/self-service && go get github.com/99designs/gqlgen && go run github.com/99designs/gqlgen
+	cd graphql/backoffice && go get github.com/99designs/gqlgen && go run github.com/99designs/gqlgen
 
 client:
-	cd service/shopify && go get github.com/Khan/genqlient/generate && go run -v github.com/Khan/genqlient
-	cd service/custom && go get github.com/Khan/genqlient/generate && go run -v github.com/Khan/genqlient
+	go get github.com/Khan/genqlient/generate && cd service/shopify && go run -v github.com/Khan/genqlient && cd ../custom && go run -v github.com/Khan/genqlient
 	go mod tidy
 
 all: generate client
@@ -17,6 +17,3 @@ build:
 
 clean:
 	rm -rf ./bin ./vendor Gopkg.lock
-
-deploy: clean build_backoffice
-	npx serverless deploy --stage production --verbose
