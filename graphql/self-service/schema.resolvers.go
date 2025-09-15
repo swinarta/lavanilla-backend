@@ -55,6 +55,9 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		if err != nil {
 			return nil, err
 		}
+		if len(customerCreateResp.CustomerCreate.UserErrors) > 0 {
+			return nil, errors.New(customerCreateResp.CustomerCreate.UserErrors[0].Message)
+		}
 		customerId = customerCreateResp.CustomerCreate.Customer.Id
 	}
 

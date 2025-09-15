@@ -6,13 +6,24 @@ package self_service
 
 import (
 	"context"
-	"fmt"
 	"lavanilla/graphql/backoffice/model"
+	"lavanilla/service/shopify"
+
+	"github.com/samber/lo"
 )
 
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
 func (r *queryResolver) DraftOrderDesigner(ctx context.Context) ([]*model.Order, error) {
-	panic(fmt.Errorf("not implemented: DraftOrderDesigner - draftOrderDesigner"))
+	orders, err := r.ShopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"))
+	if err != nil {
+		return nil, err
+	}
+	return lo.Map(orders.DraftOrders.Nodes, func(item shopify.GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder, _ int) *model.Order {
+		return &model.Order{
+			ID:   item.Id,
+			Name: item.Name,
+		}
+	}), nil
 }
 
 // Query returns QueryResolver implementation.

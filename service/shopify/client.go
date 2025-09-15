@@ -50,10 +50,10 @@ func (c *Client) GetCustomer(ctx context.Context, email *string, phone *string) 
 	if email != nil && phone != nil {
 		query = fmt.Sprintf("email:%s OR phone:%s", *email, *phone)
 	}
-	if email != nil {
+	if email != nil && phone == nil {
 		query = fmt.Sprintf("email:%s", *email)
 	}
-	if phone != nil {
+	if phone != nil && email == nil {
 		query = fmt.Sprintf("phone:%s", *phone)
 	}
 	return GetCustomer(ctx, c.graphql, query)
@@ -70,6 +70,10 @@ func (c *Client) CreateCustomer(ctx context.Context, email *string, phone *strin
 	return CreateCustomer(ctx, c.graphql, input)
 }
 
-func (c *Client) GetDraftOrders(ctx context.Context, id string) (*GetProductResponse, error) {
-	return GetProduct(ctx, c.graphql, id)
+func (c *Client) GetDraftOrders(ctx context.Context, tag *string) (*GetDraftOrderResponse, error) {
+	query := ""
+	if tag != nil {
+		query = fmt.Sprintf("tag:%s", *tag)
+	}
+	return GetDraftOrder(ctx, c.graphql, query)
 }
