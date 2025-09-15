@@ -206,6 +206,7 @@ query GetProductsSelfService {
             node {
                 id
                 description
+                title
                 priceRangeV2 {
                     minVariantPrice {
                         amount

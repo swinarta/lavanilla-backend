@@ -2628,6 +2628,9 @@ type GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct 
 	// A single-line description of the product,
 	// with [HTML tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed.
 	Description string `json:"description"`
+	// The name for the product that displays to customers. The title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+	Title string `json:"title"`
 	// The minimum and maximum prices of a product, expressed in decimal numbers.
 	// For example, if the product is priced between $10.00 and $50.00,
 	// then the price range is $10.00 - $50.00.
@@ -2645,6 +2648,11 @@ func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProd
 // GetDescription returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.Description, and is useful for accessing the field via an interface.
 func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetDescription() string {
 	return v.Description
+}
+
+// GetTitle returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.Title, and is useful for accessing the field via an interface.
+func (v *GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct) GetTitle() string {
+	return v.Title
 }
 
 // GetPriceRangeV2 returns GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProduct.PriceRangeV2, and is useful for accessing the field via an interface.
@@ -5015,6 +5023,7 @@ query GetProductsSelfService {
 			node {
 				id
 				description
+				title
 				priceRangeV2 {
 					minVariantPrice {
 						amount
