@@ -57,6 +57,26 @@ Resources:
       Tags:
         App: LaVanillaApp
 
+  LaVanillaBackOfficeGraphql:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Metadata:
+      BuildMethod: go1.x
+    Properties:
+      CodeUri: handlers/graphql-bo/
+      Handler: handlers/graphql-bo/bootstrap
+      Runtime: provided.al2023
+      Architectures:
+        - arm64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LaVanillaApi # Explicitly link to the API
+            Path: /graphql-bo
+            Method: POST
+      Tags:
+        App: LaVanillaApp
+
 Outputs:
   Endpoint:
     Description: "API Gateway endpoint URL"
