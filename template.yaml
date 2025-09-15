@@ -62,8 +62,8 @@ Resources:
     Metadata:
       BuildMethod: go1.x
     Properties:
-      CodeUri: handlers/graphql-bo/
-      Handler: handlers/graphql-bo/bootstrap
+      CodeUri: handlers/graphql-backoffice/
+      Handler: handlers/graphql-backoffice/bootstrap
       Runtime: provided.al2023
       Architectures:
         - arm64
