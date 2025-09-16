@@ -97,3 +97,7 @@ func (c *Client) GetDraftOrders(ctx context.Context, tag *string, status *model.
 	}
 	return GetDraftOrders(ctx, c.graphql, query)
 }
+
+func (c *Client) GetDraftOrder(ctx context.Context, id string) (*GetDraftOrderResponse, error) {
+	return GetDraftOrder(ctx, c.graphql, id)
+}

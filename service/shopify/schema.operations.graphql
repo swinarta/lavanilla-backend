@@ -172,6 +172,35 @@ query GetDraftOrders($query: String) {
     }
 }
 
+query GetDraftOrder($id: ID!) {
+    draftOrder(id: $id){
+        id
+        name
+        email
+        phone
+        paymentTerms {
+            id
+        }
+        purchasingEntity  {
+            ... on Customer {
+                id
+            }
+        }
+        lineItems (first: 50) {
+            nodes {
+                id
+                quantity
+                sku
+                title
+                variant {
+                    id
+                    title
+                }
+            }
+        }
+    }
+}
+
 mutation CreateCustomer($input: CustomerInput!) {
     customerCreate(input: $input) {
         customer {

@@ -2123,6 +2123,412 @@ func (v *GetCustomerResponse) GetCustomers() GetCustomerCustomersCustomerConnect
 	return v.Customers
 }
 
+// GetDraftOrderDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+// The GraphQL type's documentation follows.
+//
+// An order that a merchant creates on behalf of a customer. Draft orders are
+// useful for merchants that need to do the following tasks:
+//
+// - Create new orders for sales made by phone, in person, by chat, or elsewhere.
+// When a merchant accepts payment for a draft order, an order is created.
+// - Send invoices to customers to pay with a secure checkout link.
+// - Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+// - Re-create orders manually from active sales channels.
+// - Sell products at discount or wholesale rates.
+// - Take pre-orders.
+//
+// For draft orders in multiple currencies `presentment_money` is the source of
+// truth for what a customer is going to be charged and `shop_money` is an estimate
+// of what the merchant might receive in their shop currency.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+//
+// Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
+type GetDraftOrderDraftOrder struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The identifier for the draft order, which is unique within the store. For example, _#D1223_.
+	Name string `json:"name"`
+	// The email address of the customer, which is used to send notifications.
+	Email string `json:"email"`
+	// The assigned phone number.
+	Phone string `json:"phone"`
+	// The associated payment terms for this draft order.
+	PaymentTerms GetDraftOrderDraftOrderPaymentTerms `json:"paymentTerms"`
+	// The purchasing entity.
+	PurchasingEntity GetDraftOrderDraftOrderPurchasingEntity `json:"-"`
+	// The list of the line items in the draft order.
+	LineItems GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection `json:"lineItems"`
+}
+
+// GetId returns GetDraftOrderDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetId() string { return v.Id }
+
+// GetName returns GetDraftOrderDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetName() string { return v.Name }
+
+// GetEmail returns GetDraftOrderDraftOrder.Email, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetEmail() string { return v.Email }
+
+// GetPhone returns GetDraftOrderDraftOrder.Phone, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetPhone() string { return v.Phone }
+
+// GetPaymentTerms returns GetDraftOrderDraftOrder.PaymentTerms, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetPaymentTerms() GetDraftOrderDraftOrderPaymentTerms {
+	return v.PaymentTerms
+}
+
+// GetPurchasingEntity returns GetDraftOrderDraftOrder.PurchasingEntity, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetPurchasingEntity() GetDraftOrderDraftOrderPurchasingEntity {
+	return v.PurchasingEntity
+}
+
+// GetLineItems returns GetDraftOrderDraftOrder.LineItems, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrder) GetLineItems() GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection {
+	return v.LineItems
+}
+
+func (v *GetDraftOrderDraftOrder) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDraftOrderDraftOrder
+		PurchasingEntity json.RawMessage `json:"purchasingEntity"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDraftOrderDraftOrder = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.PurchasingEntity
+		src := firstPass.PurchasingEntity
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalGetDraftOrderDraftOrderPurchasingEntity(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal GetDraftOrderDraftOrder.PurchasingEntity: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDraftOrderDraftOrder struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Email string `json:"email"`
+
+	Phone string `json:"phone"`
+
+	PaymentTerms GetDraftOrderDraftOrderPaymentTerms `json:"paymentTerms"`
+
+	PurchasingEntity json.RawMessage `json:"purchasingEntity"`
+
+	LineItems GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection `json:"lineItems"`
+}
+
+func (v *GetDraftOrderDraftOrder) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDraftOrderDraftOrder) __premarshalJSON() (*__premarshalGetDraftOrderDraftOrder, error) {
+	var retval __premarshalGetDraftOrderDraftOrder
+
+	retval.Id = v.Id
+	retval.Name = v.Name
+	retval.Email = v.Email
+	retval.Phone = v.Phone
+	retval.PaymentTerms = v.PaymentTerms
+	{
+
+		dst := &retval.PurchasingEntity
+		src := v.PurchasingEntity
+		var err error
+		*dst, err = __marshalGetDraftOrderDraftOrderPurchasingEntity(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDraftOrderDraftOrder.PurchasingEntity: %w", err)
+		}
+	}
+	retval.LineItems = v.LineItems
+	return &retval, nil
+}
+
+// GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection includes the requested fields of the GraphQL type DraftOrderLineItemConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DraftOrderLineItems.
+type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection struct {
+	// A list of nodes that are contained in DraftOrderLineItemEdge. You can fetch
+	// data about an individual node, or you can follow the edges to fetch data about
+	// a collection of related nodes. At each node, you specify the fields that you
+	// want to retrieve.
+	Nodes []GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem `json:"nodes"`
+}
+
+// GetNodes returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnection) GetNodes() []GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem {
+	return v.Nodes
+}
+
+// GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem includes the requested fields of the GraphQL type DraftOrderLineItem.
+// The GraphQL type's documentation follows.
+//
+// The line item for a draft order.
+type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The quantity of items. For a bundle item, this is the quantity of bundles,
+	// not the quantity of items contained in the bundles themselves.
+	Quantity int `json:"quantity"`
+	// The SKU number of the product variant.
+	Sku string `json:"sku"`
+	// The title of the product or variant. This field only applies to custom line items.
+	Title string `json:"title"`
+	// The product variant for the line item.
+	Variant GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant `json:"variant"`
+}
+
+// GetId returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetId() string {
+	return v.Id
+}
+
+// GetQuantity returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.Quantity, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetQuantity() int {
+	return v.Quantity
+}
+
+// GetSku returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.Sku, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetSku() string {
+	return v.Sku
+}
+
+// GetTitle returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.Title, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetTitle() string {
+	return v.Title
+}
+
+// GetVariant returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.Variant, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetVariant() GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant {
+	return v.Variant
+}
+
+// GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The title of the product variant.
+	Title string `json:"title"`
+}
+
+// GetId returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant) GetId() string {
+	return v.Id
+}
+
+// GetTitle returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Title, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant) GetTitle() string {
+	return v.Title
+}
+
+// GetDraftOrderDraftOrderPaymentTerms includes the requested fields of the GraphQL type PaymentTerms.
+// The GraphQL type's documentation follows.
+//
+// Represents the payment terms for an order or draft order.
+type GetDraftOrderDraftOrderPaymentTerms struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetDraftOrderDraftOrderPaymentTerms.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderPaymentTerms) GetId() string { return v.Id }
+
+// GetDraftOrderDraftOrderPurchasingEntity includes the requested fields of the GraphQL interface PurchasingEntity.
+//
+// GetDraftOrderDraftOrderPurchasingEntity is implemented by the following types:
+// GetDraftOrderDraftOrderPurchasingEntityCustomer
+// GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany
+// The GraphQL type's documentation follows.
+//
+// Represents information about the purchasing entity for the order or draft order.
+type GetDraftOrderDraftOrderPurchasingEntity interface {
+	implementsGraphQLInterfaceGetDraftOrderDraftOrderPurchasingEntity()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+}
+
+func (v *GetDraftOrderDraftOrderPurchasingEntityCustomer) implementsGraphQLInterfaceGetDraftOrderDraftOrderPurchasingEntity() {
+}
+func (v *GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany) implementsGraphQLInterfaceGetDraftOrderDraftOrderPurchasingEntity() {
+}
+
+func __unmarshalGetDraftOrderDraftOrderPurchasingEntity(b []byte, v *GetDraftOrderDraftOrderPurchasingEntity) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Customer":
+		*v = new(GetDraftOrderDraftOrderPurchasingEntityCustomer)
+		return json.Unmarshal(b, *v)
+	case "PurchasingCompany":
+		*v = new(GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing PurchasingEntity.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDraftOrderDraftOrderPurchasingEntity: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDraftOrderDraftOrderPurchasingEntity(v *GetDraftOrderDraftOrderPurchasingEntity) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDraftOrderDraftOrderPurchasingEntityCustomer:
+		typename = "Customer"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDraftOrderDraftOrderPurchasingEntityCustomer
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany:
+		typename = "PurchasingCompany"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDraftOrderDraftOrderPurchasingEntity: "%T"`, v)
+	}
+}
+
+// GetDraftOrderDraftOrderPurchasingEntityCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type GetDraftOrderDraftOrderPurchasingEntityCustomer struct {
+	Typename string `json:"__typename"`
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetTypename returns GetDraftOrderDraftOrderPurchasingEntityCustomer.Typename, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderPurchasingEntityCustomer) GetTypename() string { return v.Typename }
+
+// GetId returns GetDraftOrderDraftOrderPurchasingEntityCustomer.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderPurchasingEntityCustomer) GetId() string { return v.Id }
+
+// GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany includes the requested fields of the GraphQL type PurchasingCompany.
+// The GraphQL type's documentation follows.
+//
+// Represents information about the purchasing company for the order or draft order.
+type GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany.Typename, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany) GetTypename() string {
+	return v.Typename
+}
+
+// GetDraftOrderResponse is returned by GetDraftOrder on success.
+type GetDraftOrderResponse struct {
+	// Retrieves a [draft order](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder) by its ID.
+	// A draft order is an order created by a merchant on behalf of their
+	// customers. Draft orders contain all necessary order details (products, pricing, customer information)
+	// but require payment to be accepted before they can be converted into
+	// [completed orders](https://shopify.dev/docs/api/admin-graphql/latest/mutations/draftOrderComplete).
+	//
+	// Use the `draftOrder` query to retrieve information associated with the following workflows:
+	//
+	// - Creating orders for phone, in-person, or chat sales
+	// - Sending invoices to customers with secure checkout links
+	// - Managing custom items and additional costs
+	// - Selling products at discount or wholesale rates
+	// - Processing pre-orders and saving drafts for later completion
+	//
+	// A draft order is associated with a
+	// [customer](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer)
+	// and contains multiple [line items](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderLineItem).
+	// Each draft order has a [status](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder#field-DraftOrder.fields.status),
+	// which indicates its progress through the sales workflow.
+	DraftOrder GetDraftOrderDraftOrder `json:"draftOrder"`
+}
+
+// GetDraftOrder returns GetDraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderResponse) GetDraftOrder() GetDraftOrderDraftOrder { return v.DraftOrder }
+
 // GetDraftOrdersDraftOrdersDraftOrderConnection includes the requested fields of the GraphQL type DraftOrderConnection.
 // The GraphQL type's documentation follows.
 //
@@ -5291,6 +5697,14 @@ type __GetCustomerInput struct {
 // GetQuery returns __GetCustomerInput.Query, and is useful for accessing the field via an interface.
 func (v *__GetCustomerInput) GetQuery() string { return v.Query }
 
+// __GetDraftOrderInput is used internally by genqlient
+type __GetDraftOrderInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetDraftOrderInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetDraftOrderInput) GetId() string { return v.Id }
+
 // __GetDraftOrdersInput is used internally by genqlient
 type __GetDraftOrdersInput struct {
 	Query string `json:"query"`
@@ -5525,6 +5939,64 @@ func GetCustomer(
 	}
 
 	data_ = &GetCustomerResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDraftOrder.
+const GetDraftOrder_Operation = `
+query GetDraftOrder ($id: ID!) {
+	draftOrder(id: $id) {
+		id
+		name
+		email
+		phone
+		paymentTerms {
+			id
+		}
+		purchasingEntity {
+			__typename
+			... on Customer {
+				id
+			}
+		}
+		lineItems(first: 50) {
+			nodes {
+				id
+				quantity
+				sku
+				title
+				variant {
+					id
+					title
+				}
+			}
+		}
+	}
+}
+`
+
+func GetDraftOrder(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetDraftOrderResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDraftOrder",
+		Query:  GetDraftOrder_Operation,
+		Variables: &__GetDraftOrderInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetDraftOrderResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
