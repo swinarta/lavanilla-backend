@@ -1,16 +1,3 @@
-mutation FulfillmentCreateV2($fulfillment: FulfillmentV2Input!) {
-    fulfillmentCreateV2(fulfillment: $fulfillment) {
-        fulfillment {
-            id
-            status
-        }
-        userErrors {
-            field
-            message
-        }
-    }
-}
-
 mutation TagsAdd($id: ID!, $tag: String!) {
     tagsAdd(id: $id, tags: [$tag]) {
         __typename
@@ -20,10 +7,26 @@ mutation TagsAdd($id: ID!, $tag: String!) {
     }
 }
 
+mutation DraftOrderUpdate($id: ID!, $input: DraftOrderInput!) {
+    draftOrderUpdate(id: $id, input: $input){
+        draftOrder {
+            id
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
 mutation DraftOrderComplete($id: ID!) {
     draftOrderComplete(id: $id){
         draftOrder {
             id
+        }
+        userErrors {
+            field
+            message
         }
     }
 }
@@ -158,7 +161,7 @@ query OrderDetailById($id: ID!) {
     }
 }
 
-query GetDraftOrder($query: String) {
+query GetDraftOrders($query: String) {
     draftOrders(first: 50, sortKey: UPDATED_AT, reverse: false, query: $query) {
         nodes {
             id

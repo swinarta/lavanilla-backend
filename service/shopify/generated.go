@@ -6,9 +6,24 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/Khan/genqlient/graphql"
 )
+
+// The input fields for an attribute.
+type AttributeInput struct {
+	// Key or name of the attribute.
+	Key string `json:"key"`
+	// Value of the attribute.
+	Value string `json:"value"`
+}
+
+// GetKey returns AttributeInput.Key, and is useful for accessing the field via an interface.
+func (v *AttributeInput) GetKey() string { return v.Key }
+
+// GetValue returns AttributeInput.Value, and is useful for accessing the field via an interface.
+func (v *AttributeInput) GetValue() string { return v.Value }
 
 // The code designating a country/region, which generally follows ISO 3166-1 alpha-2 guidelines.
 // If a territory doesn't have a country code value in the `CountryCode` enum, then it might be considered a subdivision
@@ -1442,6 +1457,56 @@ func (v *DeliveryProfilesResponse) GetDeliveryProfiles() DeliveryProfilesDeliver
 	return v.DeliveryProfiles
 }
 
+// The input fields for applying an order-level discount to a draft order.
+type DraftOrderAppliedDiscountInput struct {
+	// The applied amount of the discount in the specified currency.
+	AmountWithCurrency MoneyInput `json:"amountWithCurrency"`
+	// Reason for the discount.
+	Description string `json:"description"`
+	// Title of the discount.
+	Title string `json:"title"`
+	// The value of the discount.
+	// If the type of the discount is fixed amount, then this is a fixed amount in your shop currency.
+	// If the type is percentage, then this is the percentage.
+	Value float64 `json:"value"`
+	// The type of discount.
+	ValueType DraftOrderAppliedDiscountType `json:"valueType"`
+}
+
+// GetAmountWithCurrency returns DraftOrderAppliedDiscountInput.AmountWithCurrency, and is useful for accessing the field via an interface.
+func (v *DraftOrderAppliedDiscountInput) GetAmountWithCurrency() MoneyInput {
+	return v.AmountWithCurrency
+}
+
+// GetDescription returns DraftOrderAppliedDiscountInput.Description, and is useful for accessing the field via an interface.
+func (v *DraftOrderAppliedDiscountInput) GetDescription() string { return v.Description }
+
+// GetTitle returns DraftOrderAppliedDiscountInput.Title, and is useful for accessing the field via an interface.
+func (v *DraftOrderAppliedDiscountInput) GetTitle() string { return v.Title }
+
+// GetValue returns DraftOrderAppliedDiscountInput.Value, and is useful for accessing the field via an interface.
+func (v *DraftOrderAppliedDiscountInput) GetValue() float64 { return v.Value }
+
+// GetValueType returns DraftOrderAppliedDiscountInput.ValueType, and is useful for accessing the field via an interface.
+func (v *DraftOrderAppliedDiscountInput) GetValueType() DraftOrderAppliedDiscountType {
+	return v.ValueType
+}
+
+// The valid discount types that can be applied to a draft order.
+type DraftOrderAppliedDiscountType string
+
+const (
+	// A fixed amount in the store's currency.
+	DraftOrderAppliedDiscountTypeFixedAmount DraftOrderAppliedDiscountType = "FIXED_AMOUNT"
+	// A percentage of the order subtotal.
+	DraftOrderAppliedDiscountTypePercentage DraftOrderAppliedDiscountType = "PERCENTAGE"
+)
+
+var AllDraftOrderAppliedDiscountType = []DraftOrderAppliedDiscountType{
+	DraftOrderAppliedDiscountTypeFixedAmount,
+	DraftOrderAppliedDiscountTypePercentage,
+}
+
 // DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload includes the requested fields of the GraphQL type DraftOrderCompletePayload.
 // The GraphQL type's documentation follows.
 //
@@ -1449,11 +1514,18 @@ func (v *DeliveryProfilesResponse) GetDeliveryProfiles() DeliveryProfilesDeliver
 type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload struct {
 	// The completed draft order.
 	DraftOrder DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder `json:"draftOrder"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError `json:"userErrors"`
 }
 
 // GetDraftOrder returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload.DraftOrder, and is useful for accessing the field via an interface.
 func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload) GetDraftOrder() DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder {
 	return v.DraftOrder
+}
+
+// GetUserErrors returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayload) GetUserErrors() []DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError {
+	return v.UserErrors
 }
 
 // DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder includes the requested fields of the GraphQL type DraftOrder.
@@ -1490,6 +1562,27 @@ func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder
 	return v.Id
 }
 
+// DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error in the input of a mutation.
+type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
 // DraftOrderCompleteResponse is returned by DraftOrderComplete on success.
 type DraftOrderCompleteResponse struct {
 	// Completes a [draft order](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder) and
@@ -1521,114 +1614,370 @@ func (v *DraftOrderCompleteResponse) GetDraftOrderComplete() DraftOrderCompleteD
 	return v.DraftOrderComplete
 }
 
-// FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload includes the requested fields of the GraphQL type FulfillmentCreateV2Payload.
+// The input fields used to create or update a draft order.
+type DraftOrderInput struct {
+	// The discount that will be applied to the draft order.
+	// A draft order line item can have one discount. A draft order can also have one order-level discount.
+	AppliedDiscount DraftOrderAppliedDiscountInput `json:"appliedDiscount"`
+	// The list of discount codes that will be attempted to be applied to the draft order.
+	// If the draft isn't eligible for any given discount code it will be skipped during calculation.
+	DiscountCodes []string `json:"discountCodes"`
+	// Whether or not to accept automatic discounts on the draft order during calculation.
+	// If false, only discount codes and custom draft order discounts (see `appliedDiscount`) will be applied.
+	// If true, eligible automatic discounts will be applied in addition to discount codes and custom draft order discounts.
+	AcceptAutomaticDiscounts bool `json:"acceptAutomaticDiscounts"`
+	// The mailing address associated with the payment method.
+	BillingAddress MailingAddressInput `json:"billingAddress"`
+	// The extra information added to the draft order on behalf of the customer.
+	CustomAttributes []AttributeInput `json:"customAttributes"`
+	// The customer's email address.
+	Email string `json:"email"`
+	// The list of product variant or custom line item.
+	// Each draft order must include at least one line item.
+	// Accepts a maximum of 499 line items.
+	//
+	// NOTE: Draft orders don't currently support subscriptions.
+	LineItems []DraftOrderLineItemInput `json:"lineItems"`
+	// The list of metafields attached to the draft order. An existing metafield can not be used when creating a draft order.
+	Metafields []MetafieldInput `json:"metafields"`
+	// The localized fields attached to the draft order. For example, Tax IDs.
+	LocalizedFields []LocalizedFieldInput `json:"localizedFields"`
+	// The text of an optional note that a shop owner can attach to the draft order.
+	Note string `json:"note"`
+	// The mailing address to where the order will be shipped.
+	ShippingAddress MailingAddressInput `json:"shippingAddress"`
+	// The shipping line object, which details the shipping method used.
+	ShippingLine ShippingLineInput `json:"shippingLine"`
+	// A comma separated list of tags that have been added to the draft order.
+	Tags []string `json:"tags"`
+	// Whether or not taxes are exempt for the draft order.
+	// If false, then Shopify will refer to the taxable field for each line item.
+	// If a customer is applied to the draft order, then Shopify will use the customer's tax exempt field instead.
+	TaxExempt bool `json:"taxExempt"`
+	// Whether to use the customer's default address.
+	UseCustomerDefaultAddress bool `json:"useCustomerDefaultAddress"`
+	// Whether the draft order will be visible to the customer on the self-serve portal.
+	VisibleToCustomer bool `json:"visibleToCustomer"`
+	// The time after which inventory reservation will expire.
+	ReserveInventoryUntil time.Time `json:"reserveInventoryUntil"`
+	// The payment currency of the customer for this draft order.
+	PresentmentCurrencyCode CurrencyCode `json:"presentmentCurrencyCode"`
+	// The customer's phone number.
+	Phone string `json:"phone"`
+	// The fields used to create payment terms.
+	PaymentTerms PaymentTermsInput `json:"paymentTerms"`
+	// The purchasing entity for the draft order.
+	PurchasingEntity PurchasingEntityInput `json:"purchasingEntity"`
+	// The source of the checkout.
+	// To use this field for sales attribution, you must register the channels that your app is managing.
+	// You can register the channels that your app is managing by completing
+	// [this Google Form](https://docs.google.com/forms/d/e/1FAIpQLScmVTZRQNjOJ7RD738mL1lGeFjqKVe_FM2tO9xsm21QEo5Ozg/viewform?usp=sf_link).
+	// After you've submitted your request, you need to wait for your request to be processed by Shopify.
+	// You can find a list of your channels in the Partner Dashboard, in your app's Marketplace extension.
+	// You need to specify the handle as the `source_name` value in your request.
+	// The handle is the channel that the order was placed from.
+	SourceName string `json:"sourceName"`
+	// Whether discount codes are allowed during checkout of this draft order.
+	AllowDiscountCodesInCheckout bool `json:"allowDiscountCodesInCheckout"`
+	// The purchase order number.
+	PoNumber string `json:"poNumber"`
+	// The unique token identifying the draft order.
+	SessionToken string `json:"sessionToken"`
+	// Fingerprint to guarantee bundles are handled correctly.
+	TransformerFingerprint string `json:"transformerFingerprint"`
+}
+
+// GetAppliedDiscount returns DraftOrderInput.AppliedDiscount, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetAppliedDiscount() DraftOrderAppliedDiscountInput {
+	return v.AppliedDiscount
+}
+
+// GetDiscountCodes returns DraftOrderInput.DiscountCodes, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetDiscountCodes() []string { return v.DiscountCodes }
+
+// GetAcceptAutomaticDiscounts returns DraftOrderInput.AcceptAutomaticDiscounts, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetAcceptAutomaticDiscounts() bool { return v.AcceptAutomaticDiscounts }
+
+// GetBillingAddress returns DraftOrderInput.BillingAddress, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetBillingAddress() MailingAddressInput { return v.BillingAddress }
+
+// GetCustomAttributes returns DraftOrderInput.CustomAttributes, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetCustomAttributes() []AttributeInput { return v.CustomAttributes }
+
+// GetEmail returns DraftOrderInput.Email, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetEmail() string { return v.Email }
+
+// GetLineItems returns DraftOrderInput.LineItems, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetLineItems() []DraftOrderLineItemInput { return v.LineItems }
+
+// GetMetafields returns DraftOrderInput.Metafields, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetLocalizedFields returns DraftOrderInput.LocalizedFields, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetLocalizedFields() []LocalizedFieldInput { return v.LocalizedFields }
+
+// GetNote returns DraftOrderInput.Note, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetNote() string { return v.Note }
+
+// GetShippingAddress returns DraftOrderInput.ShippingAddress, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetShippingAddress() MailingAddressInput { return v.ShippingAddress }
+
+// GetShippingLine returns DraftOrderInput.ShippingLine, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetShippingLine() ShippingLineInput { return v.ShippingLine }
+
+// GetTags returns DraftOrderInput.Tags, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetTags() []string { return v.Tags }
+
+// GetTaxExempt returns DraftOrderInput.TaxExempt, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetTaxExempt() bool { return v.TaxExempt }
+
+// GetUseCustomerDefaultAddress returns DraftOrderInput.UseCustomerDefaultAddress, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetUseCustomerDefaultAddress() bool { return v.UseCustomerDefaultAddress }
+
+// GetVisibleToCustomer returns DraftOrderInput.VisibleToCustomer, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetVisibleToCustomer() bool { return v.VisibleToCustomer }
+
+// GetReserveInventoryUntil returns DraftOrderInput.ReserveInventoryUntil, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetReserveInventoryUntil() time.Time { return v.ReserveInventoryUntil }
+
+// GetPresentmentCurrencyCode returns DraftOrderInput.PresentmentCurrencyCode, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPresentmentCurrencyCode() CurrencyCode { return v.PresentmentCurrencyCode }
+
+// GetPhone returns DraftOrderInput.Phone, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPhone() string { return v.Phone }
+
+// GetPaymentTerms returns DraftOrderInput.PaymentTerms, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPaymentTerms() PaymentTermsInput { return v.PaymentTerms }
+
+// GetPurchasingEntity returns DraftOrderInput.PurchasingEntity, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPurchasingEntity() PurchasingEntityInput { return v.PurchasingEntity }
+
+// GetSourceName returns DraftOrderInput.SourceName, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetSourceName() string { return v.SourceName }
+
+// GetAllowDiscountCodesInCheckout returns DraftOrderInput.AllowDiscountCodesInCheckout, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetAllowDiscountCodesInCheckout() bool {
+	return v.AllowDiscountCodesInCheckout
+}
+
+// GetPoNumber returns DraftOrderInput.PoNumber, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetPoNumber() string { return v.PoNumber }
+
+// GetSessionToken returns DraftOrderInput.SessionToken, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetSessionToken() string { return v.SessionToken }
+
+// GetTransformerFingerprint returns DraftOrderInput.TransformerFingerprint, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetTransformerFingerprint() string { return v.TransformerFingerprint }
+
+// The input fields representing the components of a line item.
+type DraftOrderLineItemComponentInput struct {
+	// The ID of the product variant corresponding to the component.
+	VariantId string `json:"variantId"`
+	// The quantity of the component.
+	Quantity int `json:"quantity"`
+	// The UUID of the component. Must be unique and consistent across requests.
+	// This field is mandatory in order to manipulate drafts with parent line items.
+	Uuid string `json:"uuid"`
+}
+
+// GetVariantId returns DraftOrderLineItemComponentInput.VariantId, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemComponentInput) GetVariantId() string { return v.VariantId }
+
+// GetQuantity returns DraftOrderLineItemComponentInput.Quantity, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemComponentInput) GetQuantity() int { return v.Quantity }
+
+// GetUuid returns DraftOrderLineItemComponentInput.Uuid, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemComponentInput) GetUuid() string { return v.Uuid }
+
+// The input fields for a line item included in a draft order.
+type DraftOrderLineItemInput struct {
+	// The custom discount to be applied.
+	AppliedDiscount DraftOrderAppliedDiscountInput `json:"appliedDiscount"`
+	// A generic custom attribute using a key value pair.
+	CustomAttributes []AttributeInput `json:"customAttributes"`
+	// The price in presentment currency, without any discounts applied, for a custom line item.
+	// If this value is provided, `original_unit_price` will be ignored. This field is ignored when `variantId` is provided.
+	// Note: All presentment currencies for a single draft should be the same and match the
+	// presentment currency of the draft order.
+	OriginalUnitPriceWithCurrency MoneyInput `json:"originalUnitPriceWithCurrency"`
+	// The line item quantity.
+	Quantity int `json:"quantity"`
+	// Whether physical shipping is required for a custom line item. This field is ignored when `variantId` is provided.
+	RequiresShipping bool `json:"requiresShipping"`
+	// The SKU number for custom line items only. This field is ignored when `variantId` is provided.
+	Sku string `json:"sku"`
+	// Whether the custom line item is taxable. This field is ignored when `variantId` is provided.
+	Taxable bool `json:"taxable"`
+	// Title of the line item. This field is ignored when `variantId` is provided.
+	Title string `json:"title"`
+	// The ID of the product variant corresponding to the line item.
+	// Must be null for custom line items, otherwise required.
+	VariantId string `json:"variantId"`
+	// The weight unit and value inputs for custom line items only.
+	// This field is ignored when `variantId` is provided.
+	Weight WeightInput `json:"weight"`
+	// The UUID of the draft order line item. Must be unique and consistent across requests.
+	// This field is mandatory in order to manipulate drafts with bundles.
+	Uuid string `json:"uuid"`
+	// The components of the draft order line item.
+	Components []DraftOrderLineItemComponentInput `json:"components"`
+	// If the line item doesn't already have a price override input, setting `generatePriceOverride` to `true` will
+	// create a price override from the current price.
+	GeneratePriceOverride bool `json:"generatePriceOverride"`
+	// The price override for the line item. Should be set in presentment currency.
+	//
+	// This price will be used in place of the product variant's catalog price in this draft order.
+	//
+	// If the override's presentment currency doesn't match the draft order's presentment currency, it will be
+	// converted over to match the draft order's presentment currency. This will occur if the input is defined in a
+	// differing currency, or if some other event causes the draft order's currency to change.
+	//
+	// Price overrides can't be applied to bundle components. If this line item becomes part of a bundle the price
+	// override will be removed. In the case of a cart transform, this may mean that a price override is applied to
+	// this line item earlier in its lifecycle, and is removed later when the transform occurs.
+	PriceOverride MoneyInput `json:"priceOverride"`
+}
+
+// GetAppliedDiscount returns DraftOrderLineItemInput.AppliedDiscount, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetAppliedDiscount() DraftOrderAppliedDiscountInput {
+	return v.AppliedDiscount
+}
+
+// GetCustomAttributes returns DraftOrderLineItemInput.CustomAttributes, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetCustomAttributes() []AttributeInput { return v.CustomAttributes }
+
+// GetOriginalUnitPriceWithCurrency returns DraftOrderLineItemInput.OriginalUnitPriceWithCurrency, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetOriginalUnitPriceWithCurrency() MoneyInput {
+	return v.OriginalUnitPriceWithCurrency
+}
+
+// GetQuantity returns DraftOrderLineItemInput.Quantity, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetQuantity() int { return v.Quantity }
+
+// GetRequiresShipping returns DraftOrderLineItemInput.RequiresShipping, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetRequiresShipping() bool { return v.RequiresShipping }
+
+// GetSku returns DraftOrderLineItemInput.Sku, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetSku() string { return v.Sku }
+
+// GetTaxable returns DraftOrderLineItemInput.Taxable, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetTaxable() bool { return v.Taxable }
+
+// GetTitle returns DraftOrderLineItemInput.Title, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetTitle() string { return v.Title }
+
+// GetVariantId returns DraftOrderLineItemInput.VariantId, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetVariantId() string { return v.VariantId }
+
+// GetWeight returns DraftOrderLineItemInput.Weight, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetWeight() WeightInput { return v.Weight }
+
+// GetUuid returns DraftOrderLineItemInput.Uuid, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetUuid() string { return v.Uuid }
+
+// GetComponents returns DraftOrderLineItemInput.Components, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetComponents() []DraftOrderLineItemComponentInput {
+	return v.Components
+}
+
+// GetGeneratePriceOverride returns DraftOrderLineItemInput.GeneratePriceOverride, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetGeneratePriceOverride() bool { return v.GeneratePriceOverride }
+
+// GetPriceOverride returns DraftOrderLineItemInput.PriceOverride, and is useful for accessing the field via an interface.
+func (v *DraftOrderLineItemInput) GetPriceOverride() MoneyInput { return v.PriceOverride }
+
+// DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload includes the requested fields of the GraphQL type DraftOrderUpdatePayload.
 // The GraphQL type's documentation follows.
 //
-// Return type for `fulfillmentCreateV2` mutation.
-type FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload struct {
-	// The created fulfillment.
-	Fulfillment FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment `json:"fulfillment"`
+// Return type for `draftOrderUpdate` mutation.
+type DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload struct {
+	// The updated draft order.
+	DraftOrder DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder `json:"draftOrder"`
 	// The list of errors that occurred from executing the mutation.
-	UserErrors []FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError `json:"userErrors"`
+	UserErrors []DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError `json:"userErrors"`
 }
 
-// GetFulfillment returns FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload.Fulfillment, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload) GetFulfillment() FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment {
-	return v.Fulfillment
+// GetDraftOrder returns DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload) GetDraftOrder() DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder {
+	return v.DraftOrder
 }
 
-// GetUserErrors returns FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload.UserErrors, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload) GetUserErrors() []FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError {
+// GetUserErrors returns DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload) GetUserErrors() []DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError {
 	return v.UserErrors
 }
 
-// FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment includes the requested fields of the GraphQL type Fulfillment.
+// DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder includes the requested fields of the GraphQL type DraftOrder.
 // The GraphQL type's documentation follows.
 //
-// Represents a fulfillment.
-// In Shopify, a fulfillment represents a shipment of one or more items in an order.
-// When an order has been completely fulfilled, it means that all the items that are included
-// in the order have been sent to the customer.
-// There can be more than one fulfillment for an order.
-type FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment struct {
+// An order that a merchant creates on behalf of a customer. Draft orders are
+// useful for merchants that need to do the following tasks:
+//
+// - Create new orders for sales made by phone, in person, by chat, or elsewhere.
+// When a merchant accepts payment for a draft order, an order is created.
+// - Send invoices to customers to pay with a secure checkout link.
+// - Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+// - Re-create orders manually from active sales channels.
+// - Sell products at discount or wholesale rates.
+// - Take pre-orders.
+//
+// For draft orders in multiple currencies `presentment_money` is the source of
+// truth for what a customer is going to be charged and `shop_money` is an estimate
+// of what the merchant might receive in their shop currency.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+//
+// Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
+type DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder struct {
 	// A globally-unique ID.
 	Id string `json:"id"`
-	// The status of the fulfillment.
-	Status FulfillmentStatus `json:"status"`
 }
 
-// GetId returns FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment.Id, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment) GetId() string {
+// GetId returns DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder) GetId() string {
 	return v.Id
 }
 
-// GetStatus returns FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment.Status, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadFulfillment) GetStatus() FulfillmentStatus {
-	return v.Status
-}
-
-// FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
 // The GraphQL type's documentation follows.
 //
 // Represents an error in the input of a mutation.
-type FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError struct {
+type DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError struct {
 	// The path to the input field that caused the error.
 	Field []string `json:"field"`
 	// The error message.
 	Message string `json:"message"`
 }
 
-// GetField returns FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError) GetField() []string {
+// GetField returns DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError) GetField() []string {
 	return v.Field
 }
 
-// GetMessage returns FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2PayloadUserErrorsUserError) GetMessage() string {
+// GetMessage returns DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError) GetMessage() string {
 	return v.Message
 }
 
-// FulfillmentCreateV2Response is returned by FulfillmentCreateV2 on success.
-type FulfillmentCreateV2Response struct {
-	// Creates a fulfillment for one or many fulfillment orders.
-	// The fulfillment orders are associated with the same order and are assigned to the same location.
-	FulfillmentCreateV2 FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload `json:"fulfillmentCreateV2"`
+// DraftOrderUpdateResponse is returned by DraftOrderUpdate on success.
+type DraftOrderUpdateResponse struct {
+	// Updates a draft order.
+	//
+	// If a checkout has been started for a draft order, any update to the draft will unlink the checkout. Checkouts
+	// are created but not immediately completed when opening the merchant credit card modal in the admin, and when a
+	// buyer opens the invoice URL. This is usually fine, but there is an edge case where a checkout is in progress
+	// and the draft is updated before the checkout completes. This will not interfere with the checkout and order
+	// creation, but if the link from draft to checkout is broken the draft will remain open even after the order is
+	// created.
+	DraftOrderUpdate DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload `json:"draftOrderUpdate"`
 }
 
-// GetFulfillmentCreateV2 returns FulfillmentCreateV2Response.FulfillmentCreateV2, and is useful for accessing the field via an interface.
-func (v *FulfillmentCreateV2Response) GetFulfillmentCreateV2() FulfillmentCreateV2FulfillmentCreateV2FulfillmentCreateV2Payload {
-	return v.FulfillmentCreateV2
-}
-
-// The input fields used to include the quantity of the fulfillment order line item that should be fulfilled.
-type FulfillmentOrderLineItemInput struct {
-	// The ID of the fulfillment order line item.
-	Id string `json:"id"`
-	// The quantity of the fulfillment order line item.
-	Quantity int `json:"quantity"`
-}
-
-// GetId returns FulfillmentOrderLineItemInput.Id, and is useful for accessing the field via an interface.
-func (v *FulfillmentOrderLineItemInput) GetId() string { return v.Id }
-
-// GetQuantity returns FulfillmentOrderLineItemInput.Quantity, and is useful for accessing the field via an interface.
-func (v *FulfillmentOrderLineItemInput) GetQuantity() int { return v.Quantity }
-
-// The input fields used to include the line items of a specified fulfillment order that should be fulfilled.
-type FulfillmentOrderLineItemsInput struct {
-	// The ID of the fulfillment order.
-	FulfillmentOrderId string `json:"fulfillmentOrderId"`
-	// The fulfillment order line items to be fulfilled.
-	// If left blank, all line items of the fulfillment order will be fulfilled.
-	FulfillmentOrderLineItems []FulfillmentOrderLineItemInput `json:"fulfillmentOrderLineItems"`
-}
-
-// GetFulfillmentOrderId returns FulfillmentOrderLineItemsInput.FulfillmentOrderId, and is useful for accessing the field via an interface.
-func (v *FulfillmentOrderLineItemsInput) GetFulfillmentOrderId() string { return v.FulfillmentOrderId }
-
-// GetFulfillmentOrderLineItems returns FulfillmentOrderLineItemsInput.FulfillmentOrderLineItems, and is useful for accessing the field via an interface.
-func (v *FulfillmentOrderLineItemsInput) GetFulfillmentOrderLineItems() []FulfillmentOrderLineItemInput {
-	return v.FulfillmentOrderLineItems
+// GetDraftOrderUpdate returns DraftOrderUpdateResponse.DraftOrderUpdate, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateResponse) GetDraftOrderUpdate() DraftOrderUpdateDraftOrderUpdateDraftOrderUpdatePayload {
+	return v.DraftOrderUpdate
 }
 
 // The status of a fulfillment order.
@@ -1661,46 +2010,6 @@ var AllFulfillmentOrderStatus = []FulfillmentOrderStatus{
 	FulfillmentOrderStatusScheduled,
 	FulfillmentOrderStatusOnHold,
 }
-
-// The input fields used to include the address at which the fulfillment occurred.
-// This input object is intended for tax purposes, as a full address is required
-// for tax providers to accurately calculate taxes. Typically this is the address
-// of the warehouse or fulfillment center. To retrieve a fulfillment location's
-// address, use the `assignedLocation` field on the
-// [`FulfillmentOrder`](/docs/api/admin-graphql/latest/objects/FulfillmentOrder)
-// object instead.
-type FulfillmentOriginAddressInput struct {
-	// The street address of the fulfillment location.
-	Address1 string `json:"address1"`
-	// The second line of the address. Typically the number of the apartment, suite, or unit.
-	Address2 string `json:"address2"`
-	// The city in which the fulfillment location is located.
-	City string `json:"city"`
-	// The zip code of the fulfillment location.
-	Zip string `json:"zip"`
-	// The province of the fulfillment location.
-	ProvinceCode string `json:"provinceCode"`
-	// The country of the fulfillment location.
-	CountryCode string `json:"countryCode"`
-}
-
-// GetAddress1 returns FulfillmentOriginAddressInput.Address1, and is useful for accessing the field via an interface.
-func (v *FulfillmentOriginAddressInput) GetAddress1() string { return v.Address1 }
-
-// GetAddress2 returns FulfillmentOriginAddressInput.Address2, and is useful for accessing the field via an interface.
-func (v *FulfillmentOriginAddressInput) GetAddress2() string { return v.Address2 }
-
-// GetCity returns FulfillmentOriginAddressInput.City, and is useful for accessing the field via an interface.
-func (v *FulfillmentOriginAddressInput) GetCity() string { return v.City }
-
-// GetZip returns FulfillmentOriginAddressInput.Zip, and is useful for accessing the field via an interface.
-func (v *FulfillmentOriginAddressInput) GetZip() string { return v.Zip }
-
-// GetProvinceCode returns FulfillmentOriginAddressInput.ProvinceCode, and is useful for accessing the field via an interface.
-func (v *FulfillmentOriginAddressInput) GetProvinceCode() string { return v.ProvinceCode }
-
-// GetCountryCode returns FulfillmentOriginAddressInput.CountryCode, and is useful for accessing the field via an interface.
-func (v *FulfillmentOriginAddressInput) GetCountryCode() string { return v.CountryCode }
 
 // The type of a fulfillment service.
 type FulfillmentServiceType string
@@ -1747,148 +2056,6 @@ var AllFulfillmentStatus = []FulfillmentStatus{
 	FulfillmentStatusError,
 	FulfillmentStatusFailure,
 }
-
-// The input fields that specify all possible fields for tracking information.
-//
-// > Note:
-// > If you provide the `url` field, you should not provide the `urls` field.
-// >
-// > If you provide the `number` field, you should not provide the `numbers` field.
-// >
-// > If you provide the `url` field, you should provide the `number` field.
-// >
-// > If you provide the `urls` field, you should provide the `numbers` field.
-type FulfillmentTrackingInput struct {
-	// The tracking number of the fulfillment.
-	//
-	// The tracking number will be clickable in the interface if one of the following applies
-	// (the highest in the list has the highest priority):
-	//
-	// * Tracking url provided in the `url` field.
-	// * [Shopify-known tracking company name](https://shopify.dev/api/admin-graphql/latest/objects/FulfillmentTrackingInfo#supported-tracking-companies)
-	// specified in the `company` field.
-	// Shopify will build the tracking URL automatically based on the tracking number specified.
-	// * The tracking number has a Shopify-known format.
-	// Shopify will guess the tracking provider and build the tracking url based on the tracking number format.
-	// Not all tracking carriers are supported, and multiple tracking carriers may use similarly formatted tracking numbers.
-	// This can result in an invalid tracking URL.
-	// It is highly recommended that you send the tracking company and the tracking URL.
-	Number string `json:"number"`
-	// The URL to track the fulfillment.
-	//
-	// The tracking URL is displayed in the merchant's admin on the order page.
-	// The tracking URL is displayed in the shipping confirmation email, which can optionally be sent to the customer.
-	// When accounts are enabled, it's also displayed in the customer's order history.
-	//
-	// The URL must be an [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986) and
-	// [RFC 3987](https://datatracker.ietf.org/doc/html/rfc3987)-compliant URI string.
-	// For example, `"https://www.myshipping.com/track/?tracknumbers=TRACKING_NUMBER"` is a valid URL.
-	// It includes a scheme (`https`) and a host (`myshipping.com`).
-	Url string `json:"url"`
-	// The name of the tracking company.
-	//
-	// If you specify a tracking company name from
-	// [the list](https://shopify.dev/api/admin-graphql/latest/objects/FulfillmentTrackingInfo#supported-tracking-companies),
-	// Shopify will automatically build tracking URLs for all provided tracking numbers,
-	// which will make the tracking numbers clickable in the interface.
-	// The same tracking company will be applied to all tracking numbers specified.
-	//
-	// Additionally, for the tracking companies listed on the
-	// [Shipping Carriers help page](https://help.shopify.com/manual/shipping/understanding-shipping/shipping-carriers#integrated-shipping-carriers)
-	// Shopify will automatically update the fulfillment's `shipment_status` field during the fulfillment process.
-	//
-	// > Note:
-	// > Send the tracking company name exactly as written in
-	// > [the list](https://shopify.dev/api/admin-graphql/latest/objects/FulfillmentTrackingInfo#supported-tracking-companies)
-	// > (capitalization matters).
-	Company string `json:"company"`
-	// The tracking numbers of the fulfillment, one or many.
-	//
-	// With multiple tracking numbers, you can provide tracking information
-	// for all shipments associated with the fulfillment, if there are more than one.
-	// For example, if you're shipping assembly parts of one furniture item in several boxes.
-	//
-	// Tracking numbers will be clickable in the interface if one of the following applies
-	// (the highest in the list has the highest priority):
-	//
-	// * Tracking URLs provided in the `urls` field.
-	// The tracking URLs will be matched to the tracking numbers based on their positions in the arrays.
-	// * [Shopify-known tracking company name](https://shopify.dev/api/admin-graphql/latest/objects/FulfillmentTrackingInfo#supported-tracking-companies)
-	// specified in the `company` field.
-	// Shopify will build tracking URLs automatically for all tracking numbers specified.
-	// The same tracking company will be applied to all tracking numbers.
-	// * Tracking numbers have a Shopify-known format.
-	// Shopify will guess tracking providers and build tracking URLs based on the tracking number formats.
-	// Not all tracking carriers are supported, and multiple tracking carriers may use similarly formatted tracking numbers.
-	// This can result in an invalid tracking URL.
-	// It is highly recommended that you send the tracking company and the tracking URLs.
-	Numbers []string `json:"numbers"`
-	// The URLs to track the fulfillment, one or many.
-	//
-	// The tracking URLs are displayed in the merchant's admin on the order page.
-	// The tracking URLs are displayed in the shipping confirmation email, which can optionally be sent to the customer.
-	// When accounts are enabled, the tracking URLs are also displayed in the customer's order history.
-	//
-	// If you're not specifying a
-	// [Shopify-known](https://shopify.dev/api/admin-graphql/latest/objects/FulfillmentTrackingInfo#supported-tracking-companies)
-	// tracking company name in the `company` field,
-	// then provide tracking URLs for all tracking numbers from the `numbers` field.
-	//
-	// Tracking URLs from the `urls` array field are being matched with the tracking numbers from the `numbers` array
-	// field correspondingly their positions in the arrays.
-	//
-	// Each URL must be an [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986) and
-	// [RFC 3987](https://datatracker.ietf.org/doc/html/rfc3987)-compliant URI string.
-	// For example, `"https://www.myshipping.com/track/?tracknumbers=TRACKING_NUMBER"` is a valid URL.
-	// It includes a scheme (`https`) and a host (`myshipping.com`).
-	Urls []string `json:"urls"`
-}
-
-// GetNumber returns FulfillmentTrackingInput.Number, and is useful for accessing the field via an interface.
-func (v *FulfillmentTrackingInput) GetNumber() string { return v.Number }
-
-// GetUrl returns FulfillmentTrackingInput.Url, and is useful for accessing the field via an interface.
-func (v *FulfillmentTrackingInput) GetUrl() string { return v.Url }
-
-// GetCompany returns FulfillmentTrackingInput.Company, and is useful for accessing the field via an interface.
-func (v *FulfillmentTrackingInput) GetCompany() string { return v.Company }
-
-// GetNumbers returns FulfillmentTrackingInput.Numbers, and is useful for accessing the field via an interface.
-func (v *FulfillmentTrackingInput) GetNumbers() []string { return v.Numbers }
-
-// GetUrls returns FulfillmentTrackingInput.Urls, and is useful for accessing the field via an interface.
-func (v *FulfillmentTrackingInput) GetUrls() []string { return v.Urls }
-
-// The input fields used to create a fulfillment from fulfillment orders.
-type FulfillmentV2Input struct {
-	// The fulfillment's tracking information, including a tracking URL, a tracking number,
-	// and the company associated with the fulfillment.
-	TrackingInfo FulfillmentTrackingInput `json:"trackingInfo"`
-	// Whether the customer is notified.
-	// If `true`, then a notification is sent when the fulfillment is created. The default value is `false`.
-	NotifyCustomer bool `json:"notifyCustomer"`
-	// Pairs of `fulfillment_order_id` and `fulfillment_order_line_items` that represent the fulfillment
-	// order line items that have to be fulfilled for each fulfillment order.  For any given pair, if the
-	// fulfillment order line items are left blank then all the fulfillment order line items of the
-	// associated fulfillment order ID will be fulfilled.
-	LineItemsByFulfillmentOrder []FulfillmentOrderLineItemsInput `json:"lineItemsByFulfillmentOrder"`
-	// Address information about the location from which the order was fulfilled.
-	OriginAddress FulfillmentOriginAddressInput `json:"originAddress"`
-}
-
-// GetTrackingInfo returns FulfillmentV2Input.TrackingInfo, and is useful for accessing the field via an interface.
-func (v *FulfillmentV2Input) GetTrackingInfo() FulfillmentTrackingInput { return v.TrackingInfo }
-
-// GetNotifyCustomer returns FulfillmentV2Input.NotifyCustomer, and is useful for accessing the field via an interface.
-func (v *FulfillmentV2Input) GetNotifyCustomer() bool { return v.NotifyCustomer }
-
-// GetLineItemsByFulfillmentOrder returns FulfillmentV2Input.LineItemsByFulfillmentOrder, and is useful for accessing the field via an interface.
-func (v *FulfillmentV2Input) GetLineItemsByFulfillmentOrder() []FulfillmentOrderLineItemsInput {
-	return v.LineItemsByFulfillmentOrder
-}
-
-// GetOriginAddress returns FulfillmentV2Input.OriginAddress, and is useful for accessing the field via an interface.
-func (v *FulfillmentV2Input) GetOriginAddress() FulfillmentOriginAddressInput { return v.OriginAddress }
 
 // GetCustomerCustomersCustomerConnection includes the requested fields of the GraphQL type CustomerConnection.
 // The GraphQL type's documentation follows.
@@ -1956,24 +2123,24 @@ func (v *GetCustomerResponse) GetCustomers() GetCustomerCustomersCustomerConnect
 	return v.Customers
 }
 
-// GetDraftOrderDraftOrdersDraftOrderConnection includes the requested fields of the GraphQL type DraftOrderConnection.
+// GetDraftOrdersDraftOrdersDraftOrderConnection includes the requested fields of the GraphQL type DraftOrderConnection.
 // The GraphQL type's documentation follows.
 //
 // An auto-generated type for paginating through multiple DraftOrders.
-type GetDraftOrderDraftOrdersDraftOrderConnection struct {
+type GetDraftOrdersDraftOrdersDraftOrderConnection struct {
 	// A list of nodes that are contained in DraftOrderEdge. You can fetch data about
 	// an individual node, or you can follow the edges to fetch data about a
 	// collection of related nodes. At each node, you specify the fields that you
 	// want to retrieve.
-	Nodes []GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder `json:"nodes"`
+	Nodes []GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder `json:"nodes"`
 }
 
-// GetNodes returns GetDraftOrderDraftOrdersDraftOrderConnection.Nodes, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderDraftOrdersDraftOrderConnection) GetNodes() []GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder {
+// GetNodes returns GetDraftOrdersDraftOrdersDraftOrderConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnection) GetNodes() []GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder {
 	return v.Nodes
 }
 
-// GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+// GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder includes the requested fields of the GraphQL type DraftOrder.
 // The GraphQL type's documentation follows.
 //
 // An order that a merchant creates on behalf of a customer. Draft orders are
@@ -1997,7 +2164,7 @@ func (v *GetDraftOrderDraftOrdersDraftOrderConnection) GetNodes() []GetDraftOrde
 // legitimate use for the associated data.
 //
 // Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
-type GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder struct {
+type GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder struct {
 	// A globally-unique ID.
 	Id string `json:"id"`
 	// The identifier for the draft order, which is unique within the store. For example, _#D1223_.
@@ -2008,30 +2175,32 @@ type GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder struct {
 	Phone string `json:"phone"`
 }
 
-// GetId returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Id, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetId() string { return v.Id }
+// GetId returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetId() string { return v.Id }
 
-// GetName returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Name, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetName() string { return v.Name }
+// GetName returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetName() string {
+	return v.Name
+}
 
-// GetEmail returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Email, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetEmail() string {
+// GetEmail returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Email, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetEmail() string {
 	return v.Email
 }
 
-// GetPhone returns GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder.Phone, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder) GetPhone() string {
+// GetPhone returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Phone, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetPhone() string {
 	return v.Phone
 }
 
-// GetDraftOrderResponse is returned by GetDraftOrder on success.
-type GetDraftOrderResponse struct {
+// GetDraftOrdersResponse is returned by GetDraftOrders on success.
+type GetDraftOrdersResponse struct {
 	// List of saved draft orders.
-	DraftOrders GetDraftOrderDraftOrdersDraftOrderConnection `json:"draftOrders"`
+	DraftOrders GetDraftOrdersDraftOrdersDraftOrderConnection `json:"draftOrders"`
 }
 
-// GetDraftOrders returns GetDraftOrderResponse.DraftOrders, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderResponse) GetDraftOrders() GetDraftOrderDraftOrdersDraftOrderConnection {
+// GetDraftOrders returns GetDraftOrdersResponse.DraftOrders, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersResponse) GetDraftOrders() GetDraftOrdersDraftOrdersDraftOrderConnection {
 	return v.DraftOrders
 }
 
@@ -3352,6 +3521,140 @@ func (v *GetProductsSelfServiceResponse) GetProducts() GetProductsSelfServicePro
 	return v.Products
 }
 
+// The input fields for a LocalizedFieldInput.
+type LocalizedFieldInput struct {
+	// The key for the localized field.
+	Key LocalizedFieldKey `json:"key"`
+	// The localized field value.
+	Value string `json:"value"`
+}
+
+// GetKey returns LocalizedFieldInput.Key, and is useful for accessing the field via an interface.
+func (v *LocalizedFieldInput) GetKey() LocalizedFieldKey { return v.Key }
+
+// GetValue returns LocalizedFieldInput.Value, and is useful for accessing the field via an interface.
+func (v *LocalizedFieldInput) GetValue() string { return v.Value }
+
+// The key of a localized field.
+type LocalizedFieldKey string
+
+const (
+	// Localized field key 'tax_credential_br' for country Brazil.
+	LocalizedFieldKeyTaxCredentialBr LocalizedFieldKey = "TAX_CREDENTIAL_BR"
+	// Localized field key 'shipping_credential_br' for country Brazil.
+	LocalizedFieldKeyShippingCredentialBr LocalizedFieldKey = "SHIPPING_CREDENTIAL_BR"
+	// Localized field key 'tax_credential_cl' for country Chile.
+	LocalizedFieldKeyTaxCredentialCl LocalizedFieldKey = "TAX_CREDENTIAL_CL"
+	// Localized field key 'shipping_credential_cl' for country Chile.
+	LocalizedFieldKeyShippingCredentialCl LocalizedFieldKey = "SHIPPING_CREDENTIAL_CL"
+	// Localized field key 'shipping_credential_cn' for country China.
+	LocalizedFieldKeyShippingCredentialCn LocalizedFieldKey = "SHIPPING_CREDENTIAL_CN"
+	// Localized field key 'tax_credential_co' for country Colombia.
+	LocalizedFieldKeyTaxCredentialCo LocalizedFieldKey = "TAX_CREDENTIAL_CO"
+	// Localized field key 'tax_credential_type_co' for country Colombia.
+	LocalizedFieldKeyTaxCredentialTypeCo LocalizedFieldKey = "TAX_CREDENTIAL_TYPE_CO"
+	// Localized field key 'shipping_credential_co' for country Colombia.
+	LocalizedFieldKeyShippingCredentialCo LocalizedFieldKey = "SHIPPING_CREDENTIAL_CO"
+	// Localized field key 'shipping_credential_type_co' for country Colombia.
+	LocalizedFieldKeyShippingCredentialTypeCo LocalizedFieldKey = "SHIPPING_CREDENTIAL_TYPE_CO"
+	// Localized field key 'tax_credential_cr' for country Costa Rica.
+	LocalizedFieldKeyTaxCredentialCr LocalizedFieldKey = "TAX_CREDENTIAL_CR"
+	// Localized field key 'shipping_credential_cr' for country Costa Rica.
+	LocalizedFieldKeyShippingCredentialCr LocalizedFieldKey = "SHIPPING_CREDENTIAL_CR"
+	// Localized field key 'tax_credential_ec' for country Ecuador.
+	LocalizedFieldKeyTaxCredentialEc LocalizedFieldKey = "TAX_CREDENTIAL_EC"
+	// Localized field key 'shipping_credential_ec' for country Ecuador.
+	LocalizedFieldKeyShippingCredentialEc LocalizedFieldKey = "SHIPPING_CREDENTIAL_EC"
+	// Localized field key 'tax_credential_gt' for country Guatemala.
+	LocalizedFieldKeyTaxCredentialGt LocalizedFieldKey = "TAX_CREDENTIAL_GT"
+	// Localized field key 'shipping_credential_gt' for country Guatemala.
+	LocalizedFieldKeyShippingCredentialGt LocalizedFieldKey = "SHIPPING_CREDENTIAL_GT"
+	// Localized field key 'tax_credential_id' for country Indonesia.
+	LocalizedFieldKeyTaxCredentialId LocalizedFieldKey = "TAX_CREDENTIAL_ID"
+	// Localized field key 'shipping_credential_id' for country Indonesia.
+	LocalizedFieldKeyShippingCredentialId LocalizedFieldKey = "SHIPPING_CREDENTIAL_ID"
+	// Localized field key 'tax_credential_it' for country Italy.
+	LocalizedFieldKeyTaxCredentialIt LocalizedFieldKey = "TAX_CREDENTIAL_IT"
+	// Localized field key 'tax_email_it' for country Italy.
+	LocalizedFieldKeyTaxEmailIt LocalizedFieldKey = "TAX_EMAIL_IT"
+	// Localized field key 'tax_credential_my' for country Malaysia.
+	LocalizedFieldKeyTaxCredentialMy LocalizedFieldKey = "TAX_CREDENTIAL_MY"
+	// Localized field key 'shipping_credential_my' for country Malaysia.
+	LocalizedFieldKeyShippingCredentialMy LocalizedFieldKey = "SHIPPING_CREDENTIAL_MY"
+	// Localized field key 'shipping_credential_mx' for country Mexico.
+	LocalizedFieldKeyShippingCredentialMx LocalizedFieldKey = "SHIPPING_CREDENTIAL_MX"
+	// Localized field key 'tax_credential_mx' for country Mexico.
+	LocalizedFieldKeyTaxCredentialMx LocalizedFieldKey = "TAX_CREDENTIAL_MX"
+	// Localized field key 'tax_credential_type_mx' for country Mexico.
+	LocalizedFieldKeyTaxCredentialTypeMx LocalizedFieldKey = "TAX_CREDENTIAL_TYPE_MX"
+	// Localized field key 'tax_credential_use_mx' for country Mexico.
+	LocalizedFieldKeyTaxCredentialUseMx LocalizedFieldKey = "TAX_CREDENTIAL_USE_MX"
+	// Localized field key 'tax_credential_py' for country Paraguay.
+	LocalizedFieldKeyTaxCredentialPy LocalizedFieldKey = "TAX_CREDENTIAL_PY"
+	// Localized field key 'shipping_credential_py' for country Paraguay.
+	LocalizedFieldKeyShippingCredentialPy LocalizedFieldKey = "SHIPPING_CREDENTIAL_PY"
+	// Localized field key 'tax_credential_pe' for country Peru.
+	LocalizedFieldKeyTaxCredentialPe LocalizedFieldKey = "TAX_CREDENTIAL_PE"
+	// Localized field key 'shipping_credential_pe' for country Peru.
+	LocalizedFieldKeyShippingCredentialPe LocalizedFieldKey = "SHIPPING_CREDENTIAL_PE"
+	// Localized field key 'tax_credential_pt' for country Portugal.
+	LocalizedFieldKeyTaxCredentialPt LocalizedFieldKey = "TAX_CREDENTIAL_PT"
+	// Localized field key 'shipping_credential_pt' for country Portugal.
+	LocalizedFieldKeyShippingCredentialPt LocalizedFieldKey = "SHIPPING_CREDENTIAL_PT"
+	// Localized field key 'shipping_credential_kr' for country South Korea.
+	LocalizedFieldKeyShippingCredentialKr LocalizedFieldKey = "SHIPPING_CREDENTIAL_KR"
+	// Localized field key 'tax_credential_es' for country Spain.
+	LocalizedFieldKeyTaxCredentialEs LocalizedFieldKey = "TAX_CREDENTIAL_ES"
+	// Localized field key 'shipping_credential_es' for country Spain.
+	LocalizedFieldKeyShippingCredentialEs LocalizedFieldKey = "SHIPPING_CREDENTIAL_ES"
+	// Localized field key 'shipping_credential_tw' for country Taiwan.
+	LocalizedFieldKeyShippingCredentialTw LocalizedFieldKey = "SHIPPING_CREDENTIAL_TW"
+	// Localized field key 'tax_credential_tr' for country Turkey.
+	LocalizedFieldKeyTaxCredentialTr LocalizedFieldKey = "TAX_CREDENTIAL_TR"
+	// Localized field key 'shipping_credential_tr' for country Turkey.
+	LocalizedFieldKeyShippingCredentialTr LocalizedFieldKey = "SHIPPING_CREDENTIAL_TR"
+)
+
+var AllLocalizedFieldKey = []LocalizedFieldKey{
+	LocalizedFieldKeyTaxCredentialBr,
+	LocalizedFieldKeyShippingCredentialBr,
+	LocalizedFieldKeyTaxCredentialCl,
+	LocalizedFieldKeyShippingCredentialCl,
+	LocalizedFieldKeyShippingCredentialCn,
+	LocalizedFieldKeyTaxCredentialCo,
+	LocalizedFieldKeyTaxCredentialTypeCo,
+	LocalizedFieldKeyShippingCredentialCo,
+	LocalizedFieldKeyShippingCredentialTypeCo,
+	LocalizedFieldKeyTaxCredentialCr,
+	LocalizedFieldKeyShippingCredentialCr,
+	LocalizedFieldKeyTaxCredentialEc,
+	LocalizedFieldKeyShippingCredentialEc,
+	LocalizedFieldKeyTaxCredentialGt,
+	LocalizedFieldKeyShippingCredentialGt,
+	LocalizedFieldKeyTaxCredentialId,
+	LocalizedFieldKeyShippingCredentialId,
+	LocalizedFieldKeyTaxCredentialIt,
+	LocalizedFieldKeyTaxEmailIt,
+	LocalizedFieldKeyTaxCredentialMy,
+	LocalizedFieldKeyShippingCredentialMy,
+	LocalizedFieldKeyShippingCredentialMx,
+	LocalizedFieldKeyTaxCredentialMx,
+	LocalizedFieldKeyTaxCredentialTypeMx,
+	LocalizedFieldKeyTaxCredentialUseMx,
+	LocalizedFieldKeyTaxCredentialPy,
+	LocalizedFieldKeyShippingCredentialPy,
+	LocalizedFieldKeyTaxCredentialPe,
+	LocalizedFieldKeyShippingCredentialPe,
+	LocalizedFieldKeyTaxCredentialPt,
+	LocalizedFieldKeyShippingCredentialPt,
+	LocalizedFieldKeyShippingCredentialKr,
+	LocalizedFieldKeyTaxCredentialEs,
+	LocalizedFieldKeyShippingCredentialEs,
+	LocalizedFieldKeyShippingCredentialTw,
+	LocalizedFieldKeyTaxCredentialTr,
+	LocalizedFieldKeyShippingCredentialTr,
+}
+
 // The input fields to create or update a mailing address.
 type MailingAddressInput struct {
 	// The first line of the address. Typically the street address or PO Box number.
@@ -3453,6 +3756,20 @@ func (v *MetafieldInput) GetValue() string { return v.Value }
 
 // GetType returns MetafieldInput.Type, and is useful for accessing the field via an interface.
 func (v *MetafieldInput) GetType() string { return v.Type }
+
+// The input fields for a monetary value with currency.
+type MoneyInput struct {
+	// Decimal money amount.
+	Amount string `json:"amount"`
+	// Currency of the money.
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+}
+
+// GetAmount returns MoneyInput.Amount, and is useful for accessing the field via an interface.
+func (v *MoneyInput) GetAmount() string { return v.Amount }
+
+// GetCurrencyCode returns MoneyInput.CurrencyCode, and is useful for accessing the field via an interface.
+func (v *MoneyInput) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
 
 // OrderDetailByIdOrder includes the requested fields of the GraphQL type Order.
 // The GraphQL type's documentation follows.
@@ -4547,6 +4864,97 @@ type OrderDetailByIdResponse struct {
 // GetOrder returns OrderDetailByIdResponse.Order, and is useful for accessing the field via an interface.
 func (v *OrderDetailByIdResponse) GetOrder() OrderDetailByIdOrder { return v.Order }
 
+// The input fields used to create a payment schedule for payment terms.
+type PaymentScheduleInput struct {
+	// Specifies the date and time that the payment schedule was issued. This field must be provided for net type payment terms.
+	IssuedAt time.Time `json:"issuedAt"`
+	// Specifies the date and time when the payment schedule is due. This field must be provided for fixed type payment terms.
+	DueAt time.Time `json:"dueAt"`
+}
+
+// GetIssuedAt returns PaymentScheduleInput.IssuedAt, and is useful for accessing the field via an interface.
+func (v *PaymentScheduleInput) GetIssuedAt() time.Time { return v.IssuedAt }
+
+// GetDueAt returns PaymentScheduleInput.DueAt, and is useful for accessing the field via an interface.
+func (v *PaymentScheduleInput) GetDueAt() time.Time { return v.DueAt }
+
+// The input fields to create payment terms. Payment terms set the date that payment is due.
+type PaymentTermsInput struct {
+	// Specifies the ID of the payment terms template.
+	// Payment terms templates provide preset configurations to create common payment terms.
+	// Refer to the
+	// [PaymentTermsTemplate](https://shopify.dev/api/admin-graphql/latest/objects/paymenttermstemplate)
+	// object for more details.
+	PaymentTermsTemplateId string `json:"paymentTermsTemplateId"`
+	// Specifies the payment schedules for the payment terms.
+	PaymentSchedules []PaymentScheduleInput `json:"paymentSchedules"`
+}
+
+// GetPaymentTermsTemplateId returns PaymentTermsInput.PaymentTermsTemplateId, and is useful for accessing the field via an interface.
+func (v *PaymentTermsInput) GetPaymentTermsTemplateId() string { return v.PaymentTermsTemplateId }
+
+// GetPaymentSchedules returns PaymentTermsInput.PaymentSchedules, and is useful for accessing the field via an interface.
+func (v *PaymentTermsInput) GetPaymentSchedules() []PaymentScheduleInput { return v.PaymentSchedules }
+
+// The input fields for a purchasing company, which is a combination of company, company contact, and company location.
+type PurchasingCompanyInput struct {
+	// ID of the company.
+	CompanyId string `json:"companyId"`
+	// ID of the company contact.
+	CompanyContactId string `json:"companyContactId"`
+	// ID of the company location.
+	CompanyLocationId string `json:"companyLocationId"`
+}
+
+// GetCompanyId returns PurchasingCompanyInput.CompanyId, and is useful for accessing the field via an interface.
+func (v *PurchasingCompanyInput) GetCompanyId() string { return v.CompanyId }
+
+// GetCompanyContactId returns PurchasingCompanyInput.CompanyContactId, and is useful for accessing the field via an interface.
+func (v *PurchasingCompanyInput) GetCompanyContactId() string { return v.CompanyContactId }
+
+// GetCompanyLocationId returns PurchasingCompanyInput.CompanyLocationId, and is useful for accessing the field via an interface.
+func (v *PurchasingCompanyInput) GetCompanyLocationId() string { return v.CompanyLocationId }
+
+// The input fields for a purchasing entity. Can either be a customer or a purchasing company.
+type PurchasingEntityInput struct {
+	// Represents a customer. Null if there's a purchasing company.
+	CustomerId string `json:"customerId"`
+	// Represents a purchasing company. Null if there's a customer.
+	PurchasingCompany PurchasingCompanyInput `json:"purchasingCompany"`
+}
+
+// GetCustomerId returns PurchasingEntityInput.CustomerId, and is useful for accessing the field via an interface.
+func (v *PurchasingEntityInput) GetCustomerId() string { return v.CustomerId }
+
+// GetPurchasingCompany returns PurchasingEntityInput.PurchasingCompany, and is useful for accessing the field via an interface.
+func (v *PurchasingEntityInput) GetPurchasingCompany() PurchasingCompanyInput {
+	return v.PurchasingCompany
+}
+
+// The input fields for specifying the shipping details for the draft order.
+//
+// > Note:
+// > A custom shipping line includes a title and price with `shippingRateHandle`
+// set to `nil`. A shipping line with a carrier-provided shipping rate (currently
+// set via the Shopify admin) includes the shipping rate handle.
+type ShippingLineInput struct {
+	// Price of the shipping rate with currency. If provided, `price` will be ignored.
+	PriceWithCurrency MoneyInput `json:"priceWithCurrency"`
+	// A unique identifier for the shipping rate.
+	ShippingRateHandle string `json:"shippingRateHandle"`
+	// Title of the shipping rate.
+	Title string `json:"title"`
+}
+
+// GetPriceWithCurrency returns ShippingLineInput.PriceWithCurrency, and is useful for accessing the field via an interface.
+func (v *ShippingLineInput) GetPriceWithCurrency() MoneyInput { return v.PriceWithCurrency }
+
+// GetShippingRateHandle returns ShippingLineInput.ShippingRateHandle, and is useful for accessing the field via an interface.
+func (v *ShippingLineInput) GetShippingRateHandle() string { return v.ShippingRateHandle }
+
+// GetTitle returns ShippingLineInput.Title, and is useful for accessing the field via an interface.
+func (v *ShippingLineInput) GetTitle() string { return v.Title }
+
 // TagsAddResponse is returned by TagsAdd on success.
 type TagsAddResponse struct {
 	// Add tags to an order, a draft order, a customer, a product, or an online store article.
@@ -4812,6 +5220,20 @@ var AllTaxExemption = []TaxExemption{
 	TaxExemptionUsDcResellerExemption,
 }
 
+// The input fields for the weight unit and value inputs.
+type WeightInput struct {
+	// The weight value using the unit system specified with `weight_unit`.
+	Value float64 `json:"value"`
+	// Unit of measurement for `value`.
+	Unit WeightUnit `json:"unit"`
+}
+
+// GetValue returns WeightInput.Value, and is useful for accessing the field via an interface.
+func (v *WeightInput) GetValue() float64 { return v.Value }
+
+// GetUnit returns WeightInput.Unit, and is useful for accessing the field via an interface.
+func (v *WeightInput) GetUnit() WeightUnit { return v.Unit }
+
 // Units of measurement for weight.
 type WeightUnit string
 
@@ -4849,13 +5271,17 @@ type __DraftOrderCompleteInput struct {
 // GetId returns __DraftOrderCompleteInput.Id, and is useful for accessing the field via an interface.
 func (v *__DraftOrderCompleteInput) GetId() string { return v.Id }
 
-// __FulfillmentCreateV2Input is used internally by genqlient
-type __FulfillmentCreateV2Input struct {
-	Fulfillment FulfillmentV2Input `json:"fulfillment"`
+// __DraftOrderUpdateInput is used internally by genqlient
+type __DraftOrderUpdateInput struct {
+	Id    string          `json:"id"`
+	Input DraftOrderInput `json:"input"`
 }
 
-// GetFulfillment returns __FulfillmentCreateV2Input.Fulfillment, and is useful for accessing the field via an interface.
-func (v *__FulfillmentCreateV2Input) GetFulfillment() FulfillmentV2Input { return v.Fulfillment }
+// GetId returns __DraftOrderUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdateInput) GetId() string { return v.Id }
+
+// GetInput returns __DraftOrderUpdateInput.Input, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdateInput) GetInput() DraftOrderInput { return v.Input }
 
 // __GetCustomerInput is used internally by genqlient
 type __GetCustomerInput struct {
@@ -4865,13 +5291,13 @@ type __GetCustomerInput struct {
 // GetQuery returns __GetCustomerInput.Query, and is useful for accessing the field via an interface.
 func (v *__GetCustomerInput) GetQuery() string { return v.Query }
 
-// __GetDraftOrderInput is used internally by genqlient
-type __GetDraftOrderInput struct {
+// __GetDraftOrdersInput is used internally by genqlient
+type __GetDraftOrdersInput struct {
 	Query string `json:"query"`
 }
 
-// GetQuery returns __GetDraftOrderInput.Query, and is useful for accessing the field via an interface.
-func (v *__GetDraftOrderInput) GetQuery() string { return v.Query }
+// GetQuery returns __GetDraftOrdersInput.Query, and is useful for accessing the field via an interface.
+func (v *__GetDraftOrdersInput) GetQuery() string { return v.Query }
 
 // __GetFulfillmentInput is used internally by genqlient
 type __GetFulfillmentInput struct {
@@ -4997,6 +5423,10 @@ mutation DraftOrderComplete ($id: ID!) {
 		draftOrder {
 			id
 		}
+		userErrors {
+			field
+			message
+		}
 	}
 }
 `
@@ -5026,13 +5456,12 @@ func DraftOrderComplete(
 	return data_, err_
 }
 
-// The mutation executed by FulfillmentCreateV2.
-const FulfillmentCreateV2_Operation = `
-mutation FulfillmentCreateV2 ($fulfillment: FulfillmentV2Input!) {
-	fulfillmentCreateV2(fulfillment: $fulfillment) {
-		fulfillment {
+// The mutation executed by DraftOrderUpdate.
+const DraftOrderUpdate_Operation = `
+mutation DraftOrderUpdate ($id: ID!, $input: DraftOrderInput!) {
+	draftOrderUpdate(id: $id, input: $input) {
+		draftOrder {
 			id
-			status
 		}
 		userErrors {
 			field
@@ -5042,20 +5471,22 @@ mutation FulfillmentCreateV2 ($fulfillment: FulfillmentV2Input!) {
 }
 `
 
-func FulfillmentCreateV2(
+func DraftOrderUpdate(
 	ctx_ context.Context,
 	client_ graphql.Client,
-	fulfillment FulfillmentV2Input,
-) (data_ *FulfillmentCreateV2Response, err_ error) {
+	id string,
+	input DraftOrderInput,
+) (data_ *DraftOrderUpdateResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "FulfillmentCreateV2",
-		Query:  FulfillmentCreateV2_Operation,
-		Variables: &__FulfillmentCreateV2Input{
-			Fulfillment: fulfillment,
+		OpName: "DraftOrderUpdate",
+		Query:  DraftOrderUpdate_Operation,
+		Variables: &__DraftOrderUpdateInput{
+			Id:    id,
+			Input: input,
 		},
 	}
 
-	data_ = &FulfillmentCreateV2Response{}
+	data_ = &DraftOrderUpdateResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -5105,9 +5536,9 @@ func GetCustomer(
 	return data_, err_
 }
 
-// The query executed by GetDraftOrder.
-const GetDraftOrder_Operation = `
-query GetDraftOrder ($query: String) {
+// The query executed by GetDraftOrders.
+const GetDraftOrders_Operation = `
+query GetDraftOrders ($query: String) {
 	draftOrders(first: 50, sortKey: UPDATED_AT, reverse: false, query: $query) {
 		nodes {
 			id
@@ -5119,20 +5550,20 @@ query GetDraftOrder ($query: String) {
 }
 `
 
-func GetDraftOrder(
+func GetDraftOrders(
 	ctx_ context.Context,
 	client_ graphql.Client,
 	query string,
-) (data_ *GetDraftOrderResponse, err_ error) {
+) (data_ *GetDraftOrdersResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "GetDraftOrder",
-		Query:  GetDraftOrder_Operation,
-		Variables: &__GetDraftOrderInput{
+		OpName: "GetDraftOrders",
+		Query:  GetDraftOrders_Operation,
+		Variables: &__GetDraftOrdersInput{
 			Query: query,
 		},
 	}
 
-	data_ = &GetDraftOrderResponse{}
+	data_ = &GetDraftOrdersResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

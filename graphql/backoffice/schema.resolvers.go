@@ -6,6 +6,7 @@ package self_service
 
 import (
 	"context"
+	"fmt"
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service/shopify"
 
@@ -21,9 +22,30 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 	return true, nil
 }
 
+// DraftOrderUpdate is the resolver for the draftOrderUpdate field.
+func (r *mutationResolver) DraftOrderUpdate(ctx context.Context, id string, input *model.LineItemInput) (bool, error) {
+	payload := shopify.DraftOrderInput{
+		LineItems: []shopify.DraftOrderLineItemInput{{
+			Quantity:  1,
+			VariantId: "gid://shopify/ProductVariant/45540435591367",
+		},
+		},
+	}
+	_, err := r.ShopifyClient.DraftOrderUpdate(ctx, id, payload)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// DraftOrderAddProductVariant is the resolver for the draftOrderAddProductVariant field.
+func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
+	panic(fmt.Errorf("not implemented: DraftOrderAddProductVariant - draftOrderAddProductVariant"))
+}
+
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
-func (r *queryResolver) DraftOrderDesigner(ctx context.Context) ([]*model.Order, error) {
-	orders, err := r.ShopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"))
+func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error) {
+	orders, err := r.ShopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"), status)
 	if err != nil {
 		return nil, err
 	}

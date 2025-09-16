@@ -3,6 +3,7 @@ package shopify
 import (
 	"context"
 	"fmt"
+	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service"
 	"log"
 	"net/http"
@@ -74,10 +75,25 @@ func (c *Client) DraftOrderComplete(ctx context.Context, id string) (*DraftOrder
 	return DraftOrderComplete(ctx, c.graphql, id)
 }
 
-func (c *Client) GetDraftOrders(ctx context.Context, tag *string) (*GetDraftOrderResponse, error) {
+func (c *Client) DraftOrderUpdate(ctx context.Context, id string, input DraftOrderInput) (*DraftOrderUpdateResponse, error) {
+	return DraftOrderUpdate(ctx, c.graphql, id, input)
+}
+
+func (c *Client) GetDraftOrders(ctx context.Context, tag *string, status *model.DraftOrderStatus) (*GetDraftOrdersResponse, error) {
 	query := ""
 	if tag != nil {
 		query = fmt.Sprintf("tag:%s", *tag)
 	}
-	return GetDraftOrder(ctx, c.graphql, query)
+	if status != nil {
+		if query != "" {
+			query += " AND "
+		}
+		if *status == model.DraftOrderStatusOpen {
+			query += "status:OPEN"
+		}
+		if *status == model.DraftOrderStatusCompleted {
+			query += "status:COMPLETED"
+		}
+	}
+	return GetDraftOrders(ctx, c.graphql, query)
 }

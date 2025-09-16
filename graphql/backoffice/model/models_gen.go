@@ -2,6 +2,18 @@
 
 package model
 
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type LineItemInput struct {
+	ID       string `json:"id"`
+	Quantity int    `json:"quantity"`
+}
+
 type Mutation struct {
 }
 
@@ -11,4 +23,59 @@ type Order struct {
 }
 
 type Query struct {
+}
+
+type DraftOrderStatus string
+
+const (
+	DraftOrderStatusOpen      DraftOrderStatus = "OPEN"
+	DraftOrderStatusCompleted DraftOrderStatus = "COMPLETED"
+)
+
+var AllDraftOrderStatus = []DraftOrderStatus{
+	DraftOrderStatusOpen,
+	DraftOrderStatusCompleted,
+}
+
+func (e DraftOrderStatus) IsValid() bool {
+	switch e {
+	case DraftOrderStatusOpen, DraftOrderStatusCompleted:
+		return true
+	}
+	return false
+}
+
+func (e DraftOrderStatus) String() string {
+	return string(e)
+}
+
+func (e *DraftOrderStatus) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = DraftOrderStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid DraftOrderStatus", str)
+	}
+	return nil
+}
+
+func (e DraftOrderStatus) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *DraftOrderStatus) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e DraftOrderStatus) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }
