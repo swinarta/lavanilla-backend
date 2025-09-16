@@ -78,6 +78,6 @@ func (c *Client) DraftOrderUpdate1(ctx context.Context, id string) (*DraftOrderU
 	// return DraftOrderUpdate1(ctx, c.graphql, id)
 }
 
-func (c *Client) DraftOrderUpdate2(ctx context.Context, id string, input []DraftOrderLineItemInput) (*DraftOrderUpdate2Response, error) {
-	return DraftOrderUpdate2(ctx, c.graphql, id, input)
+func (c *Client) DraftOrderUpdateLineItems(ctx context.Context, id string, input []DraftOrderLineItemInput) (*DraftOrderUpdateLineItemsResponse, error) {
+	return DraftOrderUpdateLineItems(ctx, c.graphql, id, input)
 }

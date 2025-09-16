@@ -50,7 +50,6 @@ type ComplexityRoot struct {
 	Mutation struct {
 		DraftOrderAddProductVariant func(childComplexity int, id string, variantID string, quantity int) int
 		DraftOrderComplete          func(childComplexity int, id string) int
-		DraftOrderUpdate            func(childComplexity int, id string, input *model.LineItemInput) int
 	}
 
 	Order struct {
@@ -65,7 +64,6 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	DraftOrderComplete(ctx context.Context, id string) (bool, error)
-	DraftOrderUpdate(ctx context.Context, id string, input *model.LineItemInput) (bool, error)
 	DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
 }
 type QueryResolver interface {
@@ -113,17 +111,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.DraftOrderComplete(childComplexity, args["id"].(string)), true
-	case "Mutation.draftOrderUpdate":
-		if e.complexity.Mutation.DraftOrderUpdate == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_draftOrderUpdate_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DraftOrderUpdate(childComplexity, args["id"].(string), args["input"].(*model.LineItemInput)), true
 
 	case "Order.id":
 		if e.complexity.Order.ID == nil {
@@ -307,22 +294,6 @@ func (ec *executionContext) field_Mutation_draftOrderComplete_args(ctx context.C
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_draftOrderUpdate_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
-	if err != nil {
-		return nil, err
-	}
-	args["id"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOLineItemInput2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐLineItemInput)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -438,47 +409,6 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderComplete(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_draftOrderUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Mutation_draftOrderUpdate,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DraftOrderUpdate(ctx, fc.Args["id"].(string), fc.Args["input"].(*model.LineItemInput))
-		},
-		nil,
-		ec.marshalNBoolean2bool,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Mutation_draftOrderUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_draftOrderUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_draftOrderAddProductVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -490,9 +420,9 @@ func (ec *executionContext) _Mutation_draftOrderAddProductVariant(ctx context.Co
 			return ec.resolvers.Mutation().DraftOrderAddProductVariant(ctx, fc.Args["id"].(string), fc.Args["variantId"].(string), fc.Args["quantity"].(int))
 		},
 		nil,
-		ec.marshalOOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
+		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
 		true,
-		false,
+		true,
 	)
 }
 
@@ -2227,17 +2157,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "draftOrderUpdate":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_draftOrderUpdate(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "draftOrderAddProductVariant":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_draftOrderAddProductVariant(ctx, field)
 			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2757,6 +2683,10 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) marshalNOrder2lavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder(ctx context.Context, sel ast.SelectionSet, v model.Order) graphql.Marshaler {
+	return ec._Order(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder(ctx context.Context, sel ast.SelectionSet, v *model.Order) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -3082,14 +3012,6 @@ func (ec *executionContext) marshalODraftOrderStatus2ᚖlavanillaᚋgraphqlᚋba
 	return v
 }
 
-func (ec *executionContext) unmarshalOLineItemInput2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐLineItemInput(ctx context.Context, v any) (*model.LineItemInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputLineItemInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOOrder2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrderᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Order) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -3135,13 +3057,6 @@ func (ec *executionContext) marshalOOrder2ᚕᚖlavanillaᚋgraphqlᚋbackoffice
 	}
 
 	return ret
-}
-
-func (ec *executionContext) marshalOOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder(ctx context.Context, sel ast.SelectionSet, v *model.Order) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Order(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {

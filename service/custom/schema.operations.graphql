@@ -37,7 +37,7 @@ mutation DraftOrderUpdate1($id: ID!) {
     }
 }
 
-mutation DraftOrderUpdate2($id: ID!, $input: [DraftOrderLineItemInput!]!) {
+mutation DraftOrderUpdateLineItems($id: ID!, $input: [DraftOrderLineItemInput!]!) {
     draftOrderUpdate(
         id: $id,
         input: {

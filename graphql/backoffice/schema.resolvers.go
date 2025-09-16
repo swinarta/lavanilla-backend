@@ -6,8 +6,9 @@ package self_service
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"lavanilla/graphql/backoffice/model"
+	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
 
 	"github.com/samber/lo"
@@ -22,25 +23,41 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 	return true, nil
 }
 
-// DraftOrderUpdate is the resolver for the draftOrderUpdate field.
-func (r *mutationResolver) DraftOrderUpdate(ctx context.Context, id string, input *model.LineItemInput) (bool, error) {
-	payload := shopify.DraftOrderInput{
-		LineItems: []shopify.DraftOrderLineItemInput{{
-			Quantity:  1,
-			VariantId: "gid://shopify/ProductVariant/45540435591367",
-		},
-		},
-	}
-	_, err := r.ShopifyClient.DraftOrderUpdate(ctx, id, payload)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
-
 // DraftOrderAddProductVariant is the resolver for the draftOrderAddProductVariant field.
 func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	panic(fmt.Errorf("not implemented: DraftOrderAddProductVariant - draftOrderAddProductVariant"))
+	order, err := r.ShopifyClient.GetDraftOrder(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	_, found := lo.Find(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) bool {
+		return item.Variant.Id == variantID
+	})
+
+	if found {
+		return nil, errors.New("variant already exists")
+	}
+
+	existingLineItems := lo.Map(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) custom.DraftOrderLineItemInput {
+		return custom.DraftOrderLineItemInput{
+			Quantity:  item.Quantity,
+			VariantId: item.Variant.Id,
+		}
+	})
+
+	newLineItems := append(existingLineItems, custom.DraftOrderLineItemInput{
+		Quantity:  quantity,
+		VariantId: variantID,
+	})
+
+	_, err = r.CustomClient.DraftOrderUpdateLineItems(ctx, id, newLineItems)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Order{
+		ID:   order.DraftOrder.Id,
+		Name: order.DraftOrder.Name,
+	}, nil
 }
 
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
@@ -49,7 +66,7 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 	if err != nil {
 		return nil, err
 	}
-	return lo.Map(orders.DraftOrders.Nodes, func(item shopify.GetDraftOrderDraftOrdersDraftOrderConnectionNodesDraftOrder, _ int) *model.Order {
+	return lo.Map(orders.DraftOrders.Nodes, func(item shopify.GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder, _ int) *model.Order {
 		return &model.Order{
 			ID:   item.Id,
 			Name: item.Name,
@@ -65,3 +82,26 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *mutationResolver) DraftOrderUpdate(ctx context.Context, id string, input *model.LineItemInput) (bool, error) {
+	payload := shopify.DraftOrderInput{
+		LineItems: []shopify.DraftOrderLineItemInput{{
+			Quantity:  1,
+			VariantId: "gid://shopify/ProductVariant/45540435591367",
+		},
+		},
+	}
+	_, err := r.ShopifyClient.DraftOrderUpdate(ctx, id, payload)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+*/
