@@ -52,7 +52,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		customerId = customerCreateResp.CustomerCreate.Customer.Id
 	}
 
-	resp, err := r.CustomClient.CreateDraftOrder(ctx, input, customerId)
+	resp, err := r.CustomClient.DraftOrderCreate(ctx, input, customerId)
 	if err != nil {
 		return nil, err
 	}

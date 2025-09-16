@@ -1,5 +1,7 @@
 type Mutation {
     draftOrderCreate(input: DraftOrderInput!): DraftOrderResponse!
+    draftOrderUpdate(id: ID!, input: DraftOrderInput!): DraftOrderResponse!
+    draftOrderUpdate1(id: ID!): DraftOrderResponse!
 }
 
 type DraftOrderResponse {
@@ -23,8 +25,8 @@ input DraftOrderInput {
     note: String
     lineItems: [DraftOrderLineItemInput!]!
     tags: [String!]
-    paymentTerms: PaymentTermsInput!
-    purchasingEntity: PurchasingEntityInput!
+    paymentTerms: PaymentTermsInput
+    purchasingEntity: PurchasingEntityInput
 }
 
 input PurchasingEntityInput {

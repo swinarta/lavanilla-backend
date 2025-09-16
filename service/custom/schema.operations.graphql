@@ -1,5 +1,49 @@
-mutation CreateDraftOrder($input: DraftOrderInput!) {
+mutation DraftOrderCreate($input: DraftOrderInput!) {
     draftOrderCreate(input: $input) {
+        draftOrder {
+            id
+            name
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
+mutation DraftOrderUpdate($id: ID!, $input: DraftOrderInput!) {
+    draftOrderUpdate(id: $id, input: $input) {
+        draftOrder {
+            id
+            name
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
+mutation DraftOrderUpdate1($id: ID!) {
+    draftOrderUpdate1(id: $id) {
+        draftOrder {
+            id
+            name
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
+
+mutation DraftOrderUpdate2($id: ID!, $input: [DraftOrderLineItemInput!]!) {
+    draftOrderUpdate(
+        id: $id,
+        input: {
+            lineItems: $input
+        }
+    ) {
         draftOrder {
             id
             name

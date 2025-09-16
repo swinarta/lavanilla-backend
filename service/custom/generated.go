@@ -8,59 +8,59 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
-// CreateDraftOrderDraftOrderCreateDraftOrderResponse includes the requested fields of the GraphQL type DraftOrderResponse.
-type CreateDraftOrderDraftOrderCreateDraftOrderResponse struct {
-	DraftOrder CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder            `json:"draftOrder"`
-	UserErrors []CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError `json:"userErrors"`
+// DraftOrderCreateDraftOrderCreateDraftOrderResponse includes the requested fields of the GraphQL type DraftOrderResponse.
+type DraftOrderCreateDraftOrderCreateDraftOrderResponse struct {
+	DraftOrder DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder            `json:"draftOrder"`
+	UserErrors []DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError `json:"userErrors"`
 }
 
-// GetDraftOrder returns CreateDraftOrderDraftOrderCreateDraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponse) GetDraftOrder() CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder {
+// GetDraftOrder returns DraftOrderCreateDraftOrderCreateDraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateDraftOrderCreateDraftOrderResponse) GetDraftOrder() DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder {
 	return v.DraftOrder
 }
 
-// GetUserErrors returns CreateDraftOrderDraftOrderCreateDraftOrderResponse.UserErrors, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponse) GetUserErrors() []CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError {
+// GetUserErrors returns DraftOrderCreateDraftOrderCreateDraftOrderResponse.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateDraftOrderCreateDraftOrderResponse) GetUserErrors() []DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError {
 	return v.UserErrors
 }
 
-// CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder includes the requested fields of the GraphQL type DraftOrder.
-type CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder struct {
+// DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+type DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
-// GetId returns CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder.Id, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder) GetId() string { return v.Id }
+// GetId returns DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder) GetId() string { return v.Id }
 
-// GetName returns CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder.Name, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseDraftOrder) GetName() string {
+// GetName returns DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateDraftOrderCreateDraftOrderResponseDraftOrder) GetName() string {
 	return v.Name
 }
 
-// CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError includes the requested fields of the GraphQL type UserError.
-type CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError struct {
+// DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+type DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError struct {
 	Field   []string `json:"field"`
 	Message string   `json:"message"`
 }
 
-// GetField returns CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError.Field, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError) GetField() []string {
+// GetField returns DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError) GetField() []string {
 	return v.Field
 }
 
-// GetMessage returns CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError.Message, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderDraftOrderCreateDraftOrderResponseUserErrorsUserError) GetMessage() string {
+// GetMessage returns DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateDraftOrderCreateDraftOrderResponseUserErrorsUserError) GetMessage() string {
 	return v.Message
 }
 
-// CreateDraftOrderResponse is returned by CreateDraftOrder on success.
-type CreateDraftOrderResponse struct {
-	DraftOrderCreate CreateDraftOrderDraftOrderCreateDraftOrderResponse `json:"draftOrderCreate"`
+// DraftOrderCreateResponse is returned by DraftOrderCreate on success.
+type DraftOrderCreateResponse struct {
+	DraftOrderCreate DraftOrderCreateDraftOrderCreateDraftOrderResponse `json:"draftOrderCreate"`
 }
 
-// GetDraftOrderCreate returns CreateDraftOrderResponse.DraftOrderCreate, and is useful for accessing the field via an interface.
-func (v *CreateDraftOrderResponse) GetDraftOrderCreate() CreateDraftOrderDraftOrderCreateDraftOrderResponse {
+// GetDraftOrderCreate returns DraftOrderCreateResponse.DraftOrderCreate, and is useful for accessing the field via an interface.
+func (v *DraftOrderCreateResponse) GetDraftOrderCreate() DraftOrderCreateDraftOrderCreateDraftOrderResponse {
 	return v.DraftOrderCreate
 }
 
@@ -106,6 +106,174 @@ func (v *DraftOrderLineItemInput) GetVariantId() string { return v.VariantId }
 // GetQuantity returns DraftOrderLineItemInput.Quantity, and is useful for accessing the field via an interface.
 func (v *DraftOrderLineItemInput) GetQuantity() int { return v.Quantity }
 
+// DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse includes the requested fields of the GraphQL type DraftOrderResponse.
+type DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse struct {
+	DraftOrder DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder            `json:"draftOrder"`
+	UserErrors []DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDraftOrder returns DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse) GetDraftOrder() DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder {
+	return v.DraftOrder
+}
+
+// GetUserErrors returns DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse) GetUserErrors() []DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+type DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// GetId returns DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder) GetId() string { return v.Id }
+
+// GetName returns DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseDraftOrder) GetName() string {
+	return v.Name
+}
+
+// DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+type DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError struct {
+	Field   []string `json:"field"`
+	Message string   `json:"message"`
+}
+
+// GetField returns DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponseUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DraftOrderUpdate1Response is returned by DraftOrderUpdate1 on success.
+type DraftOrderUpdate1Response struct {
+	DraftOrderUpdate1 DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse `json:"draftOrderUpdate1"`
+}
+
+// GetDraftOrderUpdate1 returns DraftOrderUpdate1Response.DraftOrderUpdate1, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate1Response) GetDraftOrderUpdate1() DraftOrderUpdate1DraftOrderUpdate1DraftOrderResponse {
+	return v.DraftOrderUpdate1
+}
+
+// DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse includes the requested fields of the GraphQL type DraftOrderResponse.
+type DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse struct {
+	DraftOrder DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder            `json:"draftOrder"`
+	UserErrors []DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDraftOrder returns DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse) GetDraftOrder() DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder {
+	return v.DraftOrder
+}
+
+// GetUserErrors returns DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse) GetUserErrors() []DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+type DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// GetId returns DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder) GetId() string { return v.Id }
+
+// GetName returns DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseDraftOrder) GetName() string {
+	return v.Name
+}
+
+// DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+type DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError struct {
+	Field   []string `json:"field"`
+	Message string   `json:"message"`
+}
+
+// GetField returns DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2DraftOrderUpdateDraftOrderResponseUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DraftOrderUpdate2Response is returned by DraftOrderUpdate2 on success.
+type DraftOrderUpdate2Response struct {
+	DraftOrderUpdate DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse `json:"draftOrderUpdate"`
+}
+
+// GetDraftOrderUpdate returns DraftOrderUpdate2Response.DraftOrderUpdate, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdate2Response) GetDraftOrderUpdate() DraftOrderUpdate2DraftOrderUpdateDraftOrderResponse {
+	return v.DraftOrderUpdate
+}
+
+// DraftOrderUpdateDraftOrderUpdateDraftOrderResponse includes the requested fields of the GraphQL type DraftOrderResponse.
+type DraftOrderUpdateDraftOrderUpdateDraftOrderResponse struct {
+	DraftOrder DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder            `json:"draftOrder"`
+	UserErrors []DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDraftOrder returns DraftOrderUpdateDraftOrderUpdateDraftOrderResponse.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderResponse) GetDraftOrder() DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder {
+	return v.DraftOrder
+}
+
+// GetUserErrors returns DraftOrderUpdateDraftOrderUpdateDraftOrderResponse.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderResponse) GetUserErrors() []DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+type DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// GetId returns DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder) GetId() string { return v.Id }
+
+// GetName returns DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder.Name, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderResponseDraftOrder) GetName() string {
+	return v.Name
+}
+
+// DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+type DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError struct {
+	Field   []string `json:"field"`
+	Message string   `json:"message"`
+}
+
+// GetField returns DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateDraftOrderUpdateDraftOrderResponseUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DraftOrderUpdateResponse is returned by DraftOrderUpdate on success.
+type DraftOrderUpdateResponse struct {
+	DraftOrderUpdate DraftOrderUpdateDraftOrderUpdateDraftOrderResponse `json:"draftOrderUpdate"`
+}
+
+// GetDraftOrderUpdate returns DraftOrderUpdateResponse.DraftOrderUpdate, and is useful for accessing the field via an interface.
+func (v *DraftOrderUpdateResponse) GetDraftOrderUpdate() DraftOrderUpdateDraftOrderUpdateDraftOrderResponse {
+	return v.DraftOrderUpdate
+}
+
 type PaymentTermsInput struct {
 	PaymentTermsTemplateId string `json:"paymentTermsTemplateId"`
 }
@@ -120,17 +288,49 @@ type PurchasingEntityInput struct {
 // GetCustomerId returns PurchasingEntityInput.CustomerId, and is useful for accessing the field via an interface.
 func (v *PurchasingEntityInput) GetCustomerId() string { return v.CustomerId }
 
-// __CreateDraftOrderInput is used internally by genqlient
-type __CreateDraftOrderInput struct {
+// __DraftOrderCreateInput is used internally by genqlient
+type __DraftOrderCreateInput struct {
 	Input DraftOrderInput `json:"input"`
 }
 
-// GetInput returns __CreateDraftOrderInput.Input, and is useful for accessing the field via an interface.
-func (v *__CreateDraftOrderInput) GetInput() DraftOrderInput { return v.Input }
+// GetInput returns __DraftOrderCreateInput.Input, and is useful for accessing the field via an interface.
+func (v *__DraftOrderCreateInput) GetInput() DraftOrderInput { return v.Input }
 
-// The mutation executed by CreateDraftOrder.
-const CreateDraftOrder_Operation = `
-mutation CreateDraftOrder ($input: DraftOrderInput!) {
+// __DraftOrderUpdate1Input is used internally by genqlient
+type __DraftOrderUpdate1Input struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DraftOrderUpdate1Input.Id, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdate1Input) GetId() string { return v.Id }
+
+// __DraftOrderUpdate2Input is used internally by genqlient
+type __DraftOrderUpdate2Input struct {
+	Id    string                    `json:"id"`
+	Input []DraftOrderLineItemInput `json:"input"`
+}
+
+// GetId returns __DraftOrderUpdate2Input.Id, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdate2Input) GetId() string { return v.Id }
+
+// GetInput returns __DraftOrderUpdate2Input.Input, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdate2Input) GetInput() []DraftOrderLineItemInput { return v.Input }
+
+// __DraftOrderUpdateInput is used internally by genqlient
+type __DraftOrderUpdateInput struct {
+	Id    string          `json:"id"`
+	Input DraftOrderInput `json:"input"`
+}
+
+// GetId returns __DraftOrderUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdateInput) GetId() string { return v.Id }
+
+// GetInput returns __DraftOrderUpdateInput.Input, and is useful for accessing the field via an interface.
+func (v *__DraftOrderUpdateInput) GetInput() DraftOrderInput { return v.Input }
+
+// The mutation executed by DraftOrderCreate.
+const DraftOrderCreate_Operation = `
+mutation DraftOrderCreate ($input: DraftOrderInput!) {
 	draftOrderCreate(input: $input) {
 		draftOrder {
 			id
@@ -144,20 +344,147 @@ mutation CreateDraftOrder ($input: DraftOrderInput!) {
 }
 `
 
-func CreateDraftOrder(
+func DraftOrderCreate(
 	ctx_ context.Context,
 	client_ graphql.Client,
 	input DraftOrderInput,
-) (data_ *CreateDraftOrderResponse, err_ error) {
+) (data_ *DraftOrderCreateResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "CreateDraftOrder",
-		Query:  CreateDraftOrder_Operation,
-		Variables: &__CreateDraftOrderInput{
+		OpName: "DraftOrderCreate",
+		Query:  DraftOrderCreate_Operation,
+		Variables: &__DraftOrderCreateInput{
 			Input: input,
 		},
 	}
 
-	data_ = &CreateDraftOrderResponse{}
+	data_ = &DraftOrderCreateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DraftOrderUpdate.
+const DraftOrderUpdate_Operation = `
+mutation DraftOrderUpdate ($id: ID!, $input: DraftOrderInput!) {
+	draftOrderUpdate(id: $id, input: $input) {
+		draftOrder {
+			id
+			name
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DraftOrderUpdate(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DraftOrderInput,
+) (data_ *DraftOrderUpdateResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DraftOrderUpdate",
+		Query:  DraftOrderUpdate_Operation,
+		Variables: &__DraftOrderUpdateInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &DraftOrderUpdateResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DraftOrderUpdate1.
+const DraftOrderUpdate1_Operation = `
+mutation DraftOrderUpdate1 ($id: ID!) {
+	draftOrderUpdate1(id: $id) {
+		draftOrder {
+			id
+			name
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DraftOrderUpdate1(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DraftOrderUpdate1Response, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DraftOrderUpdate1",
+		Query:  DraftOrderUpdate1_Operation,
+		Variables: &__DraftOrderUpdate1Input{
+			Id: id,
+		},
+	}
+
+	data_ = &DraftOrderUpdate1Response{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DraftOrderUpdate2.
+const DraftOrderUpdate2_Operation = `
+mutation DraftOrderUpdate2 ($id: ID!, $input: [DraftOrderLineItemInput!]!) {
+	draftOrderUpdate(id: $id, input: {lineItems:$input}) {
+		draftOrder {
+			id
+			name
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DraftOrderUpdate2(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input []DraftOrderLineItemInput,
+) (data_ *DraftOrderUpdate2Response, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DraftOrderUpdate2",
+		Query:  DraftOrderUpdate2_Operation,
+		Variables: &__DraftOrderUpdate2Input{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &DraftOrderUpdate2Response{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
