@@ -5,6 +5,7 @@ type Query {
 type Mutation {
     draftOrderComplete(id: ID!): Boolean!
     draftOrderAddProductVariant(id: ID!, variantId: String!, quantity: Int!): Order!
+    draftOrderUpdateProductVariant(id: ID!, variantId: String!, quantity: Int!): Order!
 }
 
 enum DraftOrderStatus {

@@ -48,8 +48,9 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		DraftOrderAddProductVariant func(childComplexity int, id string, variantID string, quantity int) int
-		DraftOrderComplete          func(childComplexity int, id string) int
+		DraftOrderAddProductVariant    func(childComplexity int, id string, variantID string, quantity int) int
+		DraftOrderComplete             func(childComplexity int, id string) int
+		DraftOrderUpdateProductVariant func(childComplexity int, id string, variantID string, quantity int) int
 	}
 
 	Order struct {
@@ -65,6 +66,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	DraftOrderComplete(ctx context.Context, id string) (bool, error)
 	DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
+	DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
 }
 type QueryResolver interface {
 	DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error)
@@ -111,6 +113,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.DraftOrderComplete(childComplexity, args["id"].(string)), true
+	case "Mutation.draftOrderUpdateProductVariant":
+		if e.complexity.Mutation.DraftOrderUpdateProductVariant == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_draftOrderUpdateProductVariant_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DraftOrderUpdateProductVariant(childComplexity, args["id"].(string), args["variantId"].(string), args["quantity"].(int)), true
 
 	case "Order.id":
 		if e.complexity.Order.ID == nil {
@@ -294,6 +307,27 @@ func (ec *executionContext) field_Mutation_draftOrderComplete_args(ctx context.C
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_draftOrderUpdateProductVariant_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "variantId", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["variantId"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "quantity", ec.unmarshalNInt2int)
+	if err != nil {
+		return nil, err
+	}
+	args["quantity"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -450,6 +484,53 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderAddProductVariant(ct
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_draftOrderAddProductVariant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_draftOrderUpdateProductVariant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_draftOrderUpdateProductVariant,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.resolvers.Mutation().DraftOrderUpdateProductVariant(ctx, fc.Args["id"].(string), fc.Args["variantId"].(string), fc.Args["quantity"].(int))
+		},
+		nil,
+		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_draftOrderUpdateProductVariant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Order_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Order_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_draftOrderUpdateProductVariant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -2160,6 +2241,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "draftOrderAddProductVariant":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_draftOrderAddProductVariant(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "draftOrderUpdateProductVariant":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_draftOrderUpdateProductVariant(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
