@@ -71,7 +71,7 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, i
 	})
 
 	if !found && quantity > 0 {
-		return nil, errors.New("variant already exists")
+		return nil, errors.New("variant does not exist")
 	}
 
 	if !found && quantity == 0 {
@@ -81,17 +81,24 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, i
 		}, nil
 	}
 
-	newLineItems := lo.Map(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) custom.DraftOrderLineItemInput {
+	newLineItems := lo.FilterMap(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) (custom.DraftOrderLineItemInput, bool) {
+		if item.Variant.Id == variantID && quantity == 0 {
+			return custom.DraftOrderLineItemInput{
+				Quantity:  quantity,
+				VariantId: item.Variant.Id,
+			}, false
+		}
+
 		if item.Variant.Id == variantID {
 			return custom.DraftOrderLineItemInput{
 				Quantity:  quantity,
 				VariantId: item.Variant.Id,
-			}
+			}, true
 		}
 		return custom.DraftOrderLineItemInput{
 			Quantity:  item.Quantity,
 			VariantId: item.Variant.Id,
-		}
+		}, true
 	})
 
 	_, err = r.CustomClient.DraftOrderUpdateLineItems(ctx, id, newLineItems)
@@ -103,7 +110,6 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, i
 		ID:   order.DraftOrder.Id,
 		Name: order.DraftOrder.Name,
 	}, nil
-
 }
 
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
