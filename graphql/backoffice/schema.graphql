@@ -1,5 +1,6 @@
 type Query {
     draftOrderDesigner(status: DraftOrderStatus): [Order!]
+    presignedUrl(qty: Int!): [URL!]!
 }
 
 type Mutation {
@@ -22,3 +23,5 @@ type Order{
     id: ID!
     name: String!
 }
+
+scalar URL

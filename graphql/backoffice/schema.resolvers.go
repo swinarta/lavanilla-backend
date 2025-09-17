@@ -10,7 +10,11 @@ import (
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
+	"log"
+	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/samber/lo"
 )
 
@@ -124,6 +128,25 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 			Name: item.Name,
 		}
 	}), nil
+}
+
+// PresignedURL is the resolver for the presignedUrl field.
+func (r *queryResolver) PresignedURL(ctx context.Context, qty int) ([]string, error) {
+	bucket := "la-vanilla-draft-order-dev-351370431602"
+	filename := "ppp.jpeg"
+	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String(bucket),
+		ContentType: aws.String("image/jpeg"),
+		Key:         aws.String(filename),
+	}, func(options *s3.PresignOptions) {
+		options.Expires = 15 * time.Minute
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println(object)
+	return []string{object.URL}, err
 }
 
 // Mutation returns MutationResolver implementation.
