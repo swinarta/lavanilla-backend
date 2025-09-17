@@ -25,7 +25,7 @@ Resources:
   LaVanillaDraftOrderBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "la-vanilla-draft-order-${StageName}-${AWS::AccountId}"
+      BucketName: !Sub "la-vanilla-draft-order-${StageName}"
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:

@@ -132,7 +132,7 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // PresignedURL is the resolver for the presignedUrl field.
 func (r *queryResolver) PresignedURL(ctx context.Context, qty int) ([]string, error) {
-	bucket := "la-vanilla-draft-order-dev-351370431602"
+	bucket := "la-vanilla-draft-order-dev"
 	filename := "ppp.jpeg"
 	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(bucket),
