@@ -6,6 +6,9 @@ package self_service
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"time"
 
@@ -14,8 +17,15 @@ import (
 )
 
 // PresignedURL is the resolver for the presignedUrl field.
-func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, qty int) ([]string, error) {
-	bucket := "la-vanilla-self-service-dev"
+func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, uploadToken string, qty int) ([]string, error) {
+	const bucket = "la-vanilla-self-service-dev"
+	hash := sha256.Sum256([]byte(draftOrderID))
+	token := hex.EncodeToString(hash[:])
+
+	if token != uploadToken {
+		return nil, errors.New("invalid token")
+	}
+
 	filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
 	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(bucket),

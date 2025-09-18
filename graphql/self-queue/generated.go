@@ -46,12 +46,12 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Query struct {
-		PresignedURL func(childComplexity int, draftOrderID string, qty int) int
+		PresignedURL func(childComplexity int, draftOrderID string, uploadToken string, qty int) int
 	}
 }
 
 type QueryResolver interface {
-	PresignedURL(ctx context.Context, draftOrderID string, qty int) ([]string, error)
+	PresignedURL(ctx context.Context, draftOrderID string, uploadToken string, qty int) ([]string, error)
 }
 
 type executableSchema struct {
@@ -83,7 +83,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.PresignedURL(childComplexity, args["draftOrderId"].(string), args["qty"].(int)), true
+		return e.complexity.Query.PresignedURL(childComplexity, args["draftOrderId"].(string), args["uploadToken"].(string), args["qty"].(int)), true
 
 	}
 	return 0, false
@@ -212,11 +212,16 @@ func (ec *executionContext) field_Query_presignedUrl_args(ctx context.Context, r
 		return nil, err
 	}
 	args["draftOrderId"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "qty", ec.unmarshalNInt2int)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "uploadToken", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
-	args["qty"] = arg1
+	args["uploadToken"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "qty", ec.unmarshalNInt2int)
+	if err != nil {
+		return nil, err
+	}
+	args["qty"] = arg2
 	return args, nil
 }
 
@@ -280,7 +285,7 @@ func (ec *executionContext) _Query_presignedUrl(ctx context.Context, field graph
 		ec.fieldContext_Query_presignedUrl,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().PresignedURL(ctx, fc.Args["draftOrderId"].(string), fc.Args["qty"].(int))
+			return ec.resolvers.Query().PresignedURL(ctx, fc.Args["draftOrderId"].(string), fc.Args["uploadToken"].(string), fc.Args["qty"].(int))
 		},
 		nil,
 		ec.marshalNURL2ᚕstringᚄ,

@@ -1,5 +1,5 @@
 type Query {
-    presignedUrl(draftOrderId: ID!, qty: Int!): [URL!]!
+    presignedUrl(draftOrderId: ID!, uploadToken: String!, qty: Int!): [URL!]!
 }
 
 #type Mutation {
