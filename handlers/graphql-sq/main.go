@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"lavanilla/service/custom"
-	"lavanilla/service/shopify"
 	"log"
 	"os"
 
@@ -19,7 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vektah/gqlparser/v2/ast"
 
-	graph "lavanilla/graphql/self-service"
+	graph "lavanilla/graphql/self-queue"
 )
 
 var ginLambda *ginadapter.GinLambda
@@ -32,10 +30,7 @@ func ginHandler(ctx context.Context, request events.APIGatewayProxyRequest) (eve
 
 func graphqlHandler() gin.HandlerFunc {
 
-	c := graph.Config{Resolvers: &graph.Resolver{
-		CustomClient:  custom.NewClient(),
-		ShopifyClient: shopify.NewClient(),
-	}}
+	c := graph.Config{Resolvers: &graph.Resolver{}}
 
 	h := handler.New(graph.NewExecutableSchema(c))
 	h.AddTransport(transport.Options{})
