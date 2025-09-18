@@ -6,7 +6,10 @@ package self_service
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
+	"fmt"
 	"lavanilla/graphql/self-service/model"
 	"lavanilla/service/shopify"
 	"lavanilla/utils"
@@ -15,6 +18,14 @@ import (
 
 	"github.com/samber/lo"
 )
+
+func extractID(gid string) (string, error) {
+	parts := strings.Split(gid, "/")
+	if len(parts) == 0 {
+		return "", fmt.Errorf("invalid gid: %s", gid)
+	}
+	return parts[len(parts)-1], nil
+}
 
 // CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
@@ -60,10 +71,13 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		return nil, errors.New(resp.DraftOrderCreate.UserErrors[0].Message)
 	}
 
+	id, _ := extractID(resp.DraftOrderCreate.DraftOrder.Id)
+	hash := sha256.Sum256([]byte(id))
+
 	return &model.Order{
 		ID:          resp.DraftOrderCreate.DraftOrder.Id,
 		Name:        resp.DraftOrderCreate.DraftOrder.Name,
-		UploadToken: lo.ToPtr("123"),
+		UploadToken: lo.ToPtr(hex.EncodeToString(hash[:])),
 	}, nil
 }
 
