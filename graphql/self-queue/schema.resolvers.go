@@ -29,7 +29,6 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, q
 	}
 
 	return []string{object.URL}, err
-
 }
 
 // Query returns QueryResolver implementation.

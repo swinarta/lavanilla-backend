@@ -48,6 +48,7 @@ type Product {
 type Order{
     id: ID!
     name: String!
+    uploadToken: String
 }
 
 scalar URL

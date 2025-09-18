@@ -59,9 +59,11 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 	if len(resp.DraftOrderCreate.UserErrors) > 0 {
 		return nil, errors.New(resp.DraftOrderCreate.UserErrors[0].Message)
 	}
+
 	return &model.Order{
-		ID:   resp.DraftOrderCreate.DraftOrder.Id,
-		Name: resp.DraftOrderCreate.DraftOrder.Name,
+		ID:          resp.DraftOrderCreate.DraftOrder.Id,
+		Name:        resp.DraftOrderCreate.DraftOrder.Name,
+		UploadToken: lo.ToPtr("123"),
 	}, nil
 }
 

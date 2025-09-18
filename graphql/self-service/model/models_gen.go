@@ -16,8 +16,9 @@ type Mutation struct {
 }
 
 type Order struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	UploadToken *string `json:"uploadToken,omitempty"`
 }
 
 type OrderInput struct {

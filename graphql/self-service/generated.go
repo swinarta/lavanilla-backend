@@ -52,8 +52,9 @@ type ComplexityRoot struct {
 	}
 
 	Order struct {
-		ID   func(childComplexity int) int
-		Name func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		UploadToken func(childComplexity int) int
 	}
 
 	PriceRange struct {
@@ -135,6 +136,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Order.Name(childComplexity), true
+	case "Order.uploadToken":
+		if e.complexity.Order.UploadToken == nil {
+			break
+		}
+
+		return e.complexity.Order.UploadToken(childComplexity), true
 
 	case "PriceRange.maxVariantPrice":
 		if e.complexity.PriceRange.MaxVariantPrice == nil {
@@ -476,6 +483,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrder(ctx context.Contex
 				return ec.fieldContext_Order_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Order_name(ctx, field)
+			case "uploadToken":
+				return ec.fieldContext_Order_uploadToken(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -540,6 +549,35 @@ func (ec *executionContext) _Order_name(ctx context.Context, field graphql.Colle
 }
 
 func (ec *executionContext) fieldContext_Order_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Order_uploadToken(ctx context.Context, field graphql.CollectedField, obj *model.Order) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Order_uploadToken,
+		func(ctx context.Context) (any, error) {
+			return obj.UploadToken, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Order_uploadToken(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Order",
 		Field:      field,
@@ -2786,6 +2824,8 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "uploadToken":
+			out.Values[i] = ec._Order_uploadToken(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
