@@ -13,6 +13,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -30,7 +32,17 @@ func ginHandler(ctx context.Context, request events.APIGatewayProxyRequest) (eve
 
 func graphqlHandler() gin.HandlerFunc {
 
-	c := graph.Config{Resolvers: &graph.Resolver{}}
+	ctx := context.Background()
+	awsS3Config, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	awsS3Config.Region = "ap-southeast-1"
+	s3Client := s3.NewFromConfig(awsS3Config)
+
+	c := graph.Config{Resolvers: &graph.Resolver{
+		S3PresignClient: s3.NewPresignClient(s3Client),
+	}}
 
 	h := handler.New(graph.NewExecutableSchema(c))
 	h.AddTransport(transport.Options{})

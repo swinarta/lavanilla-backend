@@ -40,6 +40,24 @@ Resources:
       Tags:
         - Key: App
           Value: LaVanillaApp
+  LaVanillaSelfServiceBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "la-vanilla-self-service-${StageName}"
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: App
+          Value: LaVanillaApp
 
   LaVanillaApi:
     Type: AWS::Serverless::Api

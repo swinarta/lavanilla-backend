@@ -6,11 +6,30 @@ package self_service
 
 import (
 	"context"
+	"fmt"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 // PresignedURL is the resolver for the presignedUrl field.
 func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, qty int) ([]string, error) {
-	return []string{"aaa"}, nil
+	bucket := "la-vanilla-self-service-dev"
+	filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
+	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String(bucket),
+		ContentType: aws.String("image/jpeg"),
+		Key:         aws.String(filename),
+	}, func(options *s3.PresignOptions) {
+		options.Expires = 15 * time.Minute
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return []string{object.URL}, err
+
 }
 
 // Query returns QueryResolver implementation.
