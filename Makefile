@@ -1,7 +1,9 @@
 .PHONY: build clean deploy
 
 generate:
+	go get github.com/99designs/gqlgen
 	cd graphql/self-service && go get github.com/99designs/gqlgen && go run github.com/99designs/gqlgen
+	cd graphql/self-queue && go get github.com/99designs/gqlgen && go run github.com/99designs/gqlgen
 	cd graphql/backoffice && go get github.com/99designs/gqlgen && go run github.com/99designs/gqlgen
 
 client:

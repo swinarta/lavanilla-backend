@@ -1,0 +1,9 @@
+type Query {
+    presignedUrl(draftOrderId: ID!, qty: Int!): [URL!]!
+}
+
+#type Mutation {
+#    createOrder(input: OrderInput!): Order!
+#}
+
+scalar URL
