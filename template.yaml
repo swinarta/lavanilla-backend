@@ -111,6 +111,15 @@ Resources:
             RestApiId: !Ref LaVanillaApi # Explicitly link to the API
             Path: /graphql-sq
             Method: POST
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+                - s3:DeleteObject
+              Resource: !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
       Tags:
         App: LaVanillaApp
 
