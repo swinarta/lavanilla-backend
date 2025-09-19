@@ -26,19 +26,23 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 		return nil, errors.New("invalid token")
 	}
 
-	filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
-	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(bucket),
-		ContentType: aws.String("image/jpeg"),
-		Key:         aws.String(filename),
-	}, func(options *s3.PresignOptions) {
-		options.Expires = 15 * time.Minute
-	})
-	if err != nil {
-		return nil, err
+	var result []string
+	for i := 0; i < qty; i++ {
+		filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
+		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
+			Bucket:      aws.String(bucket),
+			ContentType: aws.String("image/jpeg"),
+			Key:         aws.String(filename),
+		}, func(options *s3.PresignOptions) {
+			options.Expires = 15 * time.Minute
+		})
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, object.URL)
 	}
 
-	return []string{object.URL}, err
+	return result, nil
 }
 
 // Query returns QueryResolver implementation.
