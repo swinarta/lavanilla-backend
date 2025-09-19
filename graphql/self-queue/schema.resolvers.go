@@ -28,7 +28,7 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 
 	var result []string
 	for i := 0; i < qty; i++ {
-		filename := fmt.Sprintf("%s/%d", draftOrderID, time.Now().Unix())
+		filename := fmt.Sprintf("%s/%d", draftOrderID, time.Now().Unix()+1)
 		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 			Bucket: aws.String(bucket),
 			//ContentType: aws.String("image/jpeg"),
