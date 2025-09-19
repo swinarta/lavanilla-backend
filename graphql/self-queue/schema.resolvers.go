@@ -28,11 +28,11 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 
 	var result []string
 	for i := 0; i < qty; i++ {
-		filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
+		filename := fmt.Sprintf("%s/%d", draftOrderID, time.Now().Unix())
 		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-			Bucket:      aws.String(bucket),
-			ContentType: aws.String("image/jpeg"),
-			Key:         aws.String(filename),
+			Bucket: aws.String(bucket),
+			//ContentType: aws.String("image/jpeg"),
+			Key: aws.String(filename),
 		}, func(options *s3.PresignOptions) {
 			options.Expires = 15 * time.Minute
 		})
