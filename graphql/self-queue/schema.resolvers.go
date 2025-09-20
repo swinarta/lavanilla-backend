@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"lavanilla/graphql/self-queue/model"
+	"path"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -59,9 +60,8 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 	}
 
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket:    aws.String(bucket),
-		Prefix:    aws.String(draftOrderID),
-		Delimiter: aws.String("/"),
+		Bucket: aws.String(bucket),
+		Prefix: aws.String(draftOrderID),
 	})
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
@@ -69,9 +69,9 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 
 	return lo.Map(resp.Contents, func(item types.Object, _ int) *model.File {
 		return &model.File{
-			Filename: *item.Key,
+			Filename: path.Base(*item.Key),
 			Size:     int(*item.Size),
-			URL:      fmt.Sprintf("https://d108ap8b19cxmc.cloudfront.net/%s/%s", draftOrderID, *item.Key),
+			URL:      fmt.Sprintf("https://d108ap8b19cxmc.cloudfront.net/%s", *item.Key),
 		}
 	}), nil
 }
