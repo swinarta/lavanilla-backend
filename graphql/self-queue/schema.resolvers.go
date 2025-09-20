@@ -67,15 +67,11 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
 	}
 
-	for _, item := range resp.Contents {
-		fmt.Println(" -", *item.Key)
-	}
-
 	return lo.Map(resp.Contents, func(item types.Object, _ int) *model.File {
 		return &model.File{
 			Filename: *item.Key,
 			Size:     int(*item.Size),
-			URL:      *item.Key,
+			URL:      fmt.Sprintf("https://d108ap8b19cxmc.cloudfront.net/%s/%s", draftOrderID, *item.Key),
 		}
 	}), nil
 }
