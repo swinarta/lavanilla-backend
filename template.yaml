@@ -37,6 +37,11 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteTempObjects
+            Status: Enabled
+            ExpirationInDays: 1
       Tags:
         - Key: App
           Value: LaVanillaApp
