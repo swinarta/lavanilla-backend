@@ -22,6 +22,24 @@ Globals:
       LogFormat: JSON
 
 Resources:
+  LaVanillaTempBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "la-vanilla-temp-${StageName}"
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: App
+          Value: LaVanillaApp
   LaVanillaDraftOrderBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -127,6 +145,13 @@ Resources:
             RestApiId: !Ref LaVanillaApi # Explicitly link to the API
             Path: /graphql-ss
             Method: POST
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:ListBucket
+              Resource: !GetAtt LaVanillaSelfServiceBucket.Arn
       Tags:
         App: LaVanillaApp
 

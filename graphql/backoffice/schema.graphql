@@ -1,6 +1,7 @@
 type Query {
     draftOrderDesigner(status: DraftOrderStatus): [Order!]
     presignedUrl(draftOrderId: ID!, qty: Int!): [URL!]!
+    downloadAssets(draftOrderId: ID!): URL!
 }
 
 type Mutation {

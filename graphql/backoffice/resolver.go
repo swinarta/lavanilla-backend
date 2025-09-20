@@ -15,4 +15,5 @@ type Resolver struct {
 	CustomClient    *custom.Client
 	ShopifyClient   *shopify.Client
 	S3PresignClient *s3.PresignClient
+	S3Client        *s3.Client
 }
