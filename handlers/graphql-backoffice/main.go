@@ -35,11 +35,12 @@ func ginHandler(ctx context.Context, request events.APIGatewayProxyRequest) (eve
 func graphqlHandler() gin.HandlerFunc {
 
 	ctx := context.Background()
-	awsS3Config, err := config.LoadDefaultConfig(ctx)
+	awsS3Config, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion("ap-southeast-1"),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	awsS3Config.Region = "ap-southeast-1"
 	s3Client := s3.NewFromConfig(awsS3Config)
 
 	c := graph.Config{Resolvers: &graph.Resolver{
