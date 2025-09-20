@@ -8,4 +8,5 @@ import "github.com/aws/aws-sdk-go-v2/service/s3"
 
 type Resolver struct {
 	S3PresignClient *s3.PresignClient
+	S3Client        *s3.Client
 }

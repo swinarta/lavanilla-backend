@@ -67,7 +67,7 @@ Resources:
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref StaticSiteBucket
+      Bucket: !Ref LaVanillaSelfServiceBucket
       PolicyDocument:
         Statement:
           - Effect: Allow

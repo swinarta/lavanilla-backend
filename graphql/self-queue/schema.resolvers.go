@@ -48,7 +48,14 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 
 // Files is the resolver for the files field.
 func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadToken string) ([]*model.File, error) {
-	panic(fmt.Errorf("not implemented: Files - files"))
+	const bucket = "la-vanilla-self-service-dev"
+	hash := sha256.Sum256([]byte(draftOrderID))
+	token := hex.EncodeToString(hash[:])
+
+	if token != uploadToken {
+		return nil, errors.New("invalid token")
+	}
+	return nil, nil
 }
 
 // Query returns QueryResolver implementation.
