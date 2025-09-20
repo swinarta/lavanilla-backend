@@ -180,7 +180,8 @@ Resources:
                 - s3:PutObject
                 - s3:GetObject
                 - s3:DeleteObject
-              Resource: !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
+              Resource:
+                - !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
             - Effect: Allow
               Action:
                 - s3:ListBucket
@@ -215,6 +216,7 @@ Resources:
                 - s3:DeleteObject
               Resource:
                 - !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
+                - !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
                 - !Sub "${LaVanillaTempBucket.Arn}/*"
             - Effect: Allow
               Action:
