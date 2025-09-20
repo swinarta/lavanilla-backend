@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"lavanilla/graphql/self-queue/model"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -43,6 +44,11 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 	}
 
 	return result, nil
+}
+
+// Files is the resolver for the files field.
+func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadToken string) ([]*model.File, error) {
+	panic(fmt.Errorf("not implemented: Files - files"))
 }
 
 // Query returns QueryResolver implementation.

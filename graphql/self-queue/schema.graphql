@@ -1,9 +1,16 @@
 type Query {
     presignedUrl(draftOrderId: ID!, uploadToken: String!, qty: Int!): [URL!]!
+    files(draftOrderId: ID!, uploadToken: String!): [File!]
 }
 
 #type Mutation {
 #    createOrder(input: OrderInput!): Order!
 #}
+
+type File {
+    filename: String!
+    sizeInKb: Float!
+    url: URL!
+}
 
 scalar URL

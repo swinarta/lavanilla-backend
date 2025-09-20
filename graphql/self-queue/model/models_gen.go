@@ -2,5 +2,11 @@
 
 package model
 
+type File struct {
+	Filename string  `json:"filename"`
+	SizeInKb float64 `json:"sizeInKb"`
+	URL      string  `json:"url"`
+}
+
 type Query struct {
 }
