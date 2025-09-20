@@ -9,7 +9,7 @@ type Query {
 
 type File {
     filename: String!
-    sizeInKb: Float!
+    size: Int!
     url: URL!
 }
 

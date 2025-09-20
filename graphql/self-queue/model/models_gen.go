@@ -3,9 +3,9 @@
 package model
 
 type File struct {
-	Filename string  `json:"filename"`
-	SizeInKb float64 `json:"sizeInKb"`
-	URL      string  `json:"url"`
+	Filename string `json:"filename"`
+	Size     int    `json:"size"`
+	URL      string `json:"url"`
 }
 
 type Query struct {

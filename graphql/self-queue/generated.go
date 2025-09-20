@@ -48,7 +48,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	File struct {
 		Filename func(childComplexity int) int
-		SizeInKb func(childComplexity int) int
+		Size     func(childComplexity int) int
 		URL      func(childComplexity int) int
 	}
 
@@ -88,12 +88,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.File.Filename(childComplexity), true
-	case "File.sizeInKb":
-		if e.complexity.File.SizeInKb == nil {
+	case "File.size":
+		if e.complexity.File.Size == nil {
 			break
 		}
 
-		return e.complexity.File.SizeInKb(childComplexity), true
+		return e.complexity.File.Size(childComplexity), true
 	case "File.url":
 		if e.complexity.File.URL == nil {
 			break
@@ -361,30 +361,30 @@ func (ec *executionContext) fieldContext_File_filename(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _File_sizeInKb(ctx context.Context, field graphql.CollectedField, obj *model.File) (ret graphql.Marshaler) {
+func (ec *executionContext) _File_size(ctx context.Context, field graphql.CollectedField, obj *model.File) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_File_sizeInKb,
+		ec.fieldContext_File_size,
 		func(ctx context.Context) (any, error) {
-			return obj.SizeInKb, nil
+			return obj.Size, nil
 		},
 		nil,
-		ec.marshalNFloat2float64,
+		ec.marshalNInt2int,
 		true,
 		true,
 	)
 }
 
-func (ec *executionContext) fieldContext_File_sizeInKb(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_File_size(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "File",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Float does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -487,8 +487,8 @@ func (ec *executionContext) fieldContext_Query_files(ctx context.Context, field 
 			switch field.Name {
 			case "filename":
 				return ec.fieldContext_File_filename(ctx, field)
-			case "sizeInKb":
-				return ec.fieldContext_File_sizeInKb(ctx, field)
+			case "size":
+				return ec.fieldContext_File_size(ctx, field)
 			case "url":
 				return ec.fieldContext_File_url(ctx, field)
 			}
@@ -2087,8 +2087,8 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "sizeInKb":
-			out.Values[i] = ec._File_sizeInKb(ctx, field, obj)
+		case "size":
+			out.Values[i] = ec._File_size(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2570,22 +2570,6 @@ func (ec *executionContext) marshalNFile2ᚖlavanillaᚋgraphqlᚋselfᚑqueue�
 		return graphql.Null
 	}
 	return ec._File(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v any) (float64, error) {
-	res, err := graphql.UnmarshalFloatContext(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
-	_ = sel
-	res := graphql.MarshalFloatContext(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return graphql.WrapContextMarshaler(ctx, res)
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {

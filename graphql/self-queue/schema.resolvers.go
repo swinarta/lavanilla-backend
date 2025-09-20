@@ -15,6 +15,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/samber/lo"
 )
 
 // PresignedURL is the resolver for the presignedUrl field.
@@ -55,7 +57,27 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 	if token != uploadToken {
 		return nil, errors.New("invalid token")
 	}
-	return nil, nil
+
+	resp, err := r.S3Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket:    aws.String(bucket),
+		Prefix:    aws.String(draftOrderID),
+		Delimiter: aws.String("/"),
+	})
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
+	}
+
+	for _, item := range resp.Contents {
+		fmt.Println(" -", *item.Key)
+	}
+
+	return lo.Map(resp.Contents, func(item types.Object, _ int) *model.File {
+		return &model.File{
+			Filename: *item.Key,
+			Size:     int(*item.Size),
+			URL:      *item.Key,
+		}
+	}), nil
 }
 
 // Query returns QueryResolver implementation.
