@@ -177,6 +177,8 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 			continue
 		}
 
+		log.Printf("obj key %s size %v\n", *content.Key, *content.Size)
+
 		fw, err := zipWriter.Create(path.Base(*content.Key))
 		if err != nil {
 			log.Printf("failed to create zip entry: %v", err)
