@@ -58,7 +58,7 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 		return nil, errors.New("invalid token")
 	}
 
-	resp, err := r.S3Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket:    aws.String(bucket),
 		Prefix:    aws.String(draftOrderID),
 		Delimiter: aws.String("/"),
