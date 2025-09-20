@@ -16,10 +16,12 @@ import (
 	"lavanilla/service/shopify"
 	"log"
 	"path"
+	"sync"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/samber/lo"
 )
 
@@ -156,6 +158,11 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, q
 // DownloadAssets is the resolver for the downloadAssets field.
 func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string) (string, error) {
 	const bucket = "la-vanilla-self-service-dev"
+	type fileData struct {
+		Key  string
+		Data []byte
+		Err  error
+	}
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(bucket),
 		Prefix: aws.String(draftOrderID),
@@ -163,35 +170,60 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 	if err != nil {
 		return "nil", errors.New(fmt.Sprintf("failed to list objects: %v", err))
 	}
-	var buf bytes.Buffer
-	zipWriter := zip.NewWriter(&buf)
 
+	results := make(chan fileData)
+	var wg sync.WaitGroup
 	for _, content := range resp.Contents {
+		wg.Add(1)
 
-		obj, err := r.S3Client.GetObject(ctx, &s3.GetObjectInput{
-			Bucket: aws.String(bucket),
-			Key:    content.Key,
-		})
-		if err != nil {
-			log.Printf("failed to get object %s: %v\n", *content.Key, err)
+		go func(content types.Object) {
+			defer wg.Done()
+			obj, err := r.S3Client.GetObject(ctx, &s3.GetObjectInput{
+				Bucket: aws.String(bucket),
+				Key:    content.Key,
+			})
+			if err != nil {
+				log.Printf("failed to get object %s: %v\n", *content.Key, err)
+				results <- fileData{Key: *content.Key, Err: err}
+				return
+			}
+			defer obj.Body.Close()
+
+			buf := new(bytes.Buffer)
+			_, err = io.Copy(buf, obj.Body)
+			if err != nil {
+				results <- fileData{Key: *content.Key, Err: err}
+				return
+			}
+			results <- fileData{Key: *content.Key, Data: buf.Bytes()}
+		}(content)
+	}
+
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	var zipBuf bytes.Buffer
+	zipWriter := zip.NewWriter(&zipBuf)
+
+	for result := range results {
+		if result.Err != nil {
+			log.Printf("failed to download %s: %v\n", result.Key, result.Err)
 			continue
 		}
 
-		log.Printf("obj key %s size %v\n", *content.Key, *content.Size)
-
-		fw, err := zipWriter.Create(path.Base(*content.Key))
+		fw, err := zipWriter.Create(path.Base(result.Key))
 		if err != nil {
 			log.Printf("failed to create zip entry: %v", err)
 			continue
 		}
 
-		_, err = io.Copy(fw, obj.Body)
+		_, err = fw.Write(result.Data)
 		if err != nil {
-			log.Printf("failed to write to zip: %v", err)
+			log.Printf("failed to write %s to zip: %v\n", result.Key, err)
 			continue
 		}
-
-		_ = obj.Body.Close()
 	}
 
 	if err := zipWriter.Close(); err != nil {
@@ -199,17 +231,26 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 	}
 
 	const uploadBucket = "la-vanilla-temp-dev"
-	zipKey := "myfiles1.zip"
+	zipKey := fmt.Sprintf("%s.zip", draftOrderID)
 	_, err = r.S3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(uploadBucket),
 		Key:    aws.String(zipKey),
-		Body:   bytes.NewReader(buf.Bytes()),
+		Body:   bytes.NewReader(zipBuf.Bytes()),
 	})
 	if err != nil {
 		return "", errors.New(fmt.Sprintf("failed to upload zip to s3: %v", err))
 	}
 
-	return zipKey, nil
+	object, err := r.S3PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(uploadBucket),
+		Key:    aws.String(zipKey),
+	}, func(opts *s3.PresignOptions) {
+		opts.Expires = 15 * time.Minute // URL valid for 15 minutes
+	})
+	if err != nil {
+		return "", errors.New(fmt.Sprintf("failed to presign url: %v", err))
+	}
+	return object.URL, nil
 }
 
 // Mutation returns MutationResolver implementation.
