@@ -76,6 +76,25 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
 
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          TargetOriginId: s3origin
+          ViewerProtocolPolicy: https-only
+          ForwardedValues:
+            QueryString: false
+        Origins:
+          - Id: s3origin
+            DomainName: !GetAtt LaVanillaSelfServiceBucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
+
   LaVanillaApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -176,3 +195,6 @@ Outputs:
   LogRetention:
     Description: "CloudWatch Logs retention period"
     Value: !Sub "${LogRetentionInDays} days"
+  CloudFrontURL:
+    Description: CloudFront Distribution Domain Name
+    Value: !GetAtt CloudFrontDistribution.DomainName
