@@ -15,7 +15,6 @@ import (
 	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
 	"log"
-	"os"
 	"path"
 	"time"
 
@@ -196,11 +195,6 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 
 	if err := zipWriter.Close(); err != nil {
 		return "nil", errors.New(fmt.Sprintf("failed to close zip writer: %v", err))
-	}
-
-	err = os.WriteFile("output.zip", buf.Bytes(), 0644)
-	if err != nil {
-		return "", errors.New(fmt.Sprintf("failed to write zip file: %v", err))
 	}
 
 	const uploadBucket = "la-vanilla-temp-dev"
