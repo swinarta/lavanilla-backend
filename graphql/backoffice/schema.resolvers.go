@@ -166,19 +166,18 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 	var buf bytes.Buffer
 	zipWriter := zip.NewWriter(&buf)
 
-	for _, object := range resp.Contents {
+	for _, content := range resp.Contents {
 
-		// Get the object
 		obj, err := r.S3Client.GetObject(ctx, &s3.GetObjectInput{
 			Bucket: aws.String(bucket),
-			Key:    object.Key,
+			Key:    content.Key,
 		})
 		if err != nil {
-			log.Printf("failed to get object %s: %v\n", *object.Key, err)
+			log.Printf("failed to get object %s: %v\n", *content.Key, err)
 			continue
 		}
 
-		fw, err := zipWriter.Create(path.Base(*object.Key))
+		fw, err := zipWriter.Create(path.Base(*content.Key))
 		if err != nil {
 			log.Printf("failed to create zip entry: %v", err)
 			continue
@@ -198,7 +197,7 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 	}
 
 	const uploadBucket = "la-vanilla-temp-dev"
-	zipKey := "myfiles.zip" // path in S3
+	zipKey := "myfiles1.zip"
 	_, err = r.S3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(uploadBucket),
 		Key:    aws.String(zipKey),
