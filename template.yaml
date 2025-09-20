@@ -213,7 +213,9 @@ Resources:
                 - s3:PutObject
                 - s3:GetObject
                 - s3:DeleteObject
-              Resource: !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
+              Resource:
+                - !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
+                - !Sub "${LaVanillaTempBucket.Arn}/*"
       Tags:
         App: LaVanillaApp
 
