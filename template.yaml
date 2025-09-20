@@ -216,6 +216,10 @@ Resources:
               Resource:
                 - !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
                 - !Sub "${LaVanillaTempBucket.Arn}/*"
+            - Effect: Allow
+              Action:
+                - s3:ListBucket
+              Resource: !GetAtt LaVanillaSelfServiceBucket.Arn
       Tags:
         App: LaVanillaApp
 
