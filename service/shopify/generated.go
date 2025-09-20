@@ -6125,7 +6125,7 @@ const GetProduct_Operation = `
 query GetProduct ($id: ID!) {
 	product(id: $id) {
 		description
-		variants(first: 10) {
+		variants(first: 100) {
 			nodes {
 				id
 				title
