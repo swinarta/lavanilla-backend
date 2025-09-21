@@ -1406,57 +1406,6 @@ func (v *CustomerInput) GetTaxExempt() bool { return v.TaxExempt }
 // GetTaxExemptions returns CustomerInput.TaxExemptions, and is useful for accessing the field via an interface.
 func (v *CustomerInput) GetTaxExemptions() []TaxExemption { return v.TaxExemptions }
 
-// DeliveryProfilesDeliveryProfilesDeliveryProfileConnection includes the requested fields of the GraphQL type DeliveryProfileConnection.
-// The GraphQL type's documentation follows.
-//
-// An auto-generated type for paginating through multiple DeliveryProfiles.
-type DeliveryProfilesDeliveryProfilesDeliveryProfileConnection struct {
-	// A list of nodes that are contained in DeliveryProfileEdge. You can fetch data
-	// about an individual node, or you can follow the edges to fetch data about a
-	// collection of related nodes. At each node, you specify the fields that you
-	// want to retrieve.
-	Nodes []DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile `json:"nodes"`
-}
-
-// GetNodes returns DeliveryProfilesDeliveryProfilesDeliveryProfileConnection.Nodes, and is useful for accessing the field via an interface.
-func (v *DeliveryProfilesDeliveryProfilesDeliveryProfileConnection) GetNodes() []DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile {
-	return v.Nodes
-}
-
-// DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile includes the requested fields of the GraphQL type DeliveryProfile.
-// The GraphQL type's documentation follows.
-//
-// A shipping profile. In Shopify, a shipping profile is a set of shipping rates
-// scoped to a set of products or variants that can be shipped from selected
-// locations to zones. Learn more about [building with delivery profiles](https://shopify.dev/apps/build/purchase-options/deferred/delivery-and-deferment/build-delivery-profiles).
-type DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile struct {
-	// A globally-unique ID.
-	Id string `json:"id"`
-	// The name of the delivery profile.
-	Name string `json:"name"`
-}
-
-// GetId returns DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile.Id, and is useful for accessing the field via an interface.
-func (v *DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile) GetId() string {
-	return v.Id
-}
-
-// GetName returns DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile.Name, and is useful for accessing the field via an interface.
-func (v *DeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile) GetName() string {
-	return v.Name
-}
-
-// DeliveryProfilesResponse is returned by DeliveryProfiles on success.
-type DeliveryProfilesResponse struct {
-	// Returns a list of saved delivery profiles.
-	DeliveryProfiles DeliveryProfilesDeliveryProfilesDeliveryProfileConnection `json:"deliveryProfiles"`
-}
-
-// GetDeliveryProfiles returns DeliveryProfilesResponse.DeliveryProfiles, and is useful for accessing the field via an interface.
-func (v *DeliveryProfilesResponse) GetDeliveryProfiles() DeliveryProfilesDeliveryProfilesDeliveryProfileConnection {
-	return v.DeliveryProfiles
-}
-
 // The input fields for applying an order-level discount to a draft order.
 type DraftOrderAppliedDiscountInput struct {
 	// The applied amount of the discount in the specified currency.
@@ -2500,6 +2449,97 @@ type GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany struct {
 // GetTypename returns GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany.Typename, and is useful for accessing the field via an interface.
 func (v *GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany) GetTypename() string {
 	return v.Typename
+}
+
+// GetDraftOrderMetaFieldDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+// The GraphQL type's documentation follows.
+//
+// An order that a merchant creates on behalf of a customer. Draft orders are
+// useful for merchants that need to do the following tasks:
+//
+// - Create new orders for sales made by phone, in person, by chat, or elsewhere.
+// When a merchant accepts payment for a draft order, an order is created.
+// - Send invoices to customers to pay with a secure checkout link.
+// - Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+// - Re-create orders manually from active sales channels.
+// - Sell products at discount or wholesale rates.
+// - Take pre-orders.
+//
+// For draft orders in multiple currencies `presentment_money` is the source of
+// truth for what a customer is going to be charged and `shop_money` is an estimate
+// of what the merchant might receive in their shop currency.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+//
+// Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
+type GetDraftOrderMetaFieldDraftOrder struct {
+	// A [custom field](https://shopify.dev/docs/apps/build/custom-data),
+	// including its `namespace` and `key`, that's associated with a Shopify resource
+	// for the purposes of adding and storing additional information.
+	Metafield GetDraftOrderMetaFieldDraftOrderMetafield `json:"metafield"`
+}
+
+// GetMetafield returns GetDraftOrderMetaFieldDraftOrder.Metafield, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderMetaFieldDraftOrder) GetMetafield() GetDraftOrderMetaFieldDraftOrderMetafield {
+	return v.Metafield
+}
+
+// GetDraftOrderMetaFieldDraftOrderMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such
+// as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or
+// a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin/graphql/reference/common-objects/HasMetafields).
+// Some examples of the data that metafields enable you to store are
+// specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a
+// value along with type information for that value.
+type GetDraftOrderMetaFieldDraftOrderMetafield struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The data stored in the metafield in JSON format.
+	JsonValue map[string]interface{} `json:"jsonValue"`
+}
+
+// GetId returns GetDraftOrderMetaFieldDraftOrderMetafield.Id, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderMetaFieldDraftOrderMetafield) GetId() string { return v.Id }
+
+// GetJsonValue returns GetDraftOrderMetaFieldDraftOrderMetafield.JsonValue, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderMetaFieldDraftOrderMetafield) GetJsonValue() map[string]interface{} {
+	return v.JsonValue
+}
+
+// GetDraftOrderMetaFieldResponse is returned by GetDraftOrderMetaField on success.
+type GetDraftOrderMetaFieldResponse struct {
+	// Retrieves a [draft order](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder) by its ID.
+	// A draft order is an order created by a merchant on behalf of their
+	// customers. Draft orders contain all necessary order details (products, pricing, customer information)
+	// but require payment to be accepted before they can be converted into
+	// [completed orders](https://shopify.dev/docs/api/admin-graphql/latest/mutations/draftOrderComplete).
+	//
+	// Use the `draftOrder` query to retrieve information associated with the following workflows:
+	//
+	// - Creating orders for phone, in-person, or chat sales
+	// - Sending invoices to customers with secure checkout links
+	// - Managing custom items and additional costs
+	// - Selling products at discount or wholesale rates
+	// - Processing pre-orders and saving drafts for later completion
+	//
+	// A draft order is associated with a
+	// [customer](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer)
+	// and contains multiple [line items](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrderLineItem).
+	// Each draft order has a [status](https://shopify.dev/docs/api/admin-graphql/latest/objects/DraftOrder#field-DraftOrder.fields.status),
+	// which indicates its progress through the sales workflow.
+	DraftOrder GetDraftOrderMetaFieldDraftOrder `json:"draftOrder"`
+}
+
+// GetDraftOrder returns GetDraftOrderMetaFieldResponse.DraftOrder, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderMetaFieldResponse) GetDraftOrder() GetDraftOrderMetaFieldDraftOrder {
+	return v.DraftOrder
 }
 
 // GetDraftOrderResponse is returned by GetDraftOrder on success.
@@ -4118,6 +4158,92 @@ func (v *MailingAddressInput) GetProvinceCode() string { return v.ProvinceCode }
 // GetZip returns MailingAddressInput.Zip, and is useful for accessing the field via an interface.
 func (v *MailingAddressInput) GetZip() string { return v.Zip }
 
+// MetaDataAddMetafieldsSetMetafieldsSetPayload includes the requested fields of the GraphQL type MetafieldsSetPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metafieldsSet` mutation.
+type MetaDataAddMetafieldsSetMetafieldsSetPayload struct {
+	// The list of metafields that were set.
+	Metafields []MetaDataAddMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield `json:"metafields"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError `json:"userErrors"`
+}
+
+// GetMetafields returns MetaDataAddMetafieldsSetMetafieldsSetPayload.Metafields, and is useful for accessing the field via an interface.
+func (v *MetaDataAddMetafieldsSetMetafieldsSetPayload) GetMetafields() []MetaDataAddMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield {
+	return v.Metafields
+}
+
+// GetUserErrors returns MetaDataAddMetafieldsSetMetafieldsSetPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *MetaDataAddMetafieldsSetMetafieldsSetPayload) GetUserErrors() []MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError {
+	return v.UserErrors
+}
+
+// MetaDataAddMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such
+// as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or
+// a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin/graphql/reference/common-objects/HasMetafields).
+// Some examples of the data that metafields enable you to store are
+// specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a
+// value along with type information for that value.
+type MetaDataAddMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MetaDataAddMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield.Id, and is useful for accessing the field via an interface.
+func (v *MetaDataAddMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield) GetId() string { return v.Id }
+
+// MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError includes the requested fields of the GraphQL type MetafieldsSetUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MetafieldsSet`.
+type MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error code.
+	Code MetafieldsSetUserErrorCode `json:"code"`
+}
+
+// GetField returns MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError.Field, and is useful for accessing the field via an interface.
+func (v *MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError) GetField() []string {
+	return v.Field
+}
+
+// GetCode returns MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError.Code, and is useful for accessing the field via an interface.
+func (v *MetaDataAddMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError) GetCode() MetafieldsSetUserErrorCode {
+	return v.Code
+}
+
+// MetaDataAddResponse is returned by MetaDataAdd on success.
+type MetaDataAddResponse struct {
+	// Sets metafield values. Metafield values will be set regardless if they were previously created or not.
+	//
+	// Allows a maximum of 25 metafields to be set at a time.
+	//
+	// This operation is atomic, meaning no changes are persisted if an error is encountered.
+	//
+	// As of `2024-07`, this operation supports compare-and-set functionality to better handle concurrent requests.
+	// If `compareDigest` is set for any metafield, the mutation will only set that
+	// metafield if the persisted metafield value matches the digest used on
+	// `compareDigest`.
+	// If the metafield doesn't exist yet, but you want to guarantee that the
+	// operation will run in a safe manner, set `compareDigest` to `null`.
+	// The `compareDigest` value can be acquired by querying the metafield object and selecting `compareDigest` as a field.
+	// If the `compareDigest` value does not match the digest for the persisted value, the mutation will return an error.
+	// You can opt out of write guarantees by not sending `compareDigest` in the request.
+	MetafieldsSet MetaDataAddMetafieldsSetMetafieldsSetPayload `json:"metafieldsSet"`
+}
+
+// GetMetafieldsSet returns MetaDataAddResponse.MetafieldsSet, and is useful for accessing the field via an interface.
+func (v *MetaDataAddResponse) GetMetafieldsSet() MetaDataAddMetafieldsSetMetafieldsSetPayload {
+	return v.MetafieldsSet
+}
+
 // The input fields to use to create or update a metafield through a mutation on the owning resource.
 // An alternative way to create or update a metafield is by using the
 // [metafieldsSet](https://shopify.dev/api/admin-graphql/latest/mutations/metafieldsSet) mutation.
@@ -4162,6 +4288,60 @@ func (v *MetafieldInput) GetValue() string { return v.Value }
 
 // GetType returns MetafieldInput.Type, and is useful for accessing the field via an interface.
 func (v *MetafieldInput) GetType() string { return v.Type }
+
+// Possible error codes that can be returned by `MetafieldsSetUserError`.
+type MetafieldsSetUserErrorCode string
+
+const (
+	// The metafield violates a capability restriction.
+	MetafieldsSetUserErrorCodeCapabilityViolation MetafieldsSetUserErrorCode = "CAPABILITY_VIOLATION"
+	// The metafield has been modified since it was loaded.
+	MetafieldsSetUserErrorCodeStaleObject MetafieldsSetUserErrorCode = "STALE_OBJECT"
+	// The compareDigest is invalid.
+	MetafieldsSetUserErrorCodeInvalidCompareDigest MetafieldsSetUserErrorCode = "INVALID_COMPARE_DIGEST"
+	// The type is invalid.
+	MetafieldsSetUserErrorCodeInvalidType MetafieldsSetUserErrorCode = "INVALID_TYPE"
+	// The value is invalid for the metafield type or for the definition options.
+	MetafieldsSetUserErrorCodeInvalidValue MetafieldsSetUserErrorCode = "INVALID_VALUE"
+	// ApiPermission metafields can only be created or updated by the app owner.
+	MetafieldsSetUserErrorCodeAppNotAuthorized MetafieldsSetUserErrorCode = "APP_NOT_AUTHORIZED"
+	// The input value isn't included in the list.
+	MetafieldsSetUserErrorCodeInclusion MetafieldsSetUserErrorCode = "INCLUSION"
+	// The input value is already taken.
+	MetafieldsSetUserErrorCodeTaken MetafieldsSetUserErrorCode = "TAKEN"
+	// The input value needs to be blank.
+	MetafieldsSetUserErrorCodePresent MetafieldsSetUserErrorCode = "PRESENT"
+	// The input value is blank.
+	MetafieldsSetUserErrorCodeBlank MetafieldsSetUserErrorCode = "BLANK"
+	// The input value is too long.
+	MetafieldsSetUserErrorCodeTooLong MetafieldsSetUserErrorCode = "TOO_LONG"
+	// The input value is too short.
+	MetafieldsSetUserErrorCodeTooShort MetafieldsSetUserErrorCode = "TOO_SHORT"
+	// The input value should be less than or equal to the maximum value allowed.
+	MetafieldsSetUserErrorCodeLessThanOrEqualTo MetafieldsSetUserErrorCode = "LESS_THAN_OR_EQUAL_TO"
+	// The input value is invalid.
+	MetafieldsSetUserErrorCodeInvalid MetafieldsSetUserErrorCode = "INVALID"
+	// An internal error occurred.
+	MetafieldsSetUserErrorCodeInternalError MetafieldsSetUserErrorCode = "INTERNAL_ERROR"
+)
+
+var AllMetafieldsSetUserErrorCode = []MetafieldsSetUserErrorCode{
+	MetafieldsSetUserErrorCodeCapabilityViolation,
+	MetafieldsSetUserErrorCodeStaleObject,
+	MetafieldsSetUserErrorCodeInvalidCompareDigest,
+	MetafieldsSetUserErrorCodeInvalidType,
+	MetafieldsSetUserErrorCodeInvalidValue,
+	MetafieldsSetUserErrorCodeAppNotAuthorized,
+	MetafieldsSetUserErrorCodeInclusion,
+	MetafieldsSetUserErrorCodeTaken,
+	MetafieldsSetUserErrorCodePresent,
+	MetafieldsSetUserErrorCodeBlank,
+	MetafieldsSetUserErrorCodeTooLong,
+	MetafieldsSetUserErrorCodeTooShort,
+	MetafieldsSetUserErrorCodeLessThanOrEqualTo,
+	MetafieldsSetUserErrorCodeInvalid,
+	MetafieldsSetUserErrorCodeInternalError,
+}
 
 // The input fields for a monetary value with currency.
 type MoneyInput struct {
@@ -5705,6 +5885,22 @@ type __GetDraftOrderInput struct {
 // GetId returns __GetDraftOrderInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetDraftOrderInput) GetId() string { return v.Id }
 
+// __GetDraftOrderMetaFieldInput is used internally by genqlient
+type __GetDraftOrderMetaFieldInput struct {
+	Id        string `json:"id"`
+	Namespace string `json:"namespace"`
+	Key       string `json:"key"`
+}
+
+// GetId returns __GetDraftOrderMetaFieldInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetDraftOrderMetaFieldInput) GetId() string { return v.Id }
+
+// GetNamespace returns __GetDraftOrderMetaFieldInput.Namespace, and is useful for accessing the field via an interface.
+func (v *__GetDraftOrderMetaFieldInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns __GetDraftOrderMetaFieldInput.Key, and is useful for accessing the field via an interface.
+func (v *__GetDraftOrderMetaFieldInput) GetKey() string { return v.Key }
+
 // __GetDraftOrdersInput is used internally by genqlient
 type __GetDraftOrdersInput struct {
 	Query string `json:"query"`
@@ -5736,6 +5932,26 @@ type __GetProductInput struct {
 
 // GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetProductInput) GetId() string { return v.Id }
+
+// __MetaDataAddInput is used internally by genqlient
+type __MetaDataAddInput struct {
+	OwnerId   string `json:"ownerId"`
+	Namespace string `json:"namespace"`
+	Key       string `json:"key"`
+	Value     string `json:"value"`
+}
+
+// GetOwnerId returns __MetaDataAddInput.OwnerId, and is useful for accessing the field via an interface.
+func (v *__MetaDataAddInput) GetOwnerId() string { return v.OwnerId }
+
+// GetNamespace returns __MetaDataAddInput.Namespace, and is useful for accessing the field via an interface.
+func (v *__MetaDataAddInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns __MetaDataAddInput.Key, and is useful for accessing the field via an interface.
+func (v *__MetaDataAddInput) GetKey() string { return v.Key }
+
+// GetValue returns __MetaDataAddInput.Value, and is useful for accessing the field via an interface.
+func (v *__MetaDataAddInput) GetValue() string { return v.Value }
 
 // __OrderDetailByIdInput is used internally by genqlient
 type __OrderDetailByIdInput struct {
@@ -5786,39 +6002,6 @@ func CreateCustomer(
 	}
 
 	data_ = &CreateCustomerResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The query executed by DeliveryProfiles.
-const DeliveryProfiles_Operation = `
-query DeliveryProfiles {
-	deliveryProfiles(first: 50) {
-		nodes {
-			id
-			name
-		}
-	}
-}
-`
-
-func DeliveryProfiles(
-	ctx_ context.Context,
-	client_ graphql.Client,
-) (data_ *DeliveryProfilesResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "DeliveryProfiles",
-		Query:  DeliveryProfiles_Operation,
-	}
-
-	data_ = &DeliveryProfilesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -5997,6 +6180,47 @@ func GetDraftOrder(
 	}
 
 	data_ = &GetDraftOrderResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDraftOrderMetaField.
+const GetDraftOrderMetaField_Operation = `
+query GetDraftOrderMetaField ($id: ID!, $namespace: String!, $key: String!) {
+	draftOrder(id: $id) {
+		metafield(namespace: $namespace, key: $key) {
+			id
+			jsonValue
+		}
+	}
+}
+`
+
+func GetDraftOrderMetaField(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	namespace string,
+	key string,
+) (data_ *GetDraftOrderMetaFieldResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDraftOrderMetaField",
+		Query:  GetDraftOrderMetaField_Operation,
+		Variables: &__GetDraftOrderMetaFieldInput{
+			Id:        id,
+			Namespace: namespace,
+			Key:       key,
+		},
+	}
+
+	data_ = &GetDraftOrderMetaFieldResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -6226,6 +6450,52 @@ func GetProductsSelfService(
 	}
 
 	data_ = &GetProductsSelfServiceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by MetaDataAdd.
+const MetaDataAdd_Operation = `
+mutation MetaDataAdd ($ownerId: ID!, $namespace: String!, $key: String!, $value: String!) {
+	metafieldsSet(metafields: [{ownerId:$ownerId,namespace:$namespace,type:"json",key:$key,value:$value}]) {
+		metafields {
+			id
+		}
+		userErrors {
+			field
+			code
+		}
+	}
+}
+`
+
+func MetaDataAdd(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	ownerId string,
+	namespace string,
+	key string,
+	value string,
+) (data_ *MetaDataAddResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "MetaDataAdd",
+		Query:  MetaDataAdd_Operation,
+		Variables: &__MetaDataAddInput{
+			OwnerId:   ownerId,
+			Namespace: namespace,
+			Key:       key,
+			Value:     value,
+		},
+	}
+
+	data_ = &MetaDataAddResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

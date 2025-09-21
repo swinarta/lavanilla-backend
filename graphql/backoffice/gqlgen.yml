@@ -5,7 +5,7 @@ schema:
 # Where should the generated server code go?
 exec:
   filename: generated.go
-  package: self_service
+  package: backoffice
 
 # Uncomment to enable federation
 # federation:
@@ -21,7 +21,7 @@ model:
 resolver:
   layout: follow-schema
   dir: .
-  package: self_service
+  package: backoffice
   filename_template: "{name}.resolvers.go"
   # Optional: turn on to not generate template comments above resolvers
   # omit_template_comment: false

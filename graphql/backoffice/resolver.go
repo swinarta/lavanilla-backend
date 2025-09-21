@@ -1,4 +1,4 @@
-package self_service
+package backoffice
 
 import (
 	"lavanilla/service/custom"

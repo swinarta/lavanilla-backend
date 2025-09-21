@@ -31,6 +31,26 @@ mutation DraftOrderComplete($id: ID!) {
     }
 }
 
+mutation MetaDataAdd($ownerId: ID!, $namespace: String!, $key: String!, $value: String!) {
+    metafieldsSet(metafields: [
+        {
+            ownerId: $ownerId,
+            namespace: $namespace,
+            type: "json"
+            key: $key,
+            value: $value
+        }
+    ]){
+        metafields {
+            id
+        }
+        userErrors {
+            field
+            code
+        }
+    }
+}
+
 query GetFulfillment($id: ID!) {
     fulfillment(id: $id) {
         status
@@ -44,15 +64,6 @@ query GetFulfillmentOrder($id: ID!) {
                 id
                 status
             }
-        }
-    }
-}
-
-query DeliveryProfiles {
-    deliveryProfiles(first: 50) {
-        nodes {
-            id
-            name
         }
     }
 }
@@ -168,6 +179,15 @@ query GetDraftOrders($query: String) {
             name
             email
             phone
+        }
+    }
+}
+
+query GetDraftOrderMetaField($id: ID!, $namespace: String!, $key: String!) {
+    draftOrder(id: $id){
+        metafield(namespace: $namespace, key: $key){
+            id
+            jsonValue
         }
     }
 }

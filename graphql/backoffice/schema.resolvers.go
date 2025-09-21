@@ -1,4 +1,4 @@
-package self_service
+package backoffice
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -8,11 +8,13 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service/custom"
+	"lavanilla/service/metadata"
 	"lavanilla/service/shopify"
 	"log"
 	"path"
@@ -28,7 +30,29 @@ import (
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
 func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DraftOrderStart - draftOrderStart"))
+	field, err := r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.AppNameSpace, metadata.DesignerKeyName)
+	if err != nil {
+		return false, err
+	}
+
+	if len(field.DraftOrder.Metafield.JsonValue) > 0 {
+		return false, errors.New(fmt.Sprintf("meta fields %s are not empty", metadata.DesignerKeyName))
+	}
+
+	job := DesignerJob{
+		StartAt: time.Now(),
+		EndAt:   nil,
+	}
+
+	marshal, _ := json.Marshal(job)
+	m, err := r.ShopifyClient.MetaDataAdd(ctx, id, metadata.AppNameSpace, metadata.DesignerKeyName, marshal)
+	if err != nil {
+		return false, err
+	}
+	if len(m.MetafieldsSet.UserErrors) > 0 {
+		return false, errors.New(string(m.MetafieldsSet.UserErrors[0].Code))
+	}
+	return true, nil
 }
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.

@@ -17,3 +17,5 @@ bindings:
     type: string
   Money:
     type: string
+  JSON:
+    type: map[string]interface{}

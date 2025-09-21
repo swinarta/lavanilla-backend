@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service"
+	"lavanilla/service/metadata"
 	"log"
 	"net/http"
 
@@ -100,4 +101,12 @@ func (c *Client) GetDraftOrders(ctx context.Context, tag *string, status *model.
 
 func (c *Client) GetDraftOrder(ctx context.Context, id string) (*GetDraftOrderResponse, error) {
 	return GetDraftOrder(ctx, c.graphql, id)
+}
+
+func (c *Client) MetaDataAdd(ctx context.Context, ownerId string, namespace metadata.NameSpace, key metadata.KeyName, value []byte) (*MetaDataAddResponse, error) {
+	return MetaDataAdd(ctx, c.graphql, ownerId, namespace, key, string(value))
+}
+
+func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, namespace metadata.NameSpace, key string) (*GetDraftOrderMetaFieldResponse, error) {
+	return GetDraftOrderMetaField(ctx, c.graphql, orderId, namespace, key)
 }
