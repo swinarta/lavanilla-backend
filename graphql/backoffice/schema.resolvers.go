@@ -16,6 +16,7 @@ import (
 	"lavanilla/service/shopify"
 	"log"
 	"path"
+	"strconv"
 	"sync"
 	"time"
 
@@ -125,12 +126,61 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, i
 
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Products - products"))
+	productConn, err := r.ShopifyClient.GetProductsSelfService(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var result []*model.Product
+	for _, product := range productConn.Products.Edges {
+		maxPrice, err := strconv.ParseFloat(product.Node.PriceRangeV2.MaxVariantPrice.Amount, 64)
+		if err != nil {
+			return nil, err
+		}
+		minPrice, err := strconv.ParseFloat(product.Node.PriceRangeV2.MinVariantPrice.Amount, 64)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &model.Product{
+			ID:          product.Node.Id,
+			Title:       product.Node.Title,
+			Description: product.Node.Description,
+			PriceRange: &model.PriceRange{
+				MaxVariantPrice: &maxPrice,
+				MinVariantPrice: &minPrice,
+			},
+			Images: lo.Map(product.Node.Media.Nodes, func(imageEdge shopify.GetProductsSelfServiceProductsProductConnectionEdgesProductEdgeNodeProductMediaMediaConnectionNodesMedia, _ int) string {
+				return imageEdge.GetPreview().Image.Url
+			}),
+		})
+	}
+	return result, nil
 }
 
 // Product is the resolver for the product field.
 func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Product - product"))
+	productResp, err := r.ShopifyClient.GetProduct(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Product{
+		ID:          id,
+		Description: productResp.Product.Description,
+		Images: lo.Map(productResp.Product.Media.Nodes, func(imageEdge shopify.GetProductProductMediaMediaConnectionNodesMedia, _ int) string {
+			return imageEdge.GetPreview().Image.Url
+		}),
+		Variants: lo.Map(productResp.Product.Variants.Nodes, func(variantEdge shopify.GetProductProductVariantsProductVariantConnectionNodesProductVariant, _ int) *model.ProductVariant {
+			price, err := strconv.ParseFloat(variantEdge.Price, 64)
+			if err != nil {
+				price = 0
+			}
+			return &model.ProductVariant{
+				ID:    variantEdge.Id,
+				Title: variantEdge.Title,
+				Sku:   variantEdge.Sku,
+				Price: price,
+			}
+		}),
+	}, nil
 }
 
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
