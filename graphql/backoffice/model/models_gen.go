@@ -22,6 +22,28 @@ type Order struct {
 	Name string `json:"name"`
 }
 
+type PriceRange struct {
+	MinVariantPrice *float64 `json:"minVariantPrice,omitempty"`
+	MaxVariantPrice *float64 `json:"maxVariantPrice,omitempty"`
+}
+
+type Product struct {
+	ID          string            `json:"id"`
+	Title       string            `json:"title"`
+	Description string            `json:"description"`
+	PriceRange  *PriceRange       `json:"priceRange,omitempty"`
+	Images      []string          `json:"images,omitempty"`
+	Variants    []*ProductVariant `json:"variants,omitempty"`
+}
+
+type ProductVariant struct {
+	ID    string   `json:"id"`
+	Title string   `json:"title"`
+	Sku   string   `json:"sku"`
+	Price float64  `json:"price"`
+	Image []string `json:"image,omitempty"`
+}
+
 type Query struct {
 }
 

@@ -1,7 +1,10 @@
 type Query {
+    products: [Product!]
+    product(id: ID!): Product
     draftOrderDesigner(status: DraftOrderStatus): [Order!]
-    presignedUrl(draftOrderId: ID!, qty: Int!): [URL!]!
-    downloadAssets(draftOrderId: ID!): URL!
+    presignedUrlDesigner(draftOrderId: ID!, variantId: ID!, qty: Int!): [URL!]!
+    downloadAssetsDesigner(draftOrderId: ID!): URL!
+    downloadAssetsPrintOperator(orderId: ID!): URL!
 }
 
 type Mutation {
@@ -23,6 +26,28 @@ input LineItemInput {
 type Order{
     id: ID!
     name: String!
+}
+
+type Product {
+    id: ID!
+    title: String!
+    description: String!
+    priceRange: PriceRange
+    images: [URL!]
+    variants: [ProductVariant!]
+}
+
+type PriceRange {
+    minVariantPrice: Float
+    maxVariantPrice: Float
+}
+
+type ProductVariant {
+    id: ID!
+    title: String!
+    sku: String!
+    price: Float!
+    image: [URL!]
 }
 
 scalar URL

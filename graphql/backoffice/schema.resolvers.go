@@ -123,6 +123,16 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, i
 	}, nil
 }
 
+// Products is the resolver for the products field.
+func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
+	panic(fmt.Errorf("not implemented: Products - products"))
+}
+
+// Product is the resolver for the product field.
+func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product, error) {
+	panic(fmt.Errorf("not implemented: Product - product"))
+}
+
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
 func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error) {
 	orders, err := r.ShopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"), status)
@@ -137,8 +147,8 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 	}), nil
 }
 
-// PresignedURL is the resolver for the presignedUrl field.
-func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, qty int) ([]string, error) {
+// PresignedURLDesigner is the resolver for the presignedUrlDesigner field.
+func (r *queryResolver) PresignedURLDesigner(ctx context.Context, draftOrderID string, variantID string, qty int) ([]string, error) {
 	bucket := "la-vanilla-draft-order-dev"
 	filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
 	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
@@ -155,8 +165,8 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, q
 	return []string{object.URL}, err
 }
 
-// DownloadAssets is the resolver for the downloadAssets field.
-func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string) (string, error) {
+// DownloadAssetsDesigner is the resolver for the downloadAssetsDesigner field.
+func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
 	const bucket = "la-vanilla-self-service-dev"
 	type fileData struct {
 		Key  string
@@ -255,6 +265,11 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 		return "", errors.New(fmt.Sprintf("failed to presign url: %v", err))
 	}
 	return object.URL, nil
+}
+
+// DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.
+func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
+	panic(fmt.Errorf("not implemented: DownloadAssetsPrintOperator - downloadAssetsPrintOperator"))
 }
 
 // Mutation returns MutationResolver implementation.
