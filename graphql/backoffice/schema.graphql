@@ -2,12 +2,14 @@ type Query {
     products: [Product!]
     product(id: ID!): Product
     draftOrderDesigner(status: DraftOrderStatus): [Order!]
+    draftOrderDetailDesigner(draftOrderId: ID!): Order!
     presignedUrlDesigner(draftOrderId: ID!, variantId: ID!, qty: Int!): [URL!]!
     downloadAssetsDesigner(draftOrderId: ID!): URL!
     downloadAssetsPrintOperator(orderId: ID!): URL!
 }
 
 type Mutation {
+    draftOrderStart(id: ID!): Boolean!
     draftOrderComplete(id: ID!): Boolean!
     draftOrderAddProductVariant(id: ID!, variantId: String!, quantity: Int!): Order!
     draftOrderUpdateProductVariant(id: ID!, variantId: String!, quantity: Int!): Order!

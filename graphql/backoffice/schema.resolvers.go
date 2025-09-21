@@ -26,6 +26,11 @@ import (
 	"github.com/samber/lo"
 )
 
+// DraftOrderStart is the resolver for the draftOrderStart field.
+func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented: DraftOrderStart - draftOrderStart"))
+}
+
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
 func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
 	_, err := r.ShopifyClient.DraftOrderComplete(ctx, id)
@@ -197,6 +202,11 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 	}), nil
 }
 
+// DraftOrderDetailDesigner is the resolver for the draftOrderDetailDesigner field.
+func (r *queryResolver) DraftOrderDetailDesigner(ctx context.Context, draftOrderID string) (*model.Order, error) {
+	panic(fmt.Errorf("not implemented: DraftOrderDetailDesigner - draftOrderDetailDesigner"))
+}
+
 // PresignedURLDesigner is the resolver for the presignedUrlDesigner field.
 func (r *queryResolver) PresignedURLDesigner(ctx context.Context, draftOrderID string, variantID string, qty int) ([]string, error) {
 	bucket := "la-vanilla-draft-order-dev"
@@ -291,7 +301,7 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 	}
 
 	if err := zipWriter.Close(); err != nil {
-		return "nil", errors.New(fmt.Sprintf("failed to close zip writer: %v", err))
+		return "", errors.New(fmt.Sprintf("failed to close zip writer: %v", err))
 	}
 
 	const uploadBucket = "la-vanilla-temp-dev"
