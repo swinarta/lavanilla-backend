@@ -139,7 +139,7 @@ Resources:
       BuildMethod: go1.x
     Properties:
       CodeUri: handlers/graphql-ss/
-      Handler: handlers/graphql-ss/bootstrap
+      Handler: bootstrap
       Runtime: provided.al2023
       Architectures:
         - arm64
@@ -166,7 +166,7 @@ Resources:
       BuildMethod: go1.x
     Properties:
       CodeUri: handlers/graphql-sq/
-      Handler: handlers/graphql-sq/bootstrap
+      Handler: bootstrap
       Runtime: provided.al2023
       Architectures:
         - arm64
@@ -200,7 +200,7 @@ Resources:
       BuildMethod: go1.x
     Properties:
       CodeUri: handlers/graphql-backoffice/
-      Handler: handlers/graphql-backoffice/bootstrap
+      Handler: bootstrap
       Runtime: provided.al2023
       Architectures:
         - arm64
