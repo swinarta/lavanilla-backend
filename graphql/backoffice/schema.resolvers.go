@@ -168,7 +168,11 @@ func (r *queryResolver) DownloadAssets(ctx context.Context, draftOrderID string)
 		Prefix: aws.String(draftOrderID),
 	})
 	if err != nil {
-		return "nil", errors.New(fmt.Sprintf("failed to list objects: %v", err))
+		return "", errors.New(fmt.Sprintf("failed to list objects: %v", err))
+	}
+
+	if len(resp.Contents) <= 0 {
+		return "", errors.New("no assets to download")
 	}
 
 	results := make(chan fileData)
