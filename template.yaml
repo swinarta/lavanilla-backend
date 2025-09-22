@@ -255,7 +255,9 @@ Resources:
             - Effect: Allow
               Action:
                 - s3:ListBucket
-              Resource: !GetAtt LaVanillaSelfServiceBucket.Arn
+              Resource:
+                - !GetAtt LaVanillaSelfServiceBucket.Arn
+                - !GetAtt LaVanillaDraftOrderBucket.Arn
       Tags:
         App: LaVanillaApp
 
