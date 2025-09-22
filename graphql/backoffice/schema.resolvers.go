@@ -318,6 +318,7 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 		LineItems: lo.Map(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) *model.LineItem {
 			lineItemId, _ := utils.ExtractID(item.Id)
 			foundImages, _ := objectMap[lineItemId]
+			variantPrice, _ := strconv.ParseFloat(item.Variant.Price, 64)
 			return &model.LineItem{
 				Product: &model.Product{
 					ID:    item.Id,
@@ -328,6 +329,7 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 					ID:    item.Variant.Id,
 					Title: item.Variant.Title,
 					Sku:   item.Variant.Sku,
+					Price: variantPrice,
 				},
 				Images: lo.Map(foundImages, func(item string, _ int) string {
 					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, item)
