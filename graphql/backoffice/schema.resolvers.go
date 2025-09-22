@@ -30,7 +30,7 @@ import (
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
 func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool, error) {
-	field, err := r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.AppNameSpace, metadata.DesignerKeyName)
+	field, err := r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName)
 	if err != nil {
 		return false, err
 	}
@@ -39,19 +39,36 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 		return false, errors.New(fmt.Sprintf("meta fields %s are not empty", metadata.DesignerKeyName))
 	}
 
-	job := DesignerJob{
+	job := metadata.DesignerJob{
 		StartAt: time.Now(),
 		EndAt:   nil,
 	}
 
 	marshal, _ := json.Marshal(job)
-	m, err := r.ShopifyClient.MetaDataAdd(ctx, id, metadata.AppNameSpace, metadata.DesignerKeyName, marshal)
+	m, err := r.ShopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal)
 	if err != nil {
 		return false, err
 	}
 	if len(m.MetafieldsSet.UserErrors) > 0 {
 		return false, errors.New(string(m.MetafieldsSet.UserErrors[0].Code))
 	}
+
+	tag, err := r.ShopifyClient.AddTag(ctx, id, "DESAINER_IN_PROGRESS")
+	if err != nil {
+		return false, err
+	}
+	if len(tag.TagsAdd.UserErrors) > 0 {
+		return false, errors.New(tag.TagsAdd.UserErrors[0].Message)
+	}
+
+	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
+		Timestamp: time.Now(),
+		Action:    "DESIGNER_START",
+	})
+	if err != nil {
+		return false, err
+	}
+
 	return true, nil
 }
 

@@ -2,6 +2,8 @@ package shopify
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service"
@@ -11,6 +13,8 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 )
+
+const NameSpace = "LVN-APP"
 
 type customHttpTransport struct {
 	shopifyToken string
@@ -103,10 +107,30 @@ func (c *Client) GetDraftOrder(ctx context.Context, id string) (*GetDraftOrderRe
 	return GetDraftOrder(ctx, c.graphql, id)
 }
 
-func (c *Client) MetaDataAdd(ctx context.Context, ownerId string, namespace metadata.NameSpace, key metadata.KeyName, value []byte) (*MetaDataAddResponse, error) {
-	return MetaDataAdd(ctx, c.graphql, ownerId, namespace, key, string(value))
+func (c *Client) MetaDataAdd(ctx context.Context, ownerId string, key metadata.KeyName, value []byte) (*MetaDataAddResponse, error) {
+	return MetaDataAdd(ctx, c.graphql, ownerId, NameSpace, key, string(value))
 }
 
-func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, namespace metadata.NameSpace, key string) (*GetDraftOrderMetaFieldResponse, error) {
-	return GetDraftOrderMetaField(ctx, c.graphql, orderId, namespace, key)
+func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, key string) (*GetDraftOrderMetaFieldResponse, error) {
+	return GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, key)
+}
+
+func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, error) {
+	found, err := GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName)
+	if err != nil {
+		return nil, err
+	}
+	var payload []metadata.Timeline
+	if found == nil {
+		payload = []metadata.Timeline{value}
+	}
+	marshal, _ := json.Marshal(payload)
+	add, err := MetaDataAdd(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName, string(marshal))
+	if err != nil {
+		return nil, err
+	}
+	if len(add.MetafieldsSet.UserErrors) > 0 {
+		return nil, errors.New(string(add.MetafieldsSet.UserErrors[0].Code))
+	}
+	return &add.MetafieldsSet.Metafields[0].Id, nil
 }
