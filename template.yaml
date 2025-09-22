@@ -98,7 +98,18 @@ Resources:
               CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
             Action: s3:GetObject
             Resource: !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
-
+  DraftOrderBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref LaVanillaDraftOrderBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
+            Action: s3:GetObject
+            Resource: !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
+            
   CDNSelfService:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -115,6 +126,24 @@ Resources:
         Origins:
           - Id: s3origin
             DomainName: !GetAtt LaVanillaSelfServiceBucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
+  CDNDraftOrder:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          TargetOriginId: s3draftorderorigin
+          ViewerProtocolPolicy: https-only
+          ForwardedValues:
+            QueryString: false
+        Origins:
+          - Id: s3draftorderorigin
+            DomainName: !GetAtt LaVanillaDraftOrderBucket.DomainName
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
 
@@ -240,6 +269,6 @@ Outputs:
   CloudFrontSelfServiceURL:
     Description: CDN for Self Service
     Value: !GetAtt CDNSelfService.DomainName
-#  CloudFrontDraftOrderURL:
-#    Description: CDN for Draft Order Bucket
-#    Value: !GetAtt CloudFrontDraftOrderDistribution.DomainName
+  CloudFrontDraftOrderURL:
+    Description: CDN for Draft Order Bucket
+    Value: !GetAtt CDNDraftOrder.DomainName

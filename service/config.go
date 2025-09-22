@@ -11,7 +11,7 @@ const (
 
 const (
 	S3BucketSelfService = "la-vanilla-self-service-dev"
-	CdnSelfService      = "https://d108ap8b19cxmc.cloudfront.net"
+	CdnSelfService      = "https://di3in3edearl1.cloudfront.net"
 )
 
 const (
