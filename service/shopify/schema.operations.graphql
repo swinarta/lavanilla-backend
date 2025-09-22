@@ -1,6 +1,13 @@
 mutation TagsAdd($id: ID!, $tag: String!) {
     tagsAdd(id: $id, tags: [$tag]) {
-        __typename
+        userErrors {
+            message
+        }
+    }
+}
+
+mutation TagsRemove($id: ID!, $tag: String!) {
+    tagsRemove(id: $id, tags: [$tag]){
         userErrors {
             message
         }

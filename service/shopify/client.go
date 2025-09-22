@@ -8,7 +8,6 @@ import (
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service"
 	"lavanilla/service/metadata"
-	"log"
 	"net/http"
 	"reflect"
 
@@ -40,8 +39,11 @@ func NewClient() *Client {
 }
 
 func (c *Client) AddTag(ctx context.Context, orderId string, tag string) (*TagsAddResponse, error) {
-	log.Printf("orderId: %v\n", orderId)
 	return TagsAdd(ctx, c.graphql, orderId, tag)
+}
+
+func (c *Client) RemoveTag(ctx context.Context, orderId string, tag string) (*TagsRemoveResponse, error) {
+	return TagsRemove(ctx, c.graphql, orderId, tag)
 }
 
 func (c *Client) GetProductsSelfService(ctx context.Context) (*GetProductsSelfServiceResponse, error) {
@@ -141,9 +143,7 @@ func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadat
 	if err := json.Unmarshal([]byte(found.DraftOrder.Metafield.Value), &payload); err != nil {
 		return nil, err
 	}
-	if len(payload) == 0 {
-		payload = []metadata.Timeline{value}
-	}
+	payload = append(payload, value)
 	marshal, _ := json.Marshal(payload)
 	add, err := MetaDataAdd(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName, string(marshal))
 	if err != nil {

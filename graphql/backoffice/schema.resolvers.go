@@ -82,6 +82,37 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 	if err != nil {
 		return false, err
 	}
+	now := time.Now()
+	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
+		Timestamp: now,
+		Action:    "DESIGNER_END",
+	})
+	if err != nil {
+		return false, err
+	}
+	var designerJob *metadata.DesignerJob
+	_, err = r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob)
+	if err != nil {
+		return false, err
+	}
+
+	if designerJob != nil {
+		designerJob.EndAt = lo.ToPtr(now)
+	}
+
+	marshal, _ := json.Marshal(designerJob)
+	_, err = r.ShopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal)
+	if err != nil {
+		return false, err
+	}
+	tag, err := r.ShopifyClient.RemoveTag(ctx, id, "DESAINER_IN_PROGRESS")
+	if err != nil {
+		return false, err
+	}
+	if len(tag.TagsRemove.UserErrors) > 0 {
+		return false, errors.New(tag.TagsRemove.UserErrors[0].Message)
+	}
+
 	return true, nil
 }
 
@@ -249,7 +280,6 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // DraftOrder is the resolver for the draftOrder field.
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
-
 	listObjectFuture := mo.NewFuture[*s3.ListObjectsV2Output](func(resolve func(*s3.ListObjectsV2Output), reject func(error)) {
 		result, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 			Bucket: aws.String(service.S3BucketDraftOrder),

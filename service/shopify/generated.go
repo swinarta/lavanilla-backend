@@ -5553,13 +5553,9 @@ func (v *TagsAddResponse) GetTagsAdd() TagsAddTagsAddTagsAddPayload { return v.T
 //
 // Return type for `tagsAdd` mutation.
 type TagsAddTagsAddTagsAddPayload struct {
-	Typename string `json:"__typename"`
 	// The list of errors that occurred from executing the mutation.
 	UserErrors []TagsAddTagsAddTagsAddPayloadUserErrorsUserError `json:"userErrors"`
 }
-
-// GetTypename returns TagsAddTagsAddTagsAddPayload.Typename, and is useful for accessing the field via an interface.
-func (v *TagsAddTagsAddTagsAddPayload) GetTypename() string { return v.Typename }
 
 // GetUserErrors returns TagsAddTagsAddTagsAddPayload.UserErrors, and is useful for accessing the field via an interface.
 func (v *TagsAddTagsAddTagsAddPayload) GetUserErrors() []TagsAddTagsAddTagsAddPayloadUserErrorsUserError {
@@ -5577,6 +5573,45 @@ type TagsAddTagsAddTagsAddPayloadUserErrorsUserError struct {
 
 // GetMessage returns TagsAddTagsAddTagsAddPayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
 func (v *TagsAddTagsAddTagsAddPayloadUserErrorsUserError) GetMessage() string { return v.Message }
+
+// TagsRemoveResponse is returned by TagsRemove on success.
+type TagsRemoveResponse struct {
+	// Remove tags from an order, a draft order, a customer, a product, or an online store article.
+	TagsRemove TagsRemoveTagsRemoveTagsRemovePayload `json:"tagsRemove"`
+}
+
+// GetTagsRemove returns TagsRemoveResponse.TagsRemove, and is useful for accessing the field via an interface.
+func (v *TagsRemoveResponse) GetTagsRemove() TagsRemoveTagsRemoveTagsRemovePayload {
+	return v.TagsRemove
+}
+
+// TagsRemoveTagsRemoveTagsRemovePayload includes the requested fields of the GraphQL type TagsRemovePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `tagsRemove` mutation.
+type TagsRemoveTagsRemoveTagsRemovePayload struct {
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []TagsRemoveTagsRemoveTagsRemovePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetUserErrors returns TagsRemoveTagsRemoveTagsRemovePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *TagsRemoveTagsRemoveTagsRemovePayload) GetUserErrors() []TagsRemoveTagsRemoveTagsRemovePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// TagsRemoveTagsRemoveTagsRemovePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error in the input of a mutation.
+type TagsRemoveTagsRemoveTagsRemovePayloadUserErrorsUserError struct {
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetMessage returns TagsRemoveTagsRemoveTagsRemovePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *TagsRemoveTagsRemoveTagsRemovePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
 
 // Available customer tax exemptions.
 type TaxExemption string
@@ -5970,6 +6005,18 @@ func (v *__TagsAddInput) GetId() string { return v.Id }
 
 // GetTag returns __TagsAddInput.Tag, and is useful for accessing the field via an interface.
 func (v *__TagsAddInput) GetTag() string { return v.Tag }
+
+// __TagsRemoveInput is used internally by genqlient
+type __TagsRemoveInput struct {
+	Id  string `json:"id"`
+	Tag string `json:"tag"`
+}
+
+// GetId returns __TagsRemoveInput.Id, and is useful for accessing the field via an interface.
+func (v *__TagsRemoveInput) GetId() string { return v.Id }
+
+// GetTag returns __TagsRemoveInput.Tag, and is useful for accessing the field via an interface.
+func (v *__TagsRemoveInput) GetTag() string { return v.Tag }
 
 // The mutation executed by CreateCustomer.
 const CreateCustomer_Operation = `
@@ -6641,7 +6688,6 @@ func OrderDetailById(
 const TagsAdd_Operation = `
 mutation TagsAdd ($id: ID!, $tag: String!) {
 	tagsAdd(id: $id, tags: [$tag]) {
-		__typename
 		userErrors {
 			message
 		}
@@ -6665,6 +6711,44 @@ func TagsAdd(
 	}
 
 	data_ = &TagsAddResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by TagsRemove.
+const TagsRemove_Operation = `
+mutation TagsRemove ($id: ID!, $tag: String!) {
+	tagsRemove(id: $id, tags: [$tag]) {
+		userErrors {
+			message
+		}
+	}
+}
+`
+
+func TagsRemove(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	tag string,
+) (data_ *TagsRemoveResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "TagsRemove",
+		Query:  TagsRemove_Operation,
+		Variables: &__TagsRemoveInput{
+			Id:  id,
+			Tag: tag,
+		},
+	}
+
+	data_ = &TagsRemoveResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
