@@ -1,4 +1,4 @@
-package self_service
+package self_queue
 
 import "github.com/aws/aws-sdk-go-v2/service/s3"
 
