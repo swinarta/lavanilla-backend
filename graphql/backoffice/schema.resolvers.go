@@ -65,13 +65,13 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 		return false, err
 	}
 
-	// tag, err := r.ShopifyClient.AddTag(ctx, id, "DESAINER_IN_PROGRESS")
-	// if err != nil {
-	// 	return false, err
-	// }
-	// if len(tag.TagsAdd.UserErrors) > 0 {
-	// 	return false, errors.New(tag.TagsAdd.UserErrors[0].Message)
-	// }
+	tag, err := r.ShopifyClient.AddTag(ctx, id, "DESAINER_IN_PROGRESS")
+	if err != nil {
+		return false, err
+	}
+	if len(tag.TagsAdd.UserErrors) > 0 {
+		return false, errors.New(tag.TagsAdd.UserErrors[0].Message)
+	}
 
 	return true, nil
 }
