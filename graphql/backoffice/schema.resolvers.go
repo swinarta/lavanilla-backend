@@ -373,31 +373,12 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 		close(results)
 	}()
 
-	zipBuf, err := utils.CreateZipArchive(results)
+	url, err := utils.CreateZipArchive(ctx, draftOrderID, r.S3Client, r.S3PresignClient, results)
 	if err != nil {
 		return "", fmt.Errorf("failed to create zip archive: %w", err)
 	}
 
-	zipKey := fmt.Sprintf("%s.zip", draftOrderID)
-	_, err = r.S3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(service.S3BucketTemp),
-		Key:    aws.String(zipKey),
-		Body:   bytes.NewReader(zipBuf.Bytes()),
-	})
-	if err != nil {
-		return "", errors.New(fmt.Sprintf("failed to upload zip to s3: %v", err))
-	}
-
-	object, err := r.S3PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
-		Bucket: aws.String(service.S3BucketTemp),
-		Key:    aws.String(zipKey),
-	}, func(opts *s3.PresignOptions) {
-		opts.Expires = 15 * time.Minute // URL valid for 15 minutes
-	})
-	if err != nil {
-		return "", errors.New(fmt.Sprintf("failed to presign url: %v", err))
-	}
-	return object.URL, nil
+	return *url, nil
 }
 
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.

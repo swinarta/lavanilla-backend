@@ -3,8 +3,15 @@ package utils
 import (
 	"archive/zip"
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
+	"lavanilla/service"
 	"log"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 type FileData struct {
@@ -13,7 +20,7 @@ type FileData struct {
 	Err  error
 }
 
-func CreateZipArchive(results <-chan FileData) (*bytes.Buffer, error) {
+func CreateZipArchive(ctx context.Context, draftOrderID string, client *s3.Client, presignClient *s3.PresignClient, results <-chan FileData) (*string, error) {
 	var zipBuf bytes.Buffer
 	zipWriter := zip.NewWriter(&zipBuf)
 
@@ -40,5 +47,26 @@ func CreateZipArchive(results <-chan FileData) (*bytes.Buffer, error) {
 	if err := zipWriter.Close(); err != nil {
 		return nil, fmt.Errorf("failed to close zip writer: %w", err)
 	}
-	return &zipBuf, nil
+
+	zipKey := fmt.Sprintf("%s.zip", draftOrderID)
+	_, err := client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: aws.String(service.S3BucketTemp),
+		Key:    aws.String(zipKey),
+		Body:   bytes.NewReader(zipBuf.Bytes()),
+	})
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to upload zip to s3: %v", err))
+	}
+
+	object, err := presignClient.PresignGetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(service.S3BucketTemp),
+		Key:    aws.String(zipKey),
+	}, func(opts *s3.PresignOptions) {
+		opts.Expires = 15 * time.Minute
+	})
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to presign url: %v", err))
+	}
+
+	return &object.URL, nil
 }
