@@ -254,6 +254,15 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 		return nil, err
 	}
 
+	// TODO: goroutine
+	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket: aws.String(service.S3BucketSelfService),
+		Prefix: aws.String(draftOrderID),
+	})
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
+	}
+
 	return &model.Order{
 		ID:   order.DraftOrder.Id,
 		Name: order.DraftOrder.Name,
@@ -268,6 +277,9 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 					ID:    item.Variant.Id,
 					Title: item.Variant.Title,
 				},
+				Images: lo.Map(resp.Contents, func(item types.Object, _ int) string {
+					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, *item.Key)
+				}),
 			}
 		}),
 	}, nil

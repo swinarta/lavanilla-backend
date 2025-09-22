@@ -87,7 +87,7 @@ Resources:
       CloudFrontOriginAccessIdentityConfig:
         Comment: !Sub "OAI for ${AWS::StackName}"
 
-  BucketPolicy:
+  SelfServiceBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref LaVanillaSelfServiceBucket
@@ -109,7 +109,7 @@ Resources:
               CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
             Action: s3:GetObject
             Resource: !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
-            
+
   CDNSelfService:
     Type: AWS::CloudFront::Distribution
     Properties:

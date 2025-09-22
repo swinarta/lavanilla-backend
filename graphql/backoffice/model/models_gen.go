@@ -13,6 +13,7 @@ type LineItem struct {
 	Product  *Product        `json:"product"`
 	Variant  *ProductVariant `json:"variant,omitempty"`
 	Quantity int             `json:"quantity"`
+	Images   []string        `json:"images,omitempty"`
 }
 
 type LineItemInput struct {
