@@ -1,3 +1,7 @@
+type Query {
+    draftOrder(id: ID!): DraftOrderResponse!
+}
+
 type Mutation {
     draftOrderCreate(input: DraftOrderInput!): DraftOrderResponse!
     draftOrderUpdate(id: ID!, input: DraftOrderInput!): DraftOrderResponse!
@@ -12,6 +16,17 @@ type DraftOrderResponse {
 type DraftOrder {
     id: ID!
     name: String!
+    metafields(first: Int!, namespace: String!): MetafieldNode
+
+}
+
+type MetafieldNode {
+    nodes: [Metafield]
+}
+
+type Metafield {
+    key: String!
+    jsonValue: String!
 }
 
 type UserError {

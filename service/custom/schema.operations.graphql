@@ -24,19 +24,6 @@ mutation DraftOrderUpdate($id: ID!, $input: DraftOrderInput!) {
     }
 }
 
-mutation DraftOrderUpdate1($id: ID!) {
-    draftOrderUpdate1(id: $id) {
-        draftOrder {
-            id
-            name
-        }
-        userErrors {
-            field
-            message
-        }
-    }
-}
-
 mutation DraftOrderUpdateLineItems($id: ID!, $input: [DraftOrderLineItemInput!]!) {
     draftOrderUpdate(
         id: $id,

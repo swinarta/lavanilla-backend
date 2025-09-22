@@ -65,19 +65,6 @@ func (c *Client) DraftOrderUpdate(ctx context.Context, id string, input DraftOrd
 	return DraftOrderUpdate(ctx, c.graphql, id, input)
 }
 
-func (c *Client) DraftOrderUpdate1(ctx context.Context, id string) (*DraftOrderUpdateResponse, error) {
-	input := DraftOrderInput{
-		LineItems: []DraftOrderLineItemInput{
-			{
-				VariantId: "gid://shopify/DraftOrder/1001317793991",
-				Quantity:  23,
-			},
-		},
-	}
-	return DraftOrderUpdate(ctx, c.graphql, id, input)
-	// return DraftOrderUpdate1(ctx, c.graphql, id)
-}
-
 func (c *Client) DraftOrderUpdateLineItems(ctx context.Context, id string, input []DraftOrderLineItemInput) (*DraftOrderUpdateLineItemsResponse, error) {
 	return DraftOrderUpdateLineItems(ctx, c.graphql, id, input)
 }
