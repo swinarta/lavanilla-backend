@@ -30,15 +30,6 @@ jobs:
         with:
           go-version-file: go.mod
 
-#      - name: Build Go Lambdas
-#        run: |
-#          for func in graphql-ss graphql-sq graphql-backoffice; do
-#            echo "Building $func..."
-#            cd handlers/$func
-#            GOOS=linux GOARCH=arm64 go build -o bootstrap main.go
-#            cd ../../
-#          done
-
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli

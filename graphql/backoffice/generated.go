@@ -93,7 +93,7 @@ type ComplexityRoot struct {
 		DownloadAssetsPrintOperator func(childComplexity int, orderID string) int
 		DraftOrder                  func(childComplexity int, draftOrderID string) int
 		DraftOrderDesigner          func(childComplexity int, status *model.DraftOrderStatus) int
-		PresignedURLDesigner        func(childComplexity int, draftOrderID string, variantID string, qty int) int
+		PresignedURLDesigner        func(childComplexity int, draftOrderID string, lineItemID string, qty int) int
 		Product                     func(childComplexity int, id string) int
 		Products                    func(childComplexity int) int
 	}
@@ -110,7 +110,7 @@ type QueryResolver interface {
 	Product(ctx context.Context, id string) (*model.Product, error)
 	DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error)
 	DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error)
-	PresignedURLDesigner(ctx context.Context, draftOrderID string, variantID string, qty int) ([]string, error)
+	PresignedURLDesigner(ctx context.Context, draftOrderID string, lineItemID string, qty int) ([]string, error)
 	DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error)
 	DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error)
 }
@@ -352,7 +352,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.PresignedURLDesigner(childComplexity, args["draftOrderId"].(string), args["variantId"].(string), args["qty"].(int)), true
+		return e.complexity.Query.PresignedURLDesigner(childComplexity, args["draftOrderId"].(string), args["lineItemId"].(string), args["qty"].(int)), true
 	case "Query.product":
 		if e.complexity.Query.Product == nil {
 			break
@@ -623,11 +623,11 @@ func (ec *executionContext) field_Query_presignedUrlDesigner_args(ctx context.Co
 		return nil, err
 	}
 	args["draftOrderId"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "variantId", ec.unmarshalNID2string)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "lineItemId", ec.unmarshalNID2string)
 	if err != nil {
 		return nil, err
 	}
-	args["variantId"] = arg1
+	args["lineItemId"] = arg1
 	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "qty", ec.unmarshalNInt2int)
 	if err != nil {
 		return nil, err
@@ -1686,7 +1686,7 @@ func (ec *executionContext) _Query_presignedUrlDesigner(ctx context.Context, fie
 		ec.fieldContext_Query_presignedUrlDesigner,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().PresignedURLDesigner(ctx, fc.Args["draftOrderId"].(string), fc.Args["variantId"].(string), fc.Args["qty"].(int))
+			return ec.resolvers.Query().PresignedURLDesigner(ctx, fc.Args["draftOrderId"].(string), fc.Args["lineItemId"].(string), fc.Args["qty"].(int))
 		},
 		nil,
 		ec.marshalNURL2ᚕstringᚄ,

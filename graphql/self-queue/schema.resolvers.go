@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"lavanilla/graphql/self-queue/model"
+	"lavanilla/service"
 	"path"
 	"time"
 
@@ -22,7 +23,6 @@ import (
 
 // PresignedURL is the resolver for the presignedUrl field.
 func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, uploadToken string, qty int) ([]string, error) {
-	const bucket = "la-vanilla-self-service-dev"
 	hash := sha256.Sum256([]byte(draftOrderID))
 	token := hex.EncodeToString(hash[:])
 
@@ -34,7 +34,7 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 	for i := 0; i < qty; i++ {
 		filename := fmt.Sprintf("%s/%d.jpeg", draftOrderID, time.Now().Unix()+1)
 		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-			Bucket:      aws.String(bucket),
+			Bucket:      aws.String(service.S3BucketSelfService),
 			ContentType: aws.String("image/jpeg"),
 			Key:         aws.String(filename),
 		}, func(options *s3.PresignOptions) {
@@ -51,7 +51,6 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 
 // Files is the resolver for the files field.
 func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadToken string) ([]*model.File, error) {
-	const bucket = "la-vanilla-self-service-dev"
 	hash := sha256.Sum256([]byte(draftOrderID))
 	token := hex.EncodeToString(hash[:])
 
@@ -60,7 +59,7 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 	}
 
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(service.S3BucketSelfService),
 		Prefix: aws.String(draftOrderID),
 	})
 	if err != nil {
@@ -71,7 +70,7 @@ func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadTo
 		return &model.File{
 			Filename: path.Base(*item.Key),
 			Size:     int(*item.Size),
-			URL:      fmt.Sprintf("https://d108ap8b19cxmc.cloudfront.net/%s", *item.Key),
+			URL:      fmt.Sprintf("%s/%s", service.CdnSelfService, *item.Key),
 		}
 	}), nil
 }

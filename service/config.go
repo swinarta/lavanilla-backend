@@ -8,3 +8,14 @@ const (
 	HeaderKeyUserAgent       = "User-Agent"
 	HeaderValueUserAgent     = "lavanilla/1.0"
 )
+
+const (
+	S3BucketSelfService = "la-vanilla-self-service-dev"
+	CdnSelfService      = "https://d108ap8b19cxmc.cloudfront.net"
+)
+
+const (
+	S3BucketDraftOrder = "la-vanilla-draft-order-dev"
+	CdnDraftOrder      = "https://d108ap8b19cxmc.cloudfront.net"
+	S3BucketTemp       = "la-vanilla-temp-dev"
+)

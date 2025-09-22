@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io"
 	"lavanilla/graphql/backoffice/model"
+	"lavanilla/service"
 	"lavanilla/service/custom"
 	"lavanilla/service/metadata"
 	"lavanilla/service/shopify"
@@ -273,33 +274,34 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 }
 
 // PresignedURLDesigner is the resolver for the presignedUrlDesigner field.
-func (r *queryResolver) PresignedURLDesigner(ctx context.Context, draftOrderID string, variantID string, qty int) ([]string, error) {
-	bucket := "la-vanilla-draft-order-dev"
-	filename := fmt.Sprintf("%s/ppp.jpeg", draftOrderID)
-	object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(bucket),
-		ContentType: aws.String("image/jpeg"),
-		Key:         aws.String(filename),
-	}, func(options *s3.PresignOptions) {
-		options.Expires = 15 * time.Minute
-	})
-	if err != nil {
-		return nil, err
+func (r *queryResolver) PresignedURLDesigner(ctx context.Context, draftOrderID string, lineItemID string, qty int) ([]string, error) {
+	var result []string
+	for i := 0; i < qty; i++ {
+		filename := fmt.Sprintf("%s/%s/%d.jpeg", draftOrderID, lineItemID, time.Now().Unix()+1)
+		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
+			Bucket:      aws.String(service.S3BucketDraftOrder),
+			ContentType: aws.String("image/jpeg"),
+			Key:         aws.String(filename),
+		}, func(options *s3.PresignOptions) {
+			options.Expires = 15 * time.Minute
+		})
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, object.URL)
 	}
-
-	return []string{object.URL}, err
+	return result, nil
 }
 
 // DownloadAssetsDesigner is the resolver for the downloadAssetsDesigner field.
 func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
-	const bucket = "la-vanilla-self-service-dev"
 	type fileData struct {
 		Key  string
 		Data []byte
 		Err  error
 	}
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(service.S3BucketDraftOrder),
 		Prefix: aws.String(draftOrderID),
 	})
 	if err != nil {
@@ -318,7 +320,7 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 		go func(content types.Object) {
 			defer wg.Done()
 			obj, err := r.S3Client.GetObject(ctx, &s3.GetObjectInput{
-				Bucket: aws.String(bucket),
+				Bucket: aws.String(service.S3BucketDraftOrder),
 				Key:    content.Key,
 			})
 			if err != nil {
@@ -369,10 +371,9 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 		return "", errors.New(fmt.Sprintf("failed to close zip writer: %v", err))
 	}
 
-	const uploadBucket = "la-vanilla-temp-dev"
 	zipKey := fmt.Sprintf("%s.zip", draftOrderID)
 	_, err = r.S3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(uploadBucket),
+		Bucket: aws.String(service.S3BucketTemp),
 		Key:    aws.String(zipKey),
 		Body:   bytes.NewReader(zipBuf.Bytes()),
 	})
@@ -381,7 +382,7 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 	}
 
 	object, err := r.S3PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
-		Bucket: aws.String(uploadBucket),
+		Bucket: aws.String(service.S3BucketTemp),
 		Key:    aws.String(zipKey),
 	}, func(opts *s3.PresignOptions) {
 		opts.Expires = 15 * time.Minute // URL valid for 15 minutes

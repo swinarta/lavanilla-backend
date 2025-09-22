@@ -99,7 +99,7 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
 
-  CloudFrontDistribution:
+  CDNSelfService:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -237,6 +237,9 @@ Outputs:
   LogRetention:
     Description: "CloudWatch Logs retention period"
     Value: !Sub "${LogRetentionInDays} days"
-  CloudFrontURL:
-    Description: CloudFront Distribution Domain Name
+  CloudFrontSelfServiceURL:
+    Description: CDN for Self Service
     Value: !GetAtt CloudFrontDistribution.DomainName
+#  CloudFrontDraftOrderURL:
+#    Description: CDN for Draft Order Bucket
+#    Value: !GetAtt CloudFrontDraftOrderDistribution.DomainName
