@@ -140,8 +140,11 @@ func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadat
 		return nil, err
 	}
 	var payload []metadata.Timeline
-	if err := json.Unmarshal([]byte(found.DraftOrder.Metafield.Value), &payload); err != nil {
-		return nil, err
+
+	if found.DraftOrder.Metafield.Value != "" {
+		if err := json.Unmarshal([]byte(found.DraftOrder.Metafield.Value), &payload); err != nil {
+			return nil, err
+		}
 	}
 	payload = append(payload, value)
 	marshal, _ := json.Marshal(payload)

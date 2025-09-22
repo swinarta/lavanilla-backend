@@ -57,14 +57,6 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 		return false, errors.New(string(m.MetafieldsSet.UserErrors[0].Code))
 	}
 
-	tag, err := r.ShopifyClient.AddTag(ctx, id, "DESAINER_IN_PROGRESS")
-	if err != nil {
-		return false, err
-	}
-	if len(tag.TagsAdd.UserErrors) > 0 {
-		return false, errors.New(tag.TagsAdd.UserErrors[0].Message)
-	}
-
 	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
 		Timestamp: now,
 		Action:    "DESIGNER_START",
@@ -72,6 +64,14 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 	if err != nil {
 		return false, err
 	}
+
+	// tag, err := r.ShopifyClient.AddTag(ctx, id, "DESAINER_IN_PROGRESS")
+	// if err != nil {
+	// 	return false, err
+	// }
+	// if len(tag.TagsAdd.UserErrors) > 0 {
+	// 	return false, errors.New(tag.TagsAdd.UserErrors[0].Message)
+	// }
 
 	return true, nil
 }
