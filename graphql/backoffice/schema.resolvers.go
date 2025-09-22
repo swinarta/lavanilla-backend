@@ -17,9 +17,11 @@ import (
 	"lavanilla/service/custom"
 	"lavanilla/service/metadata"
 	"lavanilla/service/shopify"
+	"lavanilla/utils"
 	"log"
 	"path"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -27,6 +29,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/samber/lo"
+	"github.com/samber/mo"
 )
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
@@ -248,25 +251,45 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // DraftOrder is the resolver for the draftOrder field.
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
-	draftOrderID = fmt.Sprintf("gid://shopify/DraftOrder/%s", draftOrderID)
-	order, err := r.ShopifyClient.GetDraftOrder(ctx, draftOrderID)
+
+	listObjectFuture := mo.NewFuture[*s3.ListObjectsV2Output](func(resolve func(*s3.ListObjectsV2Output), reject func(error)) {
+		result, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+			Bucket: aws.String(service.S3BucketDraftOrder),
+			Prefix: aws.String(draftOrderID),
+		})
+		if err != nil {
+			reject(err)
+			return
+		}
+		resolve(result)
+	})
+
+	globalDraftOrderID := fmt.Sprintf("gid://shopify/DraftOrder/%s", draftOrderID)
+	order, err := r.ShopifyClient.GetDraftOrder(ctx, globalDraftOrderID)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: goroutine
-	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket: aws.String(service.S3BucketSelfService),
-		Prefix: aws.String(draftOrderID),
-	})
+	resp, err := listObjectFuture.Collect()
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
+	}
+	objectMap := make(map[string][]string)
+	for _, content := range resp.Contents {
+		parts := strings.Split(*content.Key, "/")
+		if len(parts) < 2 {
+			continue
+		}
+		key := parts[1]
+		objectMap[key] = append(objectMap[key], *content.Key)
 	}
 
 	return &model.Order{
 		ID:   order.DraftOrder.Id,
 		Name: order.DraftOrder.Name,
 		LineItems: lo.Map(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) *model.LineItem {
+			lineItemId, _ := utils.ExtractID(item.Id)
+			foundImages, _ := objectMap[lineItemId]
 			return &model.LineItem{
 				Product: &model.Product{
 					ID:    item.Id,
@@ -277,8 +300,8 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 					ID:    item.Variant.Id,
 					Title: item.Variant.Title,
 				},
-				Images: lo.Map(resp.Contents, func(item types.Object, _ int) string {
-					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, *item.Key)
+				Images: lo.Map(foundImages, func(item string, _ int) string {
+					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, item)
 				}),
 			}
 		}),
