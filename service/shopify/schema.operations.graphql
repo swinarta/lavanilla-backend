@@ -222,6 +222,7 @@ query GetDraftOrder($id: ID!) {
                 variant {
                     id
                     title
+                    sku
                 }
             }
         }

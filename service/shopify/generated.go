@@ -2316,6 +2316,9 @@ type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrder
 	Id string `json:"id"`
 	// The title of the product variant.
 	Title string `json:"title"`
+	// A case-sensitive identifier for the product variant in the shop.
+	// Required in order to connect to a fulfillment service.
+	Sku string `json:"sku"`
 }
 
 // GetId returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Id, and is useful for accessing the field via an interface.
@@ -2326,6 +2329,11 @@ func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftO
 // GetTitle returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Title, and is useful for accessing the field via an interface.
 func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant) GetTitle() string {
 	return v.Title
+}
+
+// GetSku returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant) GetSku() string {
+	return v.Sku
 }
 
 // GetDraftOrderDraftOrderPaymentTerms includes the requested fields of the GraphQL type PaymentTerms.
@@ -6204,6 +6212,7 @@ query GetDraftOrder ($id: ID!) {
 				variant {
 					id
 					title
+					sku
 				}
 			}
 		}

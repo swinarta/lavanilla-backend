@@ -38,11 +38,11 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) AddTag(ctx context.Context, orderId string, tag string) (*TagsAddResponse, error) {
+func (c *Client) AddTag(ctx context.Context, orderId string, tag metadata.KeyTag) (*TagsAddResponse, error) {
 	return TagsAdd(ctx, c.graphql, orderId, tag)
 }
 
-func (c *Client) RemoveTag(ctx context.Context, orderId string, tag string) (*TagsRemoveResponse, error) {
+func (c *Client) RemoveTag(ctx context.Context, orderId string, tag metadata.KeyTag) (*TagsRemoveResponse, error) {
 	return TagsRemove(ctx, c.graphql, orderId, tag)
 }
 

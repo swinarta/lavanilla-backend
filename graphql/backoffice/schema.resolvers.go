@@ -65,7 +65,7 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 		return false, err
 	}
 
-	tag, err := r.ShopifyClient.AddTag(ctx, id, "DESAINER_IN_PROGRESS")
+	tag, err := r.ShopifyClient.AddTag(ctx, id, metadata.DesignerInProgressKeyName)
 	if err != nil {
 		return false, err
 	}
@@ -105,7 +105,7 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 	if err != nil {
 		return false, err
 	}
-	tag, err := r.ShopifyClient.RemoveTag(ctx, id, "DESAINER_IN_PROGRESS")
+	tag, err := r.ShopifyClient.RemoveTag(ctx, id, metadata.DesignerInProgressKeyName)
 	if err != nil {
 		return false, err
 	}
@@ -327,6 +327,7 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 				Variant: &model.ProductVariant{
 					ID:    item.Variant.Id,
 					Title: item.Variant.Title,
+					Sku:   item.Variant.Sku,
 				},
 				Images: lo.Map(foundImages, func(item string, _ int) string {
 					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, item)
