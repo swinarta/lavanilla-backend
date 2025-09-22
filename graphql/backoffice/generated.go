@@ -47,6 +47,12 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	LineItem struct {
+		Product  func(childComplexity int) int
+		Quantity func(childComplexity int) int
+		Variant  func(childComplexity int) int
+	}
+
 	Mutation struct {
 		DraftOrderAddProductVariant    func(childComplexity int, id string, variantID string, quantity int) int
 		DraftOrderComplete             func(childComplexity int, id string) int
@@ -55,8 +61,9 @@ type ComplexityRoot struct {
 	}
 
 	Order struct {
-		ID   func(childComplexity int) int
-		Name func(childComplexity int) int
+		ID        func(childComplexity int) int
+		LineItems func(childComplexity int) int
+		Name      func(childComplexity int) int
 	}
 
 	PriceRange struct {
@@ -84,8 +91,8 @@ type ComplexityRoot struct {
 	Query struct {
 		DownloadAssetsDesigner      func(childComplexity int, draftOrderID string) int
 		DownloadAssetsPrintOperator func(childComplexity int, orderID string) int
+		DraftOrder                  func(childComplexity int, draftOrderID string) int
 		DraftOrderDesigner          func(childComplexity int, status *model.DraftOrderStatus) int
-		DraftOrderDetailDesigner    func(childComplexity int, draftOrderID string) int
 		PresignedURLDesigner        func(childComplexity int, draftOrderID string, variantID string, qty int) int
 		Product                     func(childComplexity int, id string) int
 		Products                    func(childComplexity int) int
@@ -102,7 +109,7 @@ type QueryResolver interface {
 	Products(ctx context.Context) ([]*model.Product, error)
 	Product(ctx context.Context, id string) (*model.Product, error)
 	DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error)
-	DraftOrderDetailDesigner(ctx context.Context, draftOrderID string) (*model.Order, error)
+	DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error)
 	PresignedURLDesigner(ctx context.Context, draftOrderID string, variantID string, qty int) ([]string, error)
 	DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error)
 	DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error)
@@ -126,6 +133,25 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "LineItem.product":
+		if e.complexity.LineItem.Product == nil {
+			break
+		}
+
+		return e.complexity.LineItem.Product(childComplexity), true
+	case "LineItem.quantity":
+		if e.complexity.LineItem.Quantity == nil {
+			break
+		}
+
+		return e.complexity.LineItem.Quantity(childComplexity), true
+	case "LineItem.variant":
+		if e.complexity.LineItem.Variant == nil {
+			break
+		}
+
+		return e.complexity.LineItem.Variant(childComplexity), true
 
 	case "Mutation.draftOrderAddProductVariant":
 		if e.complexity.Mutation.DraftOrderAddProductVariant == nil {
@@ -178,6 +204,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Order.ID(childComplexity), true
+	case "Order.lineItems":
+		if e.complexity.Order.LineItems == nil {
+			break
+		}
+
+		return e.complexity.Order.LineItems(childComplexity), true
 	case "Order.name":
 		if e.complexity.Order.Name == nil {
 			break
@@ -288,6 +320,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.DownloadAssetsPrintOperator(childComplexity, args["orderId"].(string)), true
+	case "Query.draftOrder":
+		if e.complexity.Query.DraftOrder == nil {
+			break
+		}
+
+		args, err := ec.field_Query_draftOrder_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DraftOrder(childComplexity, args["draftOrderId"].(string)), true
 	case "Query.draftOrderDesigner":
 		if e.complexity.Query.DraftOrderDesigner == nil {
 			break
@@ -299,17 +342,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.DraftOrderDesigner(childComplexity, args["status"].(*model.DraftOrderStatus)), true
-	case "Query.draftOrderDetailDesigner":
-		if e.complexity.Query.DraftOrderDetailDesigner == nil {
-			break
-		}
-
-		args, err := ec.field_Query_draftOrderDetailDesigner_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.DraftOrderDetailDesigner(childComplexity, args["draftOrderId"].(string)), true
 	case "Query.presignedUrlDesigner":
 		if e.complexity.Query.PresignedURLDesigner == nil {
 			break
@@ -572,7 +604,7 @@ func (ec *executionContext) field_Query_draftOrderDesigner_args(ctx context.Cont
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_draftOrderDetailDesigner_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query_draftOrder_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "draftOrderId", ec.unmarshalNID2string)
@@ -666,6 +698,119 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _LineItem_product(ctx context.Context, field graphql.CollectedField, obj *model.LineItem) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_LineItem_product,
+		func(ctx context.Context) (any, error) {
+			return obj.Product, nil
+		},
+		nil,
+		ec.marshalNProduct2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐProduct,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_LineItem_product(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LineItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Product_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Product_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Product_description(ctx, field)
+			case "priceRange":
+				return ec.fieldContext_Product_priceRange(ctx, field)
+			case "images":
+				return ec.fieldContext_Product_images(ctx, field)
+			case "variants":
+				return ec.fieldContext_Product_variants(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Product", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LineItem_variant(ctx context.Context, field graphql.CollectedField, obj *model.LineItem) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_LineItem_variant,
+		func(ctx context.Context) (any, error) {
+			return obj.Variant, nil
+		},
+		nil,
+		ec.marshalOProductVariant2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐProductVariant,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_LineItem_variant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LineItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ProductVariant_id(ctx, field)
+			case "title":
+				return ec.fieldContext_ProductVariant_title(ctx, field)
+			case "sku":
+				return ec.fieldContext_ProductVariant_sku(ctx, field)
+			case "price":
+				return ec.fieldContext_ProductVariant_price(ctx, field)
+			case "image":
+				return ec.fieldContext_ProductVariant_image(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ProductVariant", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _LineItem_quantity(ctx context.Context, field graphql.CollectedField, obj *model.LineItem) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_LineItem_quantity,
+		func(ctx context.Context) (any, error) {
+			return obj.Quantity, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_LineItem_quantity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "LineItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _Mutation_draftOrderStart(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
@@ -778,6 +923,8 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderAddProductVariant(ct
 				return ec.fieldContext_Order_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Order_name(ctx, field)
+			case "lineItems":
+				return ec.fieldContext_Order_lineItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -825,6 +972,8 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderUpdateProductVariant
 				return ec.fieldContext_Order_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Order_name(ctx, field)
+			case "lineItems":
+				return ec.fieldContext_Order_lineItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -896,6 +1045,43 @@ func (ec *executionContext) fieldContext_Order_name(_ context.Context, field gra
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Order_lineItems(ctx context.Context, field graphql.CollectedField, obj *model.Order) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Order_lineItems,
+		func(ctx context.Context) (any, error) {
+			return obj.LineItems, nil
+		},
+		nil,
+		ec.marshalOLineItem2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐLineItemᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Order_lineItems(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "product":
+				return ec.fieldContext_LineItem_product(ctx, field)
+			case "variant":
+				return ec.fieldContext_LineItem_variant(ctx, field)
+			case "quantity":
+				return ec.fieldContext_LineItem_quantity(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type LineItem", field.Name)
 		},
 	}
 	return fc, nil
@@ -1423,6 +1609,8 @@ func (ec *executionContext) fieldContext_Query_draftOrderDesigner(ctx context.Co
 				return ec.fieldContext_Order_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Order_name(ctx, field)
+			case "lineItems":
+				return ec.fieldContext_Order_lineItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1441,15 +1629,15 @@ func (ec *executionContext) fieldContext_Query_draftOrderDesigner(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_draftOrderDetailDesigner(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_draftOrder(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_draftOrderDetailDesigner,
+		ec.fieldContext_Query_draftOrder,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().DraftOrderDetailDesigner(ctx, fc.Args["draftOrderId"].(string))
+			return ec.resolvers.Query().DraftOrder(ctx, fc.Args["draftOrderId"].(string))
 		},
 		nil,
 		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
@@ -1458,7 +1646,7 @@ func (ec *executionContext) _Query_draftOrderDetailDesigner(ctx context.Context,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_draftOrderDetailDesigner(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_draftOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1470,6 +1658,8 @@ func (ec *executionContext) fieldContext_Query_draftOrderDetailDesigner(ctx cont
 				return ec.fieldContext_Order_id(ctx, field)
 			case "name":
 				return ec.fieldContext_Order_name(ctx, field)
+			case "lineItems":
+				return ec.fieldContext_Order_lineItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1481,7 +1671,7 @@ func (ec *executionContext) fieldContext_Query_draftOrderDetailDesigner(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_draftOrderDetailDesigner_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_draftOrder_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -3207,6 +3397,52 @@ func (ec *executionContext) unmarshalInputLineItemInput(ctx context.Context, obj
 
 // region    **************************** object.gotpl ****************************
 
+var lineItemImplementors = []string{"LineItem"}
+
+func (ec *executionContext) _LineItem(ctx context.Context, sel ast.SelectionSet, obj *model.LineItem) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, lineItemImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("LineItem")
+		case "product":
+			out.Values[i] = ec._LineItem_product(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "variant":
+			out.Values[i] = ec._LineItem_variant(ctx, field, obj)
+		case "quantity":
+			out.Values[i] = ec._LineItem_quantity(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -3298,6 +3534,8 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "lineItems":
+			out.Values[i] = ec._Order_lineItems(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3546,7 +3784,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "draftOrderDetailDesigner":
+		case "draftOrder":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3555,7 +3793,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_draftOrderDetailDesigner(ctx, field)
+				res = ec._Query_draftOrder(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -4064,6 +4302,16 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) marshalNLineItem2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐLineItem(ctx context.Context, sel ast.SelectionSet, v *model.LineItem) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._LineItem(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNOrder2lavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder(ctx context.Context, sel ast.SelectionSet, v model.Order) graphql.Marshaler {
 	return ec._Order(ctx, sel, &v)
 }
@@ -4476,6 +4724,53 @@ func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel as
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
+func (ec *executionContext) marshalOLineItem2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐLineItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.LineItem) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNLineItem2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐLineItem(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) marshalOOrder2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrderᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Order) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -4629,6 +4924,13 @@ func (ec *executionContext) marshalOProductVariant2ᚕᚖlavanillaᚋgraphqlᚋb
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOProductVariant2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐProductVariant(ctx context.Context, sel ast.SelectionSet, v *model.ProductVariant) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ProductVariant(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {

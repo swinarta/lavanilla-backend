@@ -9,6 +9,12 @@ import (
 	"strconv"
 )
 
+type LineItem struct {
+	Product  *Product        `json:"product"`
+	Variant  *ProductVariant `json:"variant,omitempty"`
+	Quantity int             `json:"quantity"`
+}
+
 type LineItemInput struct {
 	ID       string `json:"id"`
 	Quantity int    `json:"quantity"`
@@ -18,8 +24,9 @@ type Mutation struct {
 }
 
 type Order struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID        string      `json:"id"`
+	Name      string      `json:"name"`
+	LineItems []*LineItem `json:"lineItems,omitempty"`
 }
 
 type PriceRange struct {

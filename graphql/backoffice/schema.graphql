@@ -2,7 +2,7 @@ type Query {
     products: [Product!]
     product(id: ID!): Product
     draftOrderDesigner(status: DraftOrderStatus): [Order!]
-    draftOrderDetailDesigner(draftOrderId: ID!): Order!
+    draftOrder(draftOrderId: ID!): Order!
     presignedUrlDesigner(draftOrderId: ID!, variantId: ID!, qty: Int!): [URL!]!
     downloadAssetsDesigner(draftOrderId: ID!): URL!
     downloadAssetsPrintOperator(orderId: ID!): URL!
@@ -28,6 +28,13 @@ input LineItemInput {
 type Order{
     id: ID!
     name: String!
+    lineItems: [LineItem!]
+}
+
+type LineItem {
+    product: Product!
+    variant: ProductVariant
+    quantity: Int!
 }
 
 type Product {

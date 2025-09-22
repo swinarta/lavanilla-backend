@@ -6148,7 +6148,7 @@ query GetDraftOrder ($id: ID!) {
 				id
 			}
 		}
-		lineItems(first: 50) {
+		lineItems(first: 100) {
 			nodes {
 				id
 				quantity

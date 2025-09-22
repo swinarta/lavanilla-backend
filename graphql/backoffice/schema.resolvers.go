@@ -245,9 +245,31 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 	}), nil
 }
 
-// DraftOrderDetailDesigner is the resolver for the draftOrderDetailDesigner field.
-func (r *queryResolver) DraftOrderDetailDesigner(ctx context.Context, draftOrderID string) (*model.Order, error) {
-	panic(fmt.Errorf("not implemented: DraftOrderDetailDesigner - draftOrderDetailDesigner"))
+// DraftOrder is the resolver for the draftOrder field.
+func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
+	draftOrderID = fmt.Sprintf("gid://shopify/DraftOrder/%s", draftOrderID)
+	order, err := r.ShopifyClient.GetDraftOrder(ctx, draftOrderID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Order{
+		ID:   order.DraftOrder.Id,
+		Name: order.DraftOrder.Name,
+		LineItems: lo.Map(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) *model.LineItem {
+			return &model.LineItem{
+				Product: &model.Product{
+					ID:    item.Id,
+					Title: item.Title,
+				},
+				Quantity: item.Quantity,
+				Variant: &model.ProductVariant{
+					ID:    item.Variant.Id,
+					Title: item.Variant.Title,
+				},
+			}
+		}),
+	}, nil
 }
 
 // PresignedURLDesigner is the resolver for the presignedUrlDesigner field.
