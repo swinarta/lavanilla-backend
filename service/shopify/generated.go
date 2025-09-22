@@ -2501,17 +2501,15 @@ func (v *GetDraftOrderMetaFieldDraftOrder) GetMetafield() GetDraftOrderMetaField
 type GetDraftOrderMetaFieldDraftOrderMetafield struct {
 	// A globally-unique ID.
 	Id string `json:"id"`
-	// The data stored in the metafield in JSON format.
-	JsonValue map[string]interface{} `json:"jsonValue"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
 }
 
 // GetId returns GetDraftOrderMetaFieldDraftOrderMetafield.Id, and is useful for accessing the field via an interface.
 func (v *GetDraftOrderMetaFieldDraftOrderMetafield) GetId() string { return v.Id }
 
-// GetJsonValue returns GetDraftOrderMetaFieldDraftOrderMetafield.JsonValue, and is useful for accessing the field via an interface.
-func (v *GetDraftOrderMetaFieldDraftOrderMetafield) GetJsonValue() map[string]interface{} {
-	return v.JsonValue
-}
+// GetValue returns GetDraftOrderMetaFieldDraftOrderMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderMetaFieldDraftOrderMetafield) GetValue() string { return v.Value }
 
 // GetDraftOrderMetaFieldResponse is returned by GetDraftOrderMetaField on success.
 type GetDraftOrderMetaFieldResponse struct {
@@ -6197,7 +6195,7 @@ query GetDraftOrderMetaField ($id: ID!, $namespace: String!, $key: String!) {
 	draftOrder(id: $id) {
 		metafield(namespace: $namespace, key: $key) {
 			id
-			jsonValue
+			value
 		}
 	}
 }

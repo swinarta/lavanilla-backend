@@ -10,6 +10,7 @@ import (
 	"lavanilla/service/metadata"
 	"log"
 	"net/http"
+	"reflect"
 
 	"github.com/Khan/genqlient/graphql"
 )
@@ -111,8 +112,24 @@ func (c *Client) MetaDataAdd(ctx context.Context, ownerId string, key metadata.K
 	return MetaDataAdd(ctx, c.graphql, ownerId, NameSpace, key, string(value))
 }
 
-func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, key string) (*GetDraftOrderMetaFieldResponse, error) {
-	return GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, key)
+func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, key string, value any) (*GetDraftOrderMetaFieldResponse, error) {
+	res, err := GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, key)
+	if err != nil {
+		return nil, err
+	}
+
+	rv := reflect.ValueOf(value)
+	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		fmt.Println("value must be a non-nil pointer")
+		return res, nil
+	}
+
+	elem := rv.Elem()
+	newVal := reflect.New(elem.Type().Elem())
+	_ = json.Unmarshal([]byte(res.DraftOrder.Metafield.Value), newVal.Interface())
+	elem.Set(newVal)
+
+	return res, nil
 }
 
 func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, error) {
@@ -121,7 +138,10 @@ func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadat
 		return nil, err
 	}
 	var payload []metadata.Timeline
-	if found == nil {
+	if err := json.Unmarshal([]byte(found.DraftOrder.Metafield.Value), &payload); err != nil {
+		return nil, err
+	}
+	if len(payload) == 0 {
 		payload = []metadata.Timeline{value}
 	}
 	marshal, _ := json.Marshal(payload)

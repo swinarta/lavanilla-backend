@@ -30,17 +30,19 @@ import (
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
 func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool, error) {
-	field, err := r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName)
+	var designerJob *metadata.DesignerJob
+	_, err := r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob)
 	if err != nil {
 		return false, err
 	}
 
-	if len(field.DraftOrder.Metafield.JsonValue) > 0 {
+	if designerJob != nil && designerJob.StartAt != nil {
 		return false, errors.New(fmt.Sprintf("meta fields %s are not empty", metadata.DesignerKeyName))
 	}
 
+	now := time.Now()
 	job := metadata.DesignerJob{
-		StartAt: time.Now(),
+		StartAt: lo.ToPtr(now),
 		EndAt:   nil,
 	}
 
@@ -62,7 +64,7 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 	}
 
 	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
-		Timestamp: time.Now(),
+		Timestamp: now,
 		Action:    "DESIGNER_START",
 	})
 	if err != nil {

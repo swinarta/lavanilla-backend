@@ -3,7 +3,7 @@ package metadata
 import "time"
 
 type DesignerJob struct {
-	StartAt time.Time  `json:"start_at"`
+	StartAt *time.Time `json:"start_at,omitempty"`
 	EndAt   *time.Time `json:"end_at,omitempty"`
 }
 

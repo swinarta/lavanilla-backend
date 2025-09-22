@@ -187,7 +187,7 @@ query GetDraftOrderMetaField($id: ID!, $namespace: String!, $key: String!) {
     draftOrder(id: $id){
         metafield(namespace: $namespace, key: $key){
             id
-            jsonValue
+            value
         }
     }
 }

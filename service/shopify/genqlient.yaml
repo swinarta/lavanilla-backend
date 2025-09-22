@@ -18,4 +18,4 @@ bindings:
   Money:
     type: string
   JSON:
-    type: map[string]interface{}
+    type: string
