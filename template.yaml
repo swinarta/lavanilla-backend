@@ -239,7 +239,7 @@ Outputs:
     Value: !Sub "${LogRetentionInDays} days"
   CloudFrontSelfServiceURL:
     Description: CDN for Self Service
-    Value: !GetAtt CloudFrontDistribution.DomainName
+    Value: !GetAtt CDNSelfService.DomainName
 #  CloudFrontDraftOrderURL:
 #    Description: CDN for Draft Order Bucket
 #    Value: !GetAtt CloudFrontDraftOrderDistribution.DomainName
