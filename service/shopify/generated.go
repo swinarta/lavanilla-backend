@@ -2321,6 +2321,8 @@ type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrder
 	Sku string `json:"sku"`
 	// The price of the product variant in the default shop currency.
 	Price string `json:"price"`
+	// The featured image for the variant.
+	Image GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariantImage `json:"image"`
 }
 
 // GetId returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Id, and is useful for accessing the field via an interface.
@@ -2341,6 +2343,33 @@ func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftO
 // GetPrice returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Price, and is useful for accessing the field via an interface.
 func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant) GetPrice() string {
 	return v.Price
+}
+
+// GetImage returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant.Image, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant) GetImage() GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariantImage {
+	return v.Image
+}
+
+// GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariantImage includes the requested fields of the GraphQL type Image.
+// The GraphQL type's documentation follows.
+//
+// Represents an image resource.
+type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariantImage struct {
+	// The location of the image as a URL.
+	//
+	// If no transform options are specified, then the original image will be preserved including any pre-applied transforms.
+	//
+	// All transformation options are considered "best-effort". Any transformation
+	// that the original image type doesn't support will be ignored.
+	//
+	// If you need multiple variations of the same image, then you can use [GraphQL
+	// aliases](https://graphql.org/learn/queries/#aliases).
+	Url string `json:"url"`
+}
+
+// GetUrl returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariantImage.Url, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariantImage) GetUrl() string {
+	return v.Url
 }
 
 // GetDraftOrderDraftOrderPaymentTerms includes the requested fields of the GraphQL type PaymentTerms.
@@ -6221,6 +6250,9 @@ query GetDraftOrder ($id: ID!) {
 					title
 					sku
 					price
+					image {
+						url
+					}
 				}
 			}
 		}

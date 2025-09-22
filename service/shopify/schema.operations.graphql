@@ -224,6 +224,9 @@ query GetDraftOrder($id: ID!) {
                     title
                     sku
                     price
+                    image {
+                        url
+                    }
                 }
             }
         }
