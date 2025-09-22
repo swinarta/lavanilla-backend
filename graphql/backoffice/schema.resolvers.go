@@ -332,7 +332,7 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 					Price: variantPrice,
 					Image: []string{item.Variant.Image.Url},
 				},
-				Images: lo.Map(foundImages, func(item string, _ int) string {
+				UploadedImages: lo.Map(foundImages, func(item string, _ int) string {
 					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, item)
 				}),
 			}

@@ -35,7 +35,7 @@ type LineItem {
     product: Product!
     variant: ProductVariant
     quantity: Int!
-    images: [URL!]
+    uploadedImages: [URL!]
 }
 
 type Product {

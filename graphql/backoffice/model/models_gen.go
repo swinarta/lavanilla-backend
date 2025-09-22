@@ -10,10 +10,10 @@ import (
 )
 
 type LineItem struct {
-	Product  *Product        `json:"product"`
-	Variant  *ProductVariant `json:"variant,omitempty"`
-	Quantity int             `json:"quantity"`
-	Images   []string        `json:"images,omitempty"`
+	Product        *Product        `json:"product"`
+	Variant        *ProductVariant `json:"variant,omitempty"`
+	Quantity       int             `json:"quantity"`
+	UploadedImages []string        `json:"uploadedImages,omitempty"`
 }
 
 type LineItemInput struct {

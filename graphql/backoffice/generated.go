@@ -48,10 +48,10 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	LineItem struct {
-		Images   func(childComplexity int) int
-		Product  func(childComplexity int) int
-		Quantity func(childComplexity int) int
-		Variant  func(childComplexity int) int
+		Product        func(childComplexity int) int
+		Quantity       func(childComplexity int) int
+		UploadedImages func(childComplexity int) int
+		Variant        func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -135,12 +135,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
-	case "LineItem.images":
-		if e.complexity.LineItem.Images == nil {
-			break
-		}
-
-		return e.complexity.LineItem.Images(childComplexity), true
 	case "LineItem.product":
 		if e.complexity.LineItem.Product == nil {
 			break
@@ -153,6 +147,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.LineItem.Quantity(childComplexity), true
+	case "LineItem.uploadedImages":
+		if e.complexity.LineItem.UploadedImages == nil {
+			break
+		}
+
+		return e.complexity.LineItem.UploadedImages(childComplexity), true
 	case "LineItem.variant":
 		if e.complexity.LineItem.Variant == nil {
 			break
@@ -819,14 +819,14 @@ func (ec *executionContext) fieldContext_LineItem_quantity(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _LineItem_images(ctx context.Context, field graphql.CollectedField, obj *model.LineItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _LineItem_uploadedImages(ctx context.Context, field graphql.CollectedField, obj *model.LineItem) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_LineItem_images,
+		ec.fieldContext_LineItem_uploadedImages,
 		func(ctx context.Context) (any, error) {
-			return obj.Images, nil
+			return obj.UploadedImages, nil
 		},
 		nil,
 		ec.marshalOURL2ᚕstringᚄ,
@@ -835,7 +835,7 @@ func (ec *executionContext) _LineItem_images(ctx context.Context, field graphql.
 	)
 }
 
-func (ec *executionContext) fieldContext_LineItem_images(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_LineItem_uploadedImages(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "LineItem",
 		Field:      field,
@@ -1116,8 +1116,8 @@ func (ec *executionContext) fieldContext_Order_lineItems(_ context.Context, fiel
 				return ec.fieldContext_LineItem_variant(ctx, field)
 			case "quantity":
 				return ec.fieldContext_LineItem_quantity(ctx, field)
-			case "images":
-				return ec.fieldContext_LineItem_images(ctx, field)
+			case "uploadedImages":
+				return ec.fieldContext_LineItem_uploadedImages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type LineItem", field.Name)
 		},
@@ -3458,8 +3458,8 @@ func (ec *executionContext) _LineItem(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "images":
-			out.Values[i] = ec._LineItem_images(ctx, field, obj)
+		case "uploadedImages":
+			out.Values[i] = ec._LineItem_uploadedImages(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
