@@ -266,7 +266,7 @@ Resources:
               Resource:
                 - !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
                 - !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
-                - !Sub "${LaVanillaTempBucket.Arn}/*"
+                - !Sub "${TempBucket.Arn}/*"
             - Effect: Allow
               Action:
                 - s3:ListBucket
