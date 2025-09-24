@@ -157,11 +157,17 @@ Resources:
         App: LaVanillaApp
 
   # CloudWatch Log Groups with retention policy
-  GraphqlLogGroup:
+  SelfServiceGraphqlLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Retain
     Properties:
       LogGroupName: !Sub "/aws/lambda/${SelfServiceGraphql}"
+      RetentionInDays: 7
+  SelfQueueGraphqlLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${SelfQueueGraphql}"
       RetentionInDays: 7
 
   SelfServiceGraphql:
