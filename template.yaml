@@ -110,6 +110,7 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
 
+  # start CDN
   CDNSelfService:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -146,6 +147,7 @@ Resources:
             DomainName: !GetAtt LaVanillaDraftOrderBucket.DomainName
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
+  # end CDN
 
   LaVanillaApi:
     Type: AWS::Serverless::Api
@@ -159,10 +161,10 @@ Resources:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Retain
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${LaVanillaSelfServiceGraphql}"
+      LogGroupName: !Sub "/aws/lambda/${SelfServiceGraphql}"
       RetentionInDays: 7
 
-  LaVanillaSelfServiceGraphql:
+  SelfServiceGraphql:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Metadata:
       BuildMethod: go1.x
