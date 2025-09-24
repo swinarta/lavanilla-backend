@@ -20,6 +20,7 @@ Globals:
     MemorySize: 128
     LoggingConfig:
       LogFormat: JSON
+      LogGroup: !Sub "/aws/lambda/lavanilla-backend-${StageName}"
 
 Resources:
   LaVanillaTempBucket:
@@ -156,20 +157,6 @@ Resources:
       Tags:
         App: LaVanillaApp
 
-  # CloudWatch Log Groups with retention policy
-  SelfServiceGraphqlLogGroup:
-    Type: AWS::Logs::LogGroup
-    DeletionPolicy: Delete
-    Properties:
-      LogGroupName: !Sub "/aws/lambda/${SelfServiceGraphql}"
-      RetentionInDays: 7
-  SelfQueueGraphqlLogGroup:
-    Type: AWS::Logs::LogGroup
-    DeletionPolicy: Delete
-    Properties:
-      LogGroupName: !Sub "/aws/lambda/${SelfQueueGraphql}"
-      RetentionInDays: 7
-
   SelfServiceGraphql:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Metadata:
@@ -194,6 +181,13 @@ Resources:
               Action:
                 - s3:ListBucket
               Resource: !GetAtt LaVanillaSelfServiceBucket.Arn
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:PutRetentionPolicy
+              Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
       Tags:
         App: LaVanillaApp
 
@@ -228,6 +222,13 @@ Resources:
               Action:
                 - s3:ListBucket
               Resource: !GetAtt LaVanillaSelfServiceBucket.Arn
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:PutRetentionPolicy
+              Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
       Tags:
         App: LaVanillaApp
 
@@ -266,6 +267,13 @@ Resources:
               Resource:
                 - !GetAtt LaVanillaSelfServiceBucket.Arn
                 - !GetAtt LaVanillaDraftOrderBucket.Arn
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:PutRetentionPolicy
+              Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
       Tags:
         App: LaVanillaApp
 
