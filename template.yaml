@@ -25,6 +25,8 @@ Globals:
 Resources:
   TempBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub "la-vanilla-temp-${StageName}"
       VersioningConfiguration:
@@ -48,6 +50,8 @@ Resources:
           Value: LaVanillaApp
   LaVanillaDraftOrderBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub "la-vanilla-draft-order-${StageName}"
       VersioningConfiguration:
@@ -66,6 +70,8 @@ Resources:
           Value: LaVanillaApp
   LaVanillaSelfServiceBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub "la-vanilla-self-service-${StageName}"
       VersioningConfiguration:
@@ -260,7 +266,7 @@ Resources:
               Resource:
                 - !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
                 - !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
-                - !Sub "${TempBucket.Arn}/*"
+                - !Sub "${LaVanillaTempBucket.Arn}/*"
             - Effect: Allow
               Action:
                 - s3:ListBucket
