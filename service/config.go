@@ -15,7 +15,7 @@ const (
 )
 
 const (
-	S3BucketDraftOrder = "la-vanilla-draft-order-dev"
+	S3BucketDraftOrder = "la-vanilla-order-dev"
 	CdnDraftOrder      = "https://d3f5jfelg31zmw.cloudfront.net"
-	S3BucketTemp       = "la-vanilla-temp-dev"
+	S3BucketTemp       = "la-vanilla-tmp-dev"
 )
