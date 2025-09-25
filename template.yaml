@@ -48,12 +48,12 @@ Resources:
       Tags:
         - Key: App
           Value: LaVanillaApp
-  LaVanillaDraftOrderBucket:
+  OrderBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      BucketName: !Sub "la-vanilla-draft-order-${StageName}"
+      BucketName: !Sub "la-vanilla-order-${StageName}"
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:
@@ -108,14 +108,14 @@ Resources:
   DraftOrderBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref LaVanillaDraftOrderBucket
+      Bucket: !Ref OrderBucket
       PolicyDocument:
         Statement:
           - Effect: Allow
             Principal:
               CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
             Action: s3:GetObject
-            Resource: !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
+            Resource: !Sub "${OrderBucket.Arn}/*"
 
   # start CDN
   CDNSelfService:
@@ -151,7 +151,7 @@ Resources:
             QueryString: false
         Origins:
           - Id: s3draftorderorigin
-            DomainName: !GetAtt LaVanillaDraftOrderBucket.DomainName
+            DomainName: !GetAtt OrderBucket.DomainName
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
   # end CDN
@@ -264,7 +264,7 @@ Resources:
                 - s3:GetObject
                 - s3:DeleteObject
               Resource:
-                - !Sub "${LaVanillaDraftOrderBucket.Arn}/*"
+                - !Sub "${OrderBucket.Arn}/*"
                 - !Sub "${LaVanillaSelfServiceBucket.Arn}/*"
                 - !Sub "${TempBucket.Arn}/*"
             - Effect: Allow
@@ -272,7 +272,7 @@ Resources:
                 - s3:ListBucket
               Resource:
                 - !GetAtt LaVanillaSelfServiceBucket.Arn
-                - !GetAtt LaVanillaDraftOrderBucket.Arn
+                - !GetAtt OrderBucket.Arn
             - Effect: Allow
               Action:
                 - logs:CreateLogGroup
