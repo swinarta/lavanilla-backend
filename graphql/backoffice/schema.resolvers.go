@@ -19,6 +19,7 @@ import (
 	"lavanilla/service/shopify"
 	"lavanilla/utils"
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
 	"sync"
@@ -336,7 +337,7 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 					Image: []string{item.Variant.Image.Url},
 				},
 				UploadedImages: lo.Map(foundImages, func(item string, _ int) string {
-					return fmt.Sprintf("%s/%s", service.CdnOrder, item)
+					return fmt.Sprintf("%s/%s", service.CdnOrder, url.QueryEscape(item))
 				}),
 			}
 		}),
