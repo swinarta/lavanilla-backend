@@ -13,7 +13,6 @@ require (
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/gin-gonic/gin v1.11.0
 	github.com/samber/lo v1.51.0
-	github.com/samber/mo v1.15.0
 	github.com/vektah/gqlparser/v2 v2.5.30
 )
 

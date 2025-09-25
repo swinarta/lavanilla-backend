@@ -293,7 +293,7 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // DraftOrder is the resolver for the draftOrder field.
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
-	globalDraftOrderID := fmt.Sprintf("gid://shopify/DraftOrder/%s", draftOrderID)
+	globalDraftOrderID := utils.GetGlobalDraftOrderId(draftOrderID)
 	order, err := r.ShopifyClient.GetDraftOrder(ctx, globalDraftOrderID)
 	if err != nil {
 		return nil, err
@@ -411,12 +411,12 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 		close(results)
 	}()
 
-	url, err := utils.CreateZipArchive(ctx, draftOrderID, r.S3Client, r.S3PresignClient, results)
+	urlResp, err := utils.CreateZipArchive(ctx, draftOrderID, r.S3Client, r.S3PresignClient, results)
 	if err != nil {
 		return "", fmt.Errorf("failed to create zip archive: %w", err)
 	}
 
-	return *url, nil
+	return *urlResp, nil
 }
 
 // OrderPrintOperator is the resolver for the orderPrintOperator field.
@@ -447,6 +447,13 @@ func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID
 		return "", errors.New("no assets to download")
 	}
 
+	globalOrderID := utils.GetGlobalOrderId(orderID)
+	order, err := r.ShopifyClient.GetOrder(ctx, globalOrderID)
+	if err != nil {
+		return "", err
+	}
+
+	orderName := order.Order.Name
 	results := make(chan utils.FileData)
 	var wg sync.WaitGroup
 	for _, content := range resp.Contents {
@@ -471,7 +478,13 @@ func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID
 				results <- utils.FileData{Key: *content.Key, Err: err}
 				return
 			}
-			results <- utils.FileData{Key: *content.Key, Data: buf.Bytes()}
+			// replace order id with short order name
+			filename := *content.Key
+			parts := strings.Split(filename, "/")
+			if len(parts) > 0 {
+				parts[0] = orderName
+			}
+			results <- utils.FileData{Key: strings.Join(parts, "/"), Data: buf.Bytes()}
 		}(content)
 	}
 
@@ -480,12 +493,12 @@ func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID
 		close(results)
 	}()
 
-	url, err := utils.CreateZipArchive(ctx, orderID, r.S3Client, r.S3PresignClient, results)
+	urlResp, err := utils.CreateZipArchive(ctx, orderID, r.S3Client, r.S3PresignClient, results)
 	if err != nil {
 		return "", fmt.Errorf("failed to create zip archive: %w", err)
 	}
 
-	return *url, nil
+	return *urlResp, nil
 }
 
 // Mutation returns MutationResolver implementation.

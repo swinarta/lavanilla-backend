@@ -5,6 +5,14 @@ import (
 	"strings"
 )
 
+func GetGlobalDraftOrderId(draftOrderID string) string {
+	return fmt.Sprintf("gid://shopify/DraftOrder/%s", draftOrderID)
+}
+
+func GetGlobalOrderId(orderID string) string {
+	return fmt.Sprintf("gid://shopify/Order/%s", orderID)
+}
+
 func ExtractIDWithPrefix(gid string, prefix string) (string, string, error) {
 	parts := strings.Split(gid, "/")
 	if len(parts) == 0 {

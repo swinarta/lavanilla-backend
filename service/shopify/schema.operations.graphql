@@ -195,6 +195,13 @@ query GetOrders($query: String) {
     }
 }
 
+query GetOrder($orderId: ID!) {
+    order(id: $orderId) {
+        id
+        name
+    }
+}
+
 query GetDraftOrders($query: String) {
     draftOrders(first: 50, sortKey: UPDATED_AT, reverse: false, query: $query) {
         nodes {

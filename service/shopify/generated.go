@@ -3011,6 +3011,86 @@ type GetFulfillmentResponse struct {
 // GetFulfillment returns GetFulfillmentResponse.Fulfillment, and is useful for accessing the field via an interface.
 func (v *GetFulfillmentResponse) GetFulfillment() GetFulfillmentFulfillment { return v.Fulfillment }
 
+// GetOrderOrder includes the requested fields of the GraphQL type Order.
+// The GraphQL type's documentation follows.
+//
+// The `Order` object represents a customer's request to purchase one or more
+// products from a store. Use the `Order` object to handle the complete purchase
+// lifecycle from checkout to fulfillment.
+//
+// Use the `Order` object when you need to:
+//
+// - Display order details on customer account pages or admin dashboards.
+// - Create orders for phone sales, wholesale customers, or subscription services.
+// - Update order information like shipping addresses, notes, or fulfillment status.
+// - Process returns, exchanges, and partial refunds.
+// - Generate invoices, receipts, and shipping labels.
+//
+// The `Order` object serves as the central hub connecting customer information,
+// product details, payment processing, and fulfillment data within the GraphQL
+// Admin API schema.
+//
+// > Note:
+// > Only the last 60 days' worth of orders from a store are accessible from the
+// `Order` object by default. If you want to access older records,
+// > then you need to [request access to all
+// orders](https://shopify.dev/docs/api/usage/access-scopes#orders-permissions). If
+// your app is granted
+// > access, then you can add the `read_all_orders`, `read_orders`, and `write_orders` scopes.
+//
+// > Caution:
+// > Only use orders data if it's required for your app's functionality. Shopify
+// will restrict [access to scopes](https://shopify.dev/docs/api/usage/access-scopes#requesting-specific-permissions)
+// for apps that don't have a legitimate use for the associated data.
+//
+// Learn more about [building apps for orders and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment).
+type GetOrderOrder struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The unique identifier for the order that appears on the order page in the Shopify admin and the **Order status** page.
+	// For example, "#1001", "EN1001", or "1001-A".
+	// This value isn't unique across multiple stores. Use this field to identify
+	// orders in the Shopify admin and for order tracking.
+	Name string `json:"name"`
+}
+
+// GetId returns GetOrderOrder.Id, and is useful for accessing the field via an interface.
+func (v *GetOrderOrder) GetId() string { return v.Id }
+
+// GetName returns GetOrderOrder.Name, and is useful for accessing the field via an interface.
+func (v *GetOrderOrder) GetName() string { return v.Name }
+
+// GetOrderResponse is returned by GetOrder on success.
+type GetOrderResponse struct {
+	// The `order` query retrieves an
+	// [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/order) by
+	// its ID. This query provides access to comprehensive order information such as
+	// customer details, line items, financial data, and fulfillment status.
+	//
+	// Use the `order` query to retrieve information associated with the following processes:
+	//
+	// - [Order management and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment/order-management-apps)
+	// - [Financial reporting](https://help.shopify.com/manual/finance)
+	// - [Customer purchase history](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/customers-reports)
+	// and [transaction analysis](https://shopify.dev/docs/apps/launch/billing/view-charges-earnings#transaction-data-through-the-graphql-admin-api)
+	// - [Shipping](https://shopify.dev/docs/apps/build/checkout/delivery-shipping) and [inventory management](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps)
+	//
+	// You can only retrieve the last 60 days worth of orders from a store by
+	// default. If you want to access older orders, then you need to [request access to all
+	// orders](https://shopify.dev/docs/api/usage/access-scopes#orders-permissions).
+	//
+	// For large order datasets, consider using [bulk operations](https://shopify.dev/docs/api/usage/bulk-operations/queries).
+	// Bulk operations handle pagination automatically and allow you to retrieve data
+	// asynchronously without being constrained by API rate limits.
+	// Learn more about [creating orders](https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate)
+	// and [building order management
+	// apps](https://shopify.dev/docs/apps/build/orders-fulfillment).
+	Order GetOrderOrder `json:"order"`
+}
+
+// GetOrder returns GetOrderResponse.Order, and is useful for accessing the field via an interface.
+func (v *GetOrderResponse) GetOrder() GetOrderOrder { return v.Order }
+
 // GetOrdersOrdersOrderConnection includes the requested fields of the GraphQL type OrderConnection.
 // The GraphQL type's documentation follows.
 //
@@ -6163,6 +6243,14 @@ type __GetFulfillmentOrderInput struct {
 // GetId returns __GetFulfillmentOrderInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetFulfillmentOrderInput) GetId() string { return v.Id }
 
+// __GetOrderInput is used internally by genqlient
+type __GetOrderInput struct {
+	OrderId string `json:"orderId"`
+}
+
+// GetOrderId returns __GetOrderInput.OrderId, and is useful for accessing the field via an interface.
+func (v *__GetOrderInput) GetOrderId() string { return v.OrderId }
+
 // __GetOrdersInput is used internally by genqlient
 type __GetOrdersInput struct {
 	Query string `json:"query"`
@@ -6601,6 +6689,41 @@ func GetFulfillmentOrder(
 	}
 
 	data_ = &GetFulfillmentOrderResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetOrder.
+const GetOrder_Operation = `
+query GetOrder ($orderId: ID!) {
+	order(id: $orderId) {
+		id
+		name
+	}
+}
+`
+
+func GetOrder(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	orderId string,
+) (data_ *GetOrderResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetOrder",
+		Query:  GetOrder_Operation,
+		Variables: &__GetOrderInput{
+			OrderId: orderId,
+		},
+	}
+
+	data_ = &GetOrderResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
