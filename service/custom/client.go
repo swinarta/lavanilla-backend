@@ -44,6 +44,7 @@ func (c *Client) DraftOrderCreate(ctx context.Context, input model.OrderInput, c
 		}),
 		Tags: []string{
 			"DESAINER",
+			"LVN-APP",
 		},
 		PaymentTerms: PaymentTermsInput{
 			PaymentTermsTemplateId: "gid://shopify/PaymentTermsTemplate/1",
