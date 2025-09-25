@@ -1561,11 +1561,21 @@ func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder
 type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder struct {
 	// A globally-unique ID.
 	Id string `json:"id"`
+	// The unique identifier for the order that appears on the order page in the Shopify admin and the **Order status** page.
+	// For example, "#1001", "EN1001", or "1001-A".
+	// This value isn't unique across multiple stores. Use this field to identify
+	// orders in the Shopify admin and for order tracking.
+	Name string `json:"name"`
 }
 
 // GetId returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder.Id, and is useful for accessing the field via an interface.
 func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder) GetId() string {
 	return v.Id
+}
+
+// GetName returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder.Name, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder) GetName() string {
+	return v.Name
 }
 
 // DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
@@ -6270,6 +6280,7 @@ mutation DraftOrderComplete ($id: ID!) {
 			name
 			order {
 				id
+				name
 			}
 		}
 		userErrors {

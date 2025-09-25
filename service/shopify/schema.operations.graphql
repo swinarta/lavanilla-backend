@@ -33,6 +33,7 @@ mutation DraftOrderComplete($id: ID!) {
             name
             order {
                 id
+                name
             }
         }
         userErrors {

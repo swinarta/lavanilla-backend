@@ -84,13 +84,13 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 		return false, err
 	}
 
-	newOrderId, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
+	newOrderName, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Name)
 	if err != nil {
 		return false, err
 	}
 
 	// rename from draftOrder.name to order.id
-	if err := S3util.RenameS3Directory(ctx, r.S3Client, service.S3BucketDraftOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", newOrderId)); err != nil {
+	if err := S3util.RenameS3Directory(ctx, r.S3Client, service.S3BucketDraftOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", newOrderName)); err != nil {
 		return false, err
 	}
 
