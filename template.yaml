@@ -28,7 +28,7 @@ Resources:
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      BucketName: !Sub "la-vanilla-temp-${StageName}"
+      BucketName: !Sub "la-vanilla-tmp-${StageName}"
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:
