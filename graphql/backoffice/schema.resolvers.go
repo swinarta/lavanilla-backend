@@ -84,13 +84,13 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 		return false, err
 	}
 
-	newOrderName, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Name)
+	newOrderId, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
 	if err != nil {
 		return false, err
 	}
 
 	// rename from draftOrder.name to order.id
-	if err := S3util.RenameS3Directory(ctx, r.S3Client, service.S3BucketDraftOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", newOrderName)); err != nil {
+	if err := S3util.RenameS3Directory(ctx, r.S3Client, service.S3BucketOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", newOrderId)); err != nil {
 		return false, err
 	}
 
@@ -294,7 +294,7 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
 	listObjectFuture := mo.NewFuture[*s3.ListObjectsV2Output](func(resolve func(*s3.ListObjectsV2Output), reject func(error)) {
 		result, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-			Bucket: aws.String(service.S3BucketDraftOrder),
+			Bucket: aws.String(service.S3BucketOrder),
 			Prefix: aws.String(draftOrderID),
 		})
 		if err != nil {
@@ -344,7 +344,7 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 					Image: []string{item.Variant.Image.Url},
 				},
 				UploadedImages: lo.Map(foundImages, func(item string, _ int) string {
-					return fmt.Sprintf("%s/%s", service.CdnDraftOrder, item)
+					return fmt.Sprintf("%s/%s", service.CdnOrder, item)
 				}),
 			}
 		}),
@@ -357,7 +357,7 @@ func (r *queryResolver) PresignedURLDesigner(ctx context.Context, orderName stri
 	for i := 0; i < qty; i++ {
 		filename := fmt.Sprintf("%s/%s/%d.jpeg", orderName, sku, time.Now().Unix()+1)
 		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-			Bucket:      aws.String(service.S3BucketDraftOrder),
+			Bucket:      aws.String(service.S3BucketOrder),
 			ContentType: aws.String("image/jpeg"),
 			Key:         aws.String(filename),
 		}, func(options *s3.PresignOptions) {
@@ -442,7 +442,57 @@ func (r *queryResolver) OrderPrintOperator(ctx context.Context) ([]*model.Order,
 
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.
 func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
-	panic(fmt.Errorf("not implemented: DownloadAssetsPrintOperator - downloadAssetsPrintOperator"))
+	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket: aws.String(service.S3BucketOrder),
+		Prefix: aws.String(orderID),
+	})
+	if err != nil {
+		return "", errors.New(fmt.Sprintf("failed to list objects: %v", err))
+	}
+
+	if len(resp.Contents) <= 0 {
+		return "", errors.New("no assets to download")
+	}
+
+	results := make(chan utils.FileData)
+	var wg sync.WaitGroup
+	for _, content := range resp.Contents {
+		wg.Add(1)
+
+		go func(content types.Object) {
+			defer wg.Done()
+			obj, err := r.S3Client.GetObject(ctx, &s3.GetObjectInput{
+				Bucket: aws.String(service.S3BucketOrder),
+				Key:    content.Key,
+			})
+			if err != nil {
+				log.Printf("failed to get object %s: %v\n", *content.Key, err)
+				results <- utils.FileData{Key: *content.Key, Err: err}
+				return
+			}
+			defer obj.Body.Close()
+
+			buf := new(bytes.Buffer)
+			_, err = io.Copy(buf, obj.Body)
+			if err != nil {
+				results <- utils.FileData{Key: *content.Key, Err: err}
+				return
+			}
+			results <- utils.FileData{Key: *content.Key, Data: buf.Bytes()}
+		}(content)
+	}
+
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	url, err := utils.CreateZipArchive(ctx, orderID, r.S3Client, r.S3PresignClient, results)
+	if err != nil {
+		return "", fmt.Errorf("failed to create zip archive: %w", err)
+	}
+
+	return *url, nil
 }
 
 // Mutation returns MutationResolver implementation.
