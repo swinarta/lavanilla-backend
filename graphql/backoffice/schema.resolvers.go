@@ -15,6 +15,7 @@ import (
 	"lavanilla/service"
 	"lavanilla/service/custom"
 	"lavanilla/service/metadata"
+	S3util "lavanilla/service/s3util"
 	"lavanilla/service/shopify"
 	"lavanilla/utils"
 	"log"
@@ -78,10 +79,19 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
 func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
-	_, err := r.ShopifyClient.DraftOrderComplete(ctx, id)
+	order, err := r.ShopifyClient.DraftOrderComplete(ctx, id)
 	if err != nil {
 		return false, err
 	}
+
+	newOrderId, _ := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
+	log.Println("DraftOrderComplete:", newOrderId)
+
+	// rename from draftOrder.name to order.id
+	if err := S3util.RenameS3Directory(ctx, r.S3Client, service.S3BucketDraftOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Order.Id)); err != nil {
+		return false, err
+	}
+
 	now := time.Now()
 	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
 		Timestamp: now,

@@ -30,6 +30,10 @@ mutation DraftOrderComplete($id: ID!) {
     draftOrderComplete(id: $id){
         draftOrder {
             id
+            name
+            order {
+                id
+            }
         }
         userErrors {
             field
