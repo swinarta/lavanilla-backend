@@ -62,7 +62,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		return nil, errors.New(resp.DraftOrderCreate.UserErrors[0].Message)
 	}
 
-	id, _ := utils.ExtractID(resp.DraftOrderCreate.DraftOrder.Id)
+	id, _, _ := utils.ExtractID(resp.DraftOrderCreate.DraftOrder.Id)
 	hash := sha256.Sum256([]byte(id))
 	token := hex.EncodeToString(hash[:])
 

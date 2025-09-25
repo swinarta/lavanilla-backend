@@ -94,6 +94,7 @@ type ComplexityRoot struct {
 		DownloadAssetsPrintOperator func(childComplexity int, orderID string) int
 		DraftOrder                  func(childComplexity int, draftOrderID string) int
 		DraftOrderDesigner          func(childComplexity int, status *model.DraftOrderStatus) int
+		OrderPrintOperator          func(childComplexity int) int
 		PresignedURLDesigner        func(childComplexity int, orderName string, sku string, qty int) int
 		Product                     func(childComplexity int, id string) int
 		Products                    func(childComplexity int) int
@@ -113,6 +114,7 @@ type QueryResolver interface {
 	DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error)
 	PresignedURLDesigner(ctx context.Context, orderName string, sku string, qty int) ([]string, error)
 	DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error)
+	OrderPrintOperator(ctx context.Context) ([]*model.Order, error)
 	DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error)
 }
 
@@ -349,6 +351,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.DraftOrderDesigner(childComplexity, args["status"].(*model.DraftOrderStatus)), true
+	case "Query.orderPrintOperator":
+		if e.complexity.Query.OrderPrintOperator == nil {
+			break
+		}
+
+		return e.complexity.Query.OrderPrintOperator(childComplexity), true
 	case "Query.presignedUrlDesigner":
 		if e.complexity.Query.PresignedURLDesigner == nil {
 			break
@@ -1794,6 +1802,43 @@ func (ec *executionContext) fieldContext_Query_downloadAssetsDesigner(ctx contex
 	if fc.Args, err = ec.field_Query_downloadAssetsDesigner_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orderPrintOperator(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_orderPrintOperator,
+		func(ctx context.Context) (any, error) {
+			return ec.resolvers.Query().OrderPrintOperator(ctx)
+		},
+		nil,
+		ec.marshalOOrder2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrderᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_orderPrintOperator(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Order_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Order_name(ctx, field)
+			case "lineItems":
+				return ec.fieldContext_Order_lineItems(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -3881,6 +3926,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "orderPrintOperator":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orderPrintOperator(ctx, field)
 				return res
 			}
 

@@ -3001,6 +3001,100 @@ type GetFulfillmentResponse struct {
 // GetFulfillment returns GetFulfillmentResponse.Fulfillment, and is useful for accessing the field via an interface.
 func (v *GetFulfillmentResponse) GetFulfillment() GetFulfillmentFulfillment { return v.Fulfillment }
 
+// GetOrdersOrdersOrderConnection includes the requested fields of the GraphQL type OrderConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Orders.
+type GetOrdersOrdersOrderConnection struct {
+	// A list of nodes that are contained in OrderEdge. You can fetch data about an
+	// individual node, or you can follow the edges to fetch data about a collection
+	// of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetOrdersOrdersOrderConnectionNodesOrder `json:"nodes"`
+}
+
+// GetNodes returns GetOrdersOrdersOrderConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnection) GetNodes() []GetOrdersOrdersOrderConnectionNodesOrder {
+	return v.Nodes
+}
+
+// GetOrdersOrdersOrderConnectionNodesOrder includes the requested fields of the GraphQL type Order.
+// The GraphQL type's documentation follows.
+//
+// The `Order` object represents a customer's request to purchase one or more
+// products from a store. Use the `Order` object to handle the complete purchase
+// lifecycle from checkout to fulfillment.
+//
+// Use the `Order` object when you need to:
+//
+// - Display order details on customer account pages or admin dashboards.
+// - Create orders for phone sales, wholesale customers, or subscription services.
+// - Update order information like shipping addresses, notes, or fulfillment status.
+// - Process returns, exchanges, and partial refunds.
+// - Generate invoices, receipts, and shipping labels.
+//
+// The `Order` object serves as the central hub connecting customer information,
+// product details, payment processing, and fulfillment data within the GraphQL
+// Admin API schema.
+//
+// > Note:
+// > Only the last 60 days' worth of orders from a store are accessible from the
+// `Order` object by default. If you want to access older records,
+// > then you need to [request access to all
+// orders](https://shopify.dev/docs/api/usage/access-scopes#orders-permissions). If
+// your app is granted
+// > access, then you can add the `read_all_orders`, `read_orders`, and `write_orders` scopes.
+//
+// > Caution:
+// > Only use orders data if it's required for your app's functionality. Shopify
+// will restrict [access to scopes](https://shopify.dev/docs/api/usage/access-scopes#requesting-specific-permissions)
+// for apps that don't have a legitimate use for the associated data.
+//
+// Learn more about [building apps for orders and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment).
+type GetOrdersOrdersOrderConnectionNodesOrder struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The unique identifier for the order that appears on the order page in the Shopify admin and the **Order status** page.
+	// For example, "#1001", "EN1001", or "1001-A".
+	// This value isn't unique across multiple stores. Use this field to identify
+	// orders in the Shopify admin and for order tracking.
+	Name string `json:"name"`
+	// The email address associated with the customer for this order.
+	// Used for sending order confirmations, shipping notifications, and other order-related communications.
+	// Returns `null` if no email address was provided during checkout.
+	Email string `json:"email"`
+	// The phone number associated with the customer for this order.
+	// Useful for contacting customers about shipping updates, delivery notifications, or order issues.
+	// Returns `null` if no phone number was provided during checkout.
+	Phone string `json:"phone"`
+}
+
+// GetId returns GetOrdersOrdersOrderConnectionNodesOrder.Id, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetId() string { return v.Id }
+
+// GetName returns GetOrdersOrdersOrderConnectionNodesOrder.Name, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetName() string { return v.Name }
+
+// GetEmail returns GetOrdersOrdersOrderConnectionNodesOrder.Email, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetEmail() string { return v.Email }
+
+// GetPhone returns GetOrdersOrdersOrderConnectionNodesOrder.Phone, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetPhone() string { return v.Phone }
+
+// GetOrdersResponse is returned by GetOrders on success.
+type GetOrdersResponse struct {
+	// Returns a list of
+	// [orders](https://shopify.dev/api/admin-graphql/latest/objects/Order) placed in
+	// the store, including data such as order status, customer, and line item details.
+	// Use the `orders` query to build reports, analyze sales performance, or
+	// automate fulfillment workflows. The `orders` query supports
+	// [pagination](https://shopify.dev/docs/api/usage/pagination-graphql),
+	// [sorting](https://shopify.dev/docs/api/admin-graphql/latest/queries/orders#argument-sortkey), and [filtering](https://shopify.dev/docs/api/admin-graphql/latest/queries/orders#argument-query).
+	Orders GetOrdersOrdersOrderConnection `json:"orders"`
+}
+
+// GetOrders returns GetOrdersResponse.Orders, and is useful for accessing the field via an interface.
+func (v *GetOrdersResponse) GetOrders() GetOrdersOrdersOrderConnection { return v.Orders }
+
 // GetProductProduct includes the requested fields of the GraphQL type Product.
 // The GraphQL type's documentation follows.
 //
@@ -6059,6 +6153,14 @@ type __GetFulfillmentOrderInput struct {
 // GetId returns __GetFulfillmentOrderInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetFulfillmentOrderInput) GetId() string { return v.Id }
 
+// __GetOrdersInput is used internally by genqlient
+type __GetOrdersInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __GetOrdersInput.Query, and is useful for accessing the field via an interface.
+func (v *__GetOrdersInput) GetQuery() string { return v.Query }
+
 // __GetProductInput is used internally by genqlient
 type __GetProductInput struct {
 	Id string `json:"id"`
@@ -6488,6 +6590,45 @@ func GetFulfillmentOrder(
 	}
 
 	data_ = &GetFulfillmentOrderResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetOrders.
+const GetOrders_Operation = `
+query GetOrders ($query: String) {
+	orders(first: 50, sortKey: CREATED_AT, reverse: false, query: $query) {
+		nodes {
+			id
+			name
+			email
+			phone
+		}
+	}
+}
+`
+
+func GetOrders(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *GetOrdersResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetOrders",
+		Query:  GetOrders_Operation,
+		Variables: &__GetOrdersInput{
+			Query: query,
+		},
+	}
+
+	data_ = &GetOrdersResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

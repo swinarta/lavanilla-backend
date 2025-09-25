@@ -84,7 +84,7 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 		return false, err
 	}
 
-	newOrderId, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
+	newOrderId, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
 	if err != nil {
 		return false, err
 	}
@@ -424,6 +424,20 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 	}
 
 	return *url, nil
+}
+
+// OrderPrintOperator is the resolver for the orderPrintOperator field.
+func (r *queryResolver) OrderPrintOperator(ctx context.Context) ([]*model.Order, error) {
+	orders, err := r.ShopifyClient.GetOrders(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return lo.Map(orders.Orders.Nodes, func(item shopify.GetOrdersOrdersOrderConnectionNodesOrder, _ int) *model.Order {
+		return &model.Order{
+			ID:   item.Id,
+			Name: item.Name,
+		}
+	}), nil
 }
 
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.

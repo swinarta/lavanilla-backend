@@ -87,6 +87,25 @@ func (c *Client) DraftOrderUpdate(ctx context.Context, id string, input DraftOrd
 	return DraftOrderUpdate(ctx, c.graphql, id, input)
 }
 
+func (c *Client) GetOrders(ctx context.Context) (*GetOrdersResponse, error) {
+	query := "tag:LVN-APP AND financial_status:paid"
+	// if tag != nil {
+	// 	query = fmt.Sprintf("tag:%s", *tag)
+	// }
+	// if status != nil {
+	// 	if query != "" {
+	// 		query += " AND "
+	// 	}
+	// 	if *status == model.DraftOrderStatusOpen {
+	// 		query += "status:OPEN"
+	// 	}
+	// 	if *status == model.DraftOrderStatusCompleted {
+	// 		query += "status:COMPLETED"
+	// 	}
+	// }
+	return GetOrders(ctx, c.graphql, query)
+}
+
 func (c *Client) GetDraftOrders(ctx context.Context, tag *string, status *model.DraftOrderStatus) (*GetDraftOrdersResponse, error) {
 	query := ""
 	if tag != nil {

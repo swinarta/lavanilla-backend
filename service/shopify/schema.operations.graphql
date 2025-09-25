@@ -183,6 +183,17 @@ query OrderDetailById($id: ID!) {
     }
 }
 
+query GetOrders($query: String) {
+    orders(first: 50, sortKey: CREATED_AT, reverse: false, query: $query){
+        nodes {
+            id
+            name
+            email
+            phone
+        }
+    }
+}
+
 query GetDraftOrders($query: String) {
     draftOrders(first: 50, sortKey: UPDATED_AT, reverse: false, query: $query) {
         nodes {

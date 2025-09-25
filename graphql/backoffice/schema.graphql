@@ -5,6 +5,9 @@ type Query {
     draftOrder(draftOrderId: ID!): Order!
     presignedUrlDesigner(orderName: String!, sku: String!, qty: Int!): [URL!]!
     downloadAssetsDesigner(draftOrderId: ID!): URL!
+
+    # print operator
+    orderPrintOperator: [Order!]
     downloadAssetsPrintOperator(orderId: ID!): URL!
 }
 
