@@ -340,10 +340,10 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 }
 
 // PresignedURLDesigner is the resolver for the presignedUrlDesigner field.
-func (r *queryResolver) PresignedURLDesigner(ctx context.Context, draftOrderID string, sku string, qty int) ([]string, error) {
+func (r *queryResolver) PresignedURLDesigner(ctx context.Context, orderName string, sku string, qty int) ([]string, error) {
 	var result []string
 	for i := 0; i < qty; i++ {
-		filename := fmt.Sprintf("%s/%s/%d.jpeg", draftOrderID, sku, time.Now().Unix()+1)
+		filename := fmt.Sprintf("%s/%s/%d.jpeg", orderName, sku, time.Now().Unix()+1)
 		object, err := r.S3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 			Bucket:      aws.String(service.S3BucketDraftOrder),
 			ContentType: aws.String("image/jpeg"),
