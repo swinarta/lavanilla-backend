@@ -28,7 +28,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/samber/lo"
-	"github.com/samber/mo"
 )
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
@@ -293,30 +292,22 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // DraftOrder is the resolver for the draftOrder field.
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
-	listObjectFuture := mo.NewFuture[*s3.ListObjectsV2Output](func(resolve func(*s3.ListObjectsV2Output), reject func(error)) {
-		result, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-			Bucket: aws.String(service.S3BucketOrder),
-			Prefix: aws.String(draftOrderID),
-		})
-		if err != nil {
-			reject(err)
-			return
-		}
-		resolve(result)
-	})
-
 	globalDraftOrderID := fmt.Sprintf("gid://shopify/DraftOrder/%s", draftOrderID)
 	order, err := r.ShopifyClient.GetDraftOrder(ctx, globalDraftOrderID)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := listObjectFuture.Collect()
+	s3resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket: aws.String(service.S3BucketOrder),
+		Prefix: aws.String(order.DraftOrder.Name),
+	})
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
 	}
+
 	objectMap := make(map[string][]string)
-	for _, content := range resp.Contents {
+	for _, content := range s3resp.Contents {
 		parts := strings.Split(*content.Key, "/")
 		if len(parts) < 2 {
 			continue
