@@ -3052,6 +3052,8 @@ type GetOrderOrder struct {
 	// This value isn't unique across multiple stores. Use this field to identify
 	// orders in the Shopify admin and for order tracking.
 	Name string `json:"name"`
+	// A list of the order's line items. Line items represent the individual products and quantities that make up the order.
+	LineItems GetOrderOrderLineItemsLineItemConnection `json:"lineItems"`
 }
 
 // GetId returns GetOrderOrder.Id, and is useful for accessing the field via an interface.
@@ -3059,6 +3061,72 @@ func (v *GetOrderOrder) GetId() string { return v.Id }
 
 // GetName returns GetOrderOrder.Name, and is useful for accessing the field via an interface.
 func (v *GetOrderOrder) GetName() string { return v.Name }
+
+// GetLineItems returns GetOrderOrder.LineItems, and is useful for accessing the field via an interface.
+func (v *GetOrderOrder) GetLineItems() GetOrderOrderLineItemsLineItemConnection { return v.LineItems }
+
+// GetOrderOrderLineItemsLineItemConnection includes the requested fields of the GraphQL type LineItemConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple LineItems.
+type GetOrderOrderLineItemsLineItemConnection struct {
+	// A list of nodes that are contained in LineItemEdge. You can fetch data about
+	// an individual node, or you can follow the edges to fetch data about a
+	// collection of related nodes. At each node, you specify the fields that you
+	// want to retrieve.
+	Nodes []GetOrderOrderLineItemsLineItemConnectionNodesLineItem `json:"nodes"`
+}
+
+// GetNodes returns GetOrderOrderLineItemsLineItemConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnection) GetNodes() []GetOrderOrderLineItemsLineItemConnectionNodesLineItem {
+	return v.Nodes
+}
+
+// GetOrderOrderLineItemsLineItemConnectionNodesLineItem includes the requested fields of the GraphQL type LineItem.
+// The GraphQL type's documentation follows.
+//
+// The `LineItem` object represents a single product or service that a customer purchased in an
+// [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order).
+// Each line item is associated with a
+// [product variant](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant)
+// and can have multiple [discount allocations](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAllocation).
+// Line items contain details about what was purchased, including the product variant, quantity, pricing,
+// and fulfillment status.
+//
+// Use the `LineItem` object to manage the following processes:
+//
+// - [Track the quantity of items](https://shopify.dev/docs/apps/build/orders-fulfillment/order-management-apps/build-fulfillment-solutions)
+// ordered, fulfilled, and unfulfilled.
+// - [Calculate prices](https://shopify.dev/docs/apps/build/orders-fulfillment/order-management-apps/edit-orders), including discounts and taxes.
+// - Manage fulfillment through [fulfillment services](https://shopify.dev/docs/apps/build/orders-fulfillment/fulfillment-service-apps).
+// - Manage [returns](https://shopify.dev/docs/apps/build/orders-fulfillment/returns-apps/build-return-management) and [exchanges](https://shopify.dev/docs/apps/build/orders-fulfillment/returns-apps/manage-exchanges).
+// - Handle [subscriptions](https://shopify.dev/docs/apps/build/purchase-options/subscriptions) and recurring orders.
+//
+// Line items can also include custom attributes and properties, allowing merchants to add specific details
+// about each item in an order. Learn more about
+// [managing orders and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment).
+type GetOrderOrderLineItemsLineItemConnectionNodesLineItem struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The variant SKU number.
+	Sku string `json:"sku"`
+	// The title of the product, optionally appended with the title of the variant (if applicable).
+	Name string `json:"name"`
+	// The number of units ordered, including refunded and removed units.
+	Quantity int `json:"quantity"`
+}
+
+// GetId returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Id, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetId() string { return v.Id }
+
+// GetSku returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Sku, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetSku() string { return v.Sku }
+
+// GetName returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Name, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetName() string { return v.Name }
+
+// GetQuantity returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Quantity, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetQuantity() int { return v.Quantity }
 
 // GetOrderResponse is returned by GetOrder on success.
 type GetOrderResponse struct {
@@ -6706,6 +6774,14 @@ query GetOrder ($orderId: ID!) {
 	order(id: $orderId) {
 		id
 		name
+		lineItems(first: 100) {
+			nodes {
+				id
+				sku
+				name
+				quantity
+			}
+		}
 	}
 }
 `

@@ -433,6 +433,28 @@ func (r *queryResolver) OrderPrintOperator(ctx context.Context) ([]*model.Order,
 	}), nil
 }
 
+// Order is the resolver for the order field.
+func (r *queryResolver) Order(ctx context.Context, orderID string) (*model.Order, error) {
+	order, err := r.ShopifyClient.GetOrder(ctx, orderID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Order{
+		ID:   order.Order.Id,
+		Name: order.Order.Name,
+		LineItems: lo.Map(order.Order.LineItems.Nodes, func(item shopify.GetOrderOrderLineItemsLineItemConnectionNodesLineItem, _ int) *model.LineItem {
+			return &model.LineItem{
+				Quantity: item.Quantity,
+				Variant: &model.ProductVariant{
+					ID:  item.Id,
+					Sku: item.Sku,
+				},
+			}
+		}),
+	}, nil
+}
+
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.
 func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{

@@ -199,6 +199,14 @@ query GetOrder($orderId: ID!) {
     order(id: $orderId) {
         id
         name
+        lineItems(first: 100) {
+            nodes {
+                id
+                sku
+                name
+                quantity
+            }
+        }
     }
 }
 
