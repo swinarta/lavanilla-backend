@@ -79,6 +79,14 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
 func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
+	tag, err := r.ShopifyClient.RemoveTag(ctx, id, metadata.DesignerInProgressKeyName)
+	if err != nil {
+		return false, err
+	}
+	if len(tag.TagsRemove.UserErrors) > 0 {
+		return false, errors.New(tag.TagsRemove.UserErrors[0].Message)
+	}
+
 	order, err := r.ShopifyClient.DraftOrderComplete(ctx, id)
 	if err != nil {
 		return false, err
@@ -116,13 +124,6 @@ func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (b
 	_, err = r.ShopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal)
 	if err != nil {
 		return false, err
-	}
-	tag, err := r.ShopifyClient.RemoveTag(ctx, id, metadata.DesignerInProgressKeyName)
-	if err != nil {
-		return false, err
-	}
-	if len(tag.TagsRemove.UserErrors) > 0 {
-		return false, errors.New(tag.TagsRemove.UserErrors[0].Message)
 	}
 
 	return true, nil
