@@ -18,6 +18,10 @@ func ExtractIDWithDraftOrderPrefix(gid string) (string, string, error) {
 	return extractIDWithPrefix(gid, "gid://shopify/DraftOrder/")
 }
 
+func ExtractIDWithOrderPrefix(gid string) (string, string, error) {
+	return extractIDWithPrefix(gid, "gid://shopify/Order/")
+}
+
 func extractIDWithPrefix(gid string, prefix string) (string, string, error) {
 	if !strings.HasPrefix(gid, prefix) {
 		return "", "", errors.New("wrong prefix given")

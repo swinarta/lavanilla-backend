@@ -457,6 +457,11 @@ func (r *queryResolver) Order(ctx context.Context, orderID string) (*model.Order
 
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.
 func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
+	orderID, _, err := utils.ExtractIDWithOrderPrefix(orderID)
+	if err != nil {
+		return "", err
+	}
+
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(service.S3BucketOrder),
 		Prefix: aws.String(orderID),
