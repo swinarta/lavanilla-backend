@@ -293,8 +293,12 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // DraftOrder is the resolver for the draftOrder field.
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
-	globalDraftOrderID := utils.GetGlobalDraftOrderId(draftOrderID)
-	order, err := r.ShopifyClient.GetDraftOrder(ctx, globalDraftOrderID)
+	_, draftOrderID, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
+	if err != nil {
+		return nil, err
+	}
+
+	order, err := r.ShopifyClient.GetDraftOrder(ctx, draftOrderID)
 	if err != nil {
 		return nil, err
 	}
