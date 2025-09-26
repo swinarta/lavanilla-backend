@@ -24,7 +24,7 @@ import (
 
 // PresignedURL is the resolver for the presignedUrl field.
 func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, uploadToken string, qty int) ([]string, error) {
-	draftOrderID, _, err := utils.ExtractIDWithPrefix(draftOrderID, "gid://shopify/DraftOrder")
+	draftOrderID, _, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
 	if err != nil {
 		return nil, err
 	}
@@ -57,6 +57,11 @@ func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, u
 
 // Files is the resolver for the files field.
 func (r *queryResolver) Files(ctx context.Context, draftOrderID string, uploadToken string) ([]*model.File, error) {
+	draftOrderID, _, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
+	if err != nil {
+		return nil, err
+	}
+
 	hash := sha256.Sum256([]byte(draftOrderID))
 	token := hex.EncodeToString(hash[:])
 

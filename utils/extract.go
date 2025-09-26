@@ -14,7 +14,11 @@ func GetGlobalOrderId(orderID string) string {
 	return fmt.Sprintf("gid://shopify/Order/%s", orderID)
 }
 
-func ExtractIDWithPrefix(gid string, prefix string) (string, string, error) {
+func ExtractIDWithDraftOrderPrefix(gid string) (string, string, error) {
+	return extractIDWithPrefix(gid, "gid://shopify/DraftOrder/")
+}
+
+func extractIDWithPrefix(gid string, prefix string) (string, string, error) {
 	if !strings.HasPrefix(gid, prefix) {
 		return "", "", errors.New("wrong prefix given")
 	}
