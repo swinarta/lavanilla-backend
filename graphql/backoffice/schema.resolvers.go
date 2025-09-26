@@ -370,6 +370,11 @@ func (r *queryResolver) PresignedURLDesigner(ctx context.Context, orderName stri
 
 // DownloadAssetsDesigner is the resolver for the downloadAssetsDesigner field.
 func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
+	draftOrderID, _, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
+	if err != nil {
+		return "", err
+	}
+
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(service.S3BucketSelfService),
 		Prefix: aws.String(draftOrderID),
@@ -461,7 +466,7 @@ func (r *queryResolver) Order(ctx context.Context, orderID string) (*model.Order
 
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.
 func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
-	orderID, _, err := utils.ExtractIDWithOrderPrefix(orderID)
+	orderID, globalOrderID, err := utils.ExtractIDWithOrderPrefix(orderID)
 	if err != nil {
 		return "", err
 	}
@@ -478,7 +483,6 @@ func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID
 		return "", errors.New("no assets to download")
 	}
 
-	globalOrderID := utils.GetGlobalOrderId(orderID)
 	order, err := r.ShopifyClient.GetOrder(ctx, globalOrderID)
 	if err != nil {
 		return "", err
