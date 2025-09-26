@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"lavanilla/graphql/self-queue/model"
 	"lavanilla/service"
+	"lavanilla/utils"
 	"path"
 	"time"
 
@@ -23,6 +24,11 @@ import (
 
 // PresignedURL is the resolver for the presignedUrl field.
 func (r *queryResolver) PresignedURL(ctx context.Context, draftOrderID string, uploadToken string, qty int) ([]string, error) {
+	draftOrderID, _, err := utils.ExtractIDWithPrefix(draftOrderID, "gid://shopify/DraftOrder")
+	if err != nil {
+		return nil, err
+	}
+
 	hash := sha256.Sum256([]byte(draftOrderID))
 	token := hex.EncodeToString(hash[:])
 

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -14,6 +15,9 @@ func GetGlobalOrderId(orderID string) string {
 }
 
 func ExtractIDWithPrefix(gid string, prefix string) (string, string, error) {
+	if !strings.HasPrefix(gid, prefix) {
+		return "", "", errors.New("wrong prefix given")
+	}
 	parts := strings.Split(gid, "/")
 	if len(parts) == 0 {
 		return "", gid, fmt.Errorf("invalid gid: %s", gid)
