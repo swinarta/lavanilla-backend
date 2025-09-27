@@ -6,10 +6,6 @@ import (
 	"strings"
 )
 
-func GetGlobalOrderId(orderID string) string {
-	return fmt.Sprintf("gid://shopify/Order/%s", orderID)
-}
-
 func ExtractIDWithDraftOrderPrefix(gid string) (string, string, error) {
 	return extractIDWithPrefix(gid, "gid://shopify/DraftOrder/")
 }
