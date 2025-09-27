@@ -397,12 +397,12 @@ func (r *queryResolver) PresignedURLDesigner(ctx context.Context, orderName stri
 
 // DownloadAssetsDesigner is the resolver for the downloadAssetsDesigner field.
 func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
-	draftOrderID, _, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
+	draftOrderID, globalDraftOrderId, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
 	if err != nil {
 		return "", err
 	}
 
-	if err = r.ShopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
+	if err = r.ShopifyClient.CheckDraftOrderStartedByDesigner(ctx, globalDraftOrderId); err != nil {
 		return "", err
 	}
 
