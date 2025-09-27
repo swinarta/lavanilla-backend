@@ -33,6 +33,16 @@ type Order{
     id: ID!
     name: String!
     lineItems: [LineItem!]
+    timelines: [Timeline!]
+}
+
+type Timeline {
+    eventAt: Time!
+    action: EventAction!
+}
+
+enum EventAction {
+    DESIGNER_START
 }
 
 type LineItem {
@@ -65,3 +75,4 @@ type ProductVariant {
 }
 
 scalar URL
+scalar Time

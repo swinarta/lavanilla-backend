@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -65,6 +66,7 @@ type ComplexityRoot struct {
 		ID        func(childComplexity int) int
 		LineItems func(childComplexity int) int
 		Name      func(childComplexity int) int
+		Timelines func(childComplexity int) int
 	}
 
 	PriceRange struct {
@@ -99,6 +101,11 @@ type ComplexityRoot struct {
 		PresignedURLDesigner        func(childComplexity int, orderName string, sku string, qty int) int
 		Product                     func(childComplexity int, id string) int
 		Products                    func(childComplexity int) int
+	}
+
+	Timeline struct {
+		Action  func(childComplexity int) int
+		EventAt func(childComplexity int) int
 	}
 }
 
@@ -227,6 +234,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Order.Name(childComplexity), true
+	case "Order.timelines":
+		if e.complexity.Order.Timelines == nil {
+			break
+		}
+
+		return e.complexity.Order.Timelines(childComplexity), true
 
 	case "PriceRange.maxVariantPrice":
 		if e.complexity.PriceRange.MaxVariantPrice == nil {
@@ -398,6 +411,19 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Query.Products(childComplexity), true
+
+	case "Timeline.action":
+		if e.complexity.Timeline.Action == nil {
+			break
+		}
+
+		return e.complexity.Timeline.Action(childComplexity), true
+	case "Timeline.eventAt":
+		if e.complexity.Timeline.EventAt == nil {
+			break
+		}
+
+		return e.complexity.Timeline.EventAt(childComplexity), true
 
 	}
 	return 0, false
@@ -993,6 +1019,8 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderAddProductVariant(ct
 				return ec.fieldContext_Order_name(ctx, field)
 			case "lineItems":
 				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1042,6 +1070,8 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderUpdateProductVariant
 				return ec.fieldContext_Order_name(ctx, field)
 			case "lineItems":
 				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1152,6 +1182,41 @@ func (ec *executionContext) fieldContext_Order_lineItems(_ context.Context, fiel
 				return ec.fieldContext_LineItem_uploadedImages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type LineItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Order_timelines(ctx context.Context, field graphql.CollectedField, obj *model.Order) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Order_timelines,
+		func(ctx context.Context) (any, error) {
+			return obj.Timelines, nil
+		},
+		nil,
+		ec.marshalOTimeline2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐTimelineᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Order_timelines(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "eventAt":
+				return ec.fieldContext_Timeline_eventAt(ctx, field)
+			case "action":
+				return ec.fieldContext_Timeline_action(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timeline", field.Name)
 		},
 	}
 	return fc, nil
@@ -1681,6 +1746,8 @@ func (ec *executionContext) fieldContext_Query_draftOrderDesigner(ctx context.Co
 				return ec.fieldContext_Order_name(ctx, field)
 			case "lineItems":
 				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1730,6 +1797,8 @@ func (ec *executionContext) fieldContext_Query_draftOrder(ctx context.Context, f
 				return ec.fieldContext_Order_name(ctx, field)
 			case "lineItems":
 				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1860,6 +1929,8 @@ func (ec *executionContext) fieldContext_Query_orderPrintOperator(_ context.Cont
 				return ec.fieldContext_Order_name(ctx, field)
 			case "lineItems":
 				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1898,6 +1969,8 @@ func (ec *executionContext) fieldContext_Query_order(ctx context.Context, field 
 				return ec.fieldContext_Order_name(ctx, field)
 			case "lineItems":
 				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -2060,6 +2133,64 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Timeline_eventAt(ctx context.Context, field graphql.CollectedField, obj *model.Timeline) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Timeline_eventAt,
+		func(ctx context.Context) (any, error) {
+			return obj.EventAt, nil
+		},
+		nil,
+		ec.marshalNTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Timeline_eventAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Timeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Timeline_action(ctx context.Context, field graphql.CollectedField, obj *model.Timeline) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Timeline_action,
+		func(ctx context.Context) (any, error) {
+			return obj.Action, nil
+		},
+		nil,
+		ec.marshalNEventAction2lavanillaᚋgraphqlᚋbackofficeᚋmodelᚐEventAction,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Timeline_action(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Timeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type EventAction does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3694,6 +3825,8 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			}
 		case "lineItems":
 			out.Values[i] = ec._Order_lineItems(ctx, field, obj)
+		case "timelines":
+			out.Values[i] = ec._Order_timelines(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4102,6 +4235,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
+var timelineImplementors = []string{"Timeline"}
+
+func (ec *executionContext) _Timeline(ctx context.Context, sel ast.SelectionSet, obj *model.Timeline) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, timelineImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Timeline")
+		case "eventAt":
+			out.Values[i] = ec._Timeline_eventAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "action":
+			out.Values[i] = ec._Timeline_action(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -4453,6 +4630,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNEventAction2lavanillaᚋgraphqlᚋbackofficeᚋmodelᚐEventAction(ctx context.Context, v any) (model.EventAction, error) {
+	var res model.EventAction
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNEventAction2lavanillaᚋgraphqlᚋbackofficeᚋmodelᚐEventAction(ctx context.Context, sel ast.SelectionSet, v model.EventAction) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v any) (float64, error) {
 	res, err := graphql.UnmarshalFloatContext(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4559,6 +4746,32 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) marshalNTimeline2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐTimeline(ctx context.Context, sel ast.SelectionSet, v *model.Timeline) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Timeline(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNURL2string(ctx context.Context, v any) (string, error) {
@@ -5148,6 +5361,53 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	_ = ctx
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOTimeline2ᚕᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐTimelineᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Timeline) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTimeline2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐTimeline(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOURL2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {

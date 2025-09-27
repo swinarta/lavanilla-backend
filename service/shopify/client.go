@@ -157,19 +157,24 @@ func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, key
 	return res, nil
 }
 
-func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, error) {
+func (c *Client) GetDraftOrderTimeline(ctx context.Context, orderId string) ([]metadata.Timeline, error) {
 	found, err := GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName)
 	if err != nil {
 		return nil, err
 	}
 	var payload []metadata.Timeline
-
 	if found.DraftOrder.Metafield.Value != "" {
 		if err := json.Unmarshal([]byte(found.DraftOrder.Metafield.Value), &payload); err != nil {
 			return nil, err
 		}
 	}
+	return payload, nil
+}
+
+func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, error) {
+	payload, err := c.GetDraftOrderTimeline(ctx, orderId)
 	payload = append(payload, value)
+
 	marshal, _ := json.Marshal(payload)
 	add, err := MetaDataAdd(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName, string(marshal))
 	if err != nil {

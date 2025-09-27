@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 type LineItem struct {
@@ -28,6 +29,7 @@ type Order struct {
 	ID        string      `json:"id"`
 	Name      string      `json:"name"`
 	LineItems []*LineItem `json:"lineItems,omitempty"`
+	Timelines []*Timeline `json:"timelines,omitempty"`
 }
 
 type PriceRange struct {
@@ -53,6 +55,11 @@ type ProductVariant struct {
 }
 
 type Query struct {
+}
+
+type Timeline struct {
+	EventAt time.Time   `json:"eventAt"`
+	Action  EventAction `json:"action"`
 }
 
 type DraftOrderStatus string
@@ -105,6 +112,59 @@ func (e *DraftOrderStatus) UnmarshalJSON(b []byte) error {
 }
 
 func (e DraftOrderStatus) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
+}
+
+type EventAction string
+
+const (
+	EventActionDesignerStart EventAction = "DESIGNER_START"
+)
+
+var AllEventAction = []EventAction{
+	EventActionDesignerStart,
+}
+
+func (e EventAction) IsValid() bool {
+	switch e {
+	case EventActionDesignerStart:
+		return true
+	}
+	return false
+}
+
+func (e EventAction) String() string {
+	return string(e)
+}
+
+func (e *EventAction) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = EventAction(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid EventAction", str)
+	}
+	return nil
+}
+
+func (e EventAction) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *EventAction) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e EventAction) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	e.MarshalGQL(&buf)
 	return buf.Bytes(), nil
