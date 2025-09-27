@@ -25,6 +25,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
@@ -321,10 +322,20 @@ func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*m
 		objectMap[key] = append(objectMap[key], *content.Key)
 	}
 
-	// TODO: check if query include timeline
-	timelineData, err := r.ShopifyClient.GetDraftOrderTimeline(ctx, draftOrderID)
-	if err != nil {
-		return nil, err
+	fields := graphql.CollectFieldsCtx(ctx, nil)
+	collectTimelines := false
+	for _, field := range fields {
+		if field.Name == "timelines" {
+			collectTimelines = true
+		}
+	}
+
+	var timelineData []metadata.Timeline
+	if collectTimelines {
+		timelineData, err = r.ShopifyClient.GetDraftOrderTimeline(ctx, draftOrderID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &model.Order{
@@ -385,6 +396,16 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 	draftOrderID, _, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
 	if err != nil {
 		return "", err
+	}
+
+	var designerJob *metadata.DesignerJob
+	_, err = r.ShopifyClient.GetDraftOrderMetaField(ctx, draftOrderID, metadata.DesignerKeyName, &designerJob)
+	if err != nil {
+		return "", err
+	}
+
+	if designerJob == nil || designerJob.StartAt == nil {
+		return "", errors.New("job not started")
 	}
 
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
