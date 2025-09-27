@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"lavanilla/graphql/backoffice/controller/draft_order_product_variant"
 	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
 	"log"
@@ -42,12 +43,15 @@ func graphqlHandler() gin.HandlerFunc {
 		log.Fatal(err)
 	}
 	s3Client := s3.NewFromConfig(awsS3Config)
+	shopifyClient := shopify.NewClient()
+	customClient := custom.NewClient()
 
 	c := graph.Config{Resolvers: &graph.Resolver{
-		CustomClient:    custom.NewClient(),
-		ShopifyClient:   shopify.NewClient(),
-		S3PresignClient: s3.NewPresignClient(s3Client),
-		S3Client:        s3Client,
+		DraftOrderProductVariant: draft_order_product_variant.NewHandler(shopifyClient, customClient),
+		CustomClient:             customClient,
+		ShopifyClient:            shopifyClient,
+		S3PresignClient:          s3.NewPresignClient(s3Client),
+		S3Client:                 s3Client,
 	}}
 
 	h := handler.New(graph.NewExecutableSchema(c))

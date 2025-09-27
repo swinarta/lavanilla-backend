@@ -169,58 +169,7 @@ func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id s
 
 // DraftOrderUpdateProductVariant is the resolver for the draftOrderUpdateProductVariant field.
 func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
-	order, err := r.ShopifyClient.GetDraftOrder(ctx, draftOrderID)
-	if err != nil {
-		return nil, err
-	}
-	_, found := lo.Find(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) bool {
-		return item.Variant.Id == variantID
-	})
-
-	if err = r.ShopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
-		return nil, err
-	}
-
-	if !found && quantity > 0 {
-		return nil, errors.New("variant does not exist")
-	}
-
-	if !found && quantity == 0 {
-		return &model.Order{
-			ID:   order.DraftOrder.Id,
-			Name: order.DraftOrder.Name,
-		}, nil
-	}
-
-	newLineItems := lo.FilterMap(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) (custom.DraftOrderLineItemInput, bool) {
-		if item.Variant.Id == variantID && quantity == 0 {
-			return custom.DraftOrderLineItemInput{
-				Quantity:  quantity,
-				VariantId: item.Variant.Id,
-			}, false
-		}
-
-		if item.Variant.Id == variantID {
-			return custom.DraftOrderLineItemInput{
-				Quantity:  quantity,
-				VariantId: item.Variant.Id,
-			}, true
-		}
-		return custom.DraftOrderLineItemInput{
-			Quantity:  item.Quantity,
-			VariantId: item.Variant.Id,
-		}, true
-	})
-
-	_, err = r.CustomClient.DraftOrderUpdateLineItems(ctx, draftOrderID, newLineItems)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.Order{
-		ID:   order.DraftOrder.Id,
-		Name: order.DraftOrder.Name,
-	}, nil
+	return r.DraftOrderProductVariant.Update(ctx, draftOrderID, variantID, quantity)
 }
 
 // Products is the resolver for the products field.

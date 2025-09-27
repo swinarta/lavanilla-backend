@@ -1,6 +1,7 @@
 package backoffice
 
 import (
+	"lavanilla/graphql/backoffice/controller/draft_order_product_variant"
 	"lavanilla/service/custom"
 	"lavanilla/service/shopify"
 
@@ -12,8 +13,9 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	CustomClient    *custom.Client
-	ShopifyClient   *shopify.Client
-	S3PresignClient *s3.PresignClient
-	S3Client        *s3.Client
+	DraftOrderProductVariant *draft_order_product_variant.Handler
+	CustomClient             *custom.Client
+	ShopifyClient            *shopify.Client
+	S3PresignClient          *s3.PresignClient
+	S3Client                 *s3.Client
 }
