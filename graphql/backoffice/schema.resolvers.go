@@ -168,14 +168,18 @@ func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id s
 }
 
 // DraftOrderUpdateProductVariant is the resolver for the draftOrderUpdateProductVariant field.
-func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	order, err := r.ShopifyClient.GetDraftOrder(ctx, id)
+func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
+	order, err := r.ShopifyClient.GetDraftOrder(ctx, draftOrderID)
 	if err != nil {
 		return nil, err
 	}
 	_, found := lo.Find(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) bool {
 		return item.Variant.Id == variantID
 	})
+
+	if err = r.ShopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
+		return nil, err
+	}
 
 	if !found && quantity > 0 {
 		return nil, errors.New("variant does not exist")
@@ -208,7 +212,7 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, i
 		}, true
 	})
 
-	_, err = r.CustomClient.DraftOrderUpdateLineItems(ctx, id, newLineItems)
+	_, err = r.CustomClient.DraftOrderUpdateLineItems(ctx, draftOrderID, newLineItems)
 	if err != nil {
 		return nil, err
 	}
@@ -398,14 +402,8 @@ func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID
 		return "", err
 	}
 
-	var designerJob *metadata.DesignerJob
-	_, err = r.ShopifyClient.GetDraftOrderMetaField(ctx, draftOrderID, metadata.DesignerKeyName, &designerJob)
-	if err != nil {
+	if err = r.ShopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
 		return "", err
-	}
-
-	if designerJob == nil || designerJob.StartAt == nil {
-		return "", errors.New("job not started")
 	}
 
 	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{

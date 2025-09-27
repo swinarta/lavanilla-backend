@@ -157,6 +157,19 @@ func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, key
 	return res, nil
 }
 
+func (c *Client) CheckDraftOrderStartedByDesigner(ctx context.Context, draftOrderID string) error {
+	var designerJob *metadata.DesignerJob
+	if _, err := c.GetDraftOrderMetaField(ctx, draftOrderID, metadata.DesignerKeyName, &designerJob); err != nil {
+		return err
+	}
+
+	if designerJob == nil || designerJob.StartAt == nil {
+		return errors.New("job not started")
+	}
+
+	return nil
+}
+
 func (c *Client) GetDraftOrderTimeline(ctx context.Context, orderId string) ([]metadata.Timeline, error) {
 	found, err := GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName)
 	if err != nil {
