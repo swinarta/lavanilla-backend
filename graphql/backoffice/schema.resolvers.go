@@ -135,8 +135,8 @@ func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id s
 }
 
 // DraftOrderUpdateProductVariant is the resolver for the draftOrderUpdateProductVariant field.
-func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
-	return r.DraftOrderProductVariant.Update(ctx, draftOrderID, variantID, quantity)
+func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
+	return r.DraftOrderProductVariant.Update(ctx, id, variantID, quantity)
 }
 
 // Products is the resolver for the products field.

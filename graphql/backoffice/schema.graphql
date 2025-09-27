@@ -42,7 +42,9 @@ type Timeline {
 }
 
 enum EventAction {
+    DRAFT_ORDER_CREATED
     DESIGNER_START
+    DESIGNER_END
 }
 
 type LineItem {

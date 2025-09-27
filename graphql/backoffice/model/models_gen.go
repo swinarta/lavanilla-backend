@@ -120,16 +120,20 @@ func (e DraftOrderStatus) MarshalJSON() ([]byte, error) {
 type EventAction string
 
 const (
-	EventActionDesignerStart EventAction = "DESIGNER_START"
+	EventActionDraftOrderCreated EventAction = "DRAFT_ORDER_CREATED"
+	EventActionDesignerStart     EventAction = "DESIGNER_START"
+	EventActionDesignerEnd       EventAction = "DESIGNER_END"
 )
 
 var AllEventAction = []EventAction{
+	EventActionDraftOrderCreated,
 	EventActionDesignerStart,
+	EventActionDesignerEnd,
 }
 
 func (e EventAction) IsValid() bool {
 	switch e {
-	case EventActionDesignerStart:
+	case EventActionDraftOrderCreated, EventActionDesignerStart, EventActionDesignerEnd:
 		return true
 	}
 	return false

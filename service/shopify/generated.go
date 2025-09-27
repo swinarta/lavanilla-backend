@@ -2587,11 +2587,16 @@ func (v *GetDraftOrderDraftOrderPurchasingEntityPurchasingCompany) GetTypename()
 //
 // Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
 type GetDraftOrderMetaFieldDraftOrder struct {
+	// The date and time when the draft order was created in Shopify.
+	CreatedAt time.Time `json:"createdAt"`
 	// A [custom field](https://shopify.dev/docs/apps/build/custom-data),
 	// including its `namespace` and `key`, that's associated with a Shopify resource
 	// for the purposes of adding and storing additional information.
 	Metafield GetDraftOrderMetaFieldDraftOrderMetafield `json:"metafield"`
 }
+
+// GetCreatedAt returns GetDraftOrderMetaFieldDraftOrder.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderMetaFieldDraftOrder) GetCreatedAt() time.Time { return v.CreatedAt }
 
 // GetMetafield returns GetDraftOrderMetaFieldDraftOrder.Metafield, and is useful for accessing the field via an interface.
 func (v *GetDraftOrderMetaFieldDraftOrder) GetMetafield() GetDraftOrderMetaFieldDraftOrderMetafield {
@@ -6619,6 +6624,7 @@ func GetDraftOrder(
 const GetDraftOrderMetaField_Operation = `
 query GetDraftOrderMetaField ($id: ID!, $namespace: String!, $key: String!) {
 	draftOrder(id: $id) {
+		createdAt
 		metafield(namespace: $namespace, key: $key) {
 			id
 			value

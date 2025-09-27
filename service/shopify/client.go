@@ -181,6 +181,10 @@ func (c *Client) GetDraftOrderTimeline(ctx context.Context, orderId string) ([]m
 			return nil, err
 		}
 	}
+	payload = append([]metadata.Timeline{{
+		Action:    "DRAFT_ORDER_CREATED",
+		Timestamp: found.DraftOrder.CreatedAt,
+	}}, payload...)
 	return payload, nil
 }
 
