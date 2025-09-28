@@ -1,2 +1,2 @@
-schema: schema.graphql
+schema: ['schema.graphql', 'product.graphql', 'lineitem.graphql']
 documents: '**/*.graphql'

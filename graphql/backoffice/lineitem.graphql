@@ -1,0 +1,6 @@
+type LineItem {
+    product: Product!
+    variant: ProductVariant
+    quantity: Int!
+    uploadedImages: [URL!]
+}

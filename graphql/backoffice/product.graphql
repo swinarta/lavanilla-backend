@@ -1,0 +1,21 @@
+type Product {
+    id: ID!
+    title: String!
+    description: String!
+    priceRange: PriceRange
+    images: [URL!]
+    variants: [ProductVariant!]
+}
+
+type PriceRange {
+    minVariantPrice: Float
+    maxVariantPrice: Float
+}
+
+type ProductVariant {
+    id: ID!
+    title: String!
+    sku: String!
+    price: Float!
+    image: [URL!]
+}

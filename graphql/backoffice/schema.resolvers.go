@@ -402,6 +402,10 @@ func (r *queryResolver) Order(ctx context.Context, orderID string) (*model.Order
 		LineItems: lo.Map(order.Order.LineItems.Nodes, func(item shopify.GetOrderOrderLineItemsLineItemConnectionNodesLineItem, _ int) *model.LineItem {
 			return &model.LineItem{
 				Quantity: item.Quantity,
+				Product: &model.Product{
+					ID:    item.Product.Id,
+					Title: item.Product.Title,
+				},
 				Variant: &model.ProductVariant{
 					ID:  item.Id,
 					Sku: item.Sku,

@@ -3119,6 +3119,8 @@ type GetOrderOrderLineItemsLineItemConnectionNodesLineItem struct {
 	Name string `json:"name"`
 	// The number of units ordered, including refunded and removed units.
 	Quantity int `json:"quantity"`
+	// The Product object associated with this line item's variant.
+	Product GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct `json:"product"`
 }
 
 // GetId returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Id, and is useful for accessing the field via an interface.
@@ -3132,6 +3134,42 @@ func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetName() string
 
 // GetQuantity returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Quantity, and is useful for accessing the field via an interface.
 func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetQuantity() int { return v.Quantity }
+
+// GetProduct returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Product, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetProduct() GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct {
+	return v.Product
+}
+
+// GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can
+// include various details such as title, description, price, images, and options
+// such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
+// to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name for the product that displays to customers. The title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+	Title string `json:"title"`
+}
+
+// GetId returns GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct.Id, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct) GetId() string { return v.Id }
+
+// GetTitle returns GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct.Title, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct) GetTitle() string {
+	return v.Title
+}
 
 // GetOrderResponse is returned by GetOrder on success.
 type GetOrderResponse struct {
@@ -6786,6 +6824,10 @@ query GetOrder ($orderId: ID!) {
 				sku
 				name
 				quantity
+				product {
+					id
+					title
+				}
 			}
 		}
 	}

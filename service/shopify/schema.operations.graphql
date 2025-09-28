@@ -205,6 +205,10 @@ query GetOrder($orderId: ID!) {
                 sku
                 name
                 quantity
+                product {
+                    id
+                    title
+                }
             }
         }
     }
