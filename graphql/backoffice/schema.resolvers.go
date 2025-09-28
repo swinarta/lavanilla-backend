@@ -78,17 +78,17 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
 func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
-	return r.DraftOrder.DraftOrderComplete(ctx, id)
+	return r.DraftOrderHandler.DraftOrderComplete(ctx, id)
 }
 
 // DraftOrderAddProductVariant is the resolver for the draftOrderAddProductVariant field.
 func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	return r.DraftOrderProductVariant.Add(ctx, id, variantID, quantity)
+	return r.DraftOrderProductVariantHandler.Add(ctx, id, variantID, quantity)
 }
 
 // DraftOrderUpdateProductVariant is the resolver for the draftOrderUpdateProductVariant field.
 func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	return r.DraftOrderProductVariant.Update(ctx, id, variantID, quantity)
+	return r.DraftOrderProductVariantHandler.Update(ctx, id, variantID, quantity)
 }
 
 // Products is the resolver for the products field.
@@ -267,66 +267,7 @@ func (r *queryResolver) PresignedURLDesigner(ctx context.Context, orderName stri
 
 // DownloadAssetsDesigner is the resolver for the downloadAssetsDesigner field.
 func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
-	draftOrderID, globalDraftOrderId, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
-	if err != nil {
-		return "", err
-	}
-
-	if err = r.ShopifyClient.CheckDraftOrderStartedByDesigner(ctx, globalDraftOrderId); err != nil {
-		return "", err
-	}
-
-	resp, err := r.S3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket: aws.String(service.S3BucketSelfService),
-		Prefix: aws.String(draftOrderID),
-	})
-	if err != nil {
-		return "", errors.New(fmt.Sprintf("failed to list objects: %v", err))
-	}
-
-	if len(resp.Contents) <= 0 {
-		return "", errors.New("no assets to download")
-	}
-
-	results := make(chan utils.FileData)
-	var wg sync.WaitGroup
-	for _, content := range resp.Contents {
-		wg.Add(1)
-
-		go func(content types.Object) {
-			defer wg.Done()
-			obj, err := r.S3Client.GetObject(ctx, &s3.GetObjectInput{
-				Bucket: aws.String(service.S3BucketSelfService),
-				Key:    content.Key,
-			})
-			if err != nil {
-				log.Printf("failed to get object %s: %v\n", *content.Key, err)
-				results <- utils.FileData{Key: *content.Key, Err: err}
-				return
-			}
-			defer obj.Body.Close()
-
-			buf := new(bytes.Buffer)
-			_, err = io.Copy(buf, obj.Body)
-			if err != nil {
-				results <- utils.FileData{Key: *content.Key, Err: err}
-				return
-			}
-			results <- utils.FileData{Key: *content.Key, Data: buf.Bytes()}
-		}(content)
-	}
-
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-
-	urlResp, err := utils.CreateZipArchive(ctx, draftOrderID, r.S3Client, r.S3PresignClient, results)
-	if err != nil {
-		return "", fmt.Errorf("failed to create zip archive: %w", err)
-	}
-
-	return *urlResp, nil
+	return r.DraftOrderHandler.DownloadAssetsDesigner(ctx, draftOrderID)
 }
 
 // OrderPrintOperator is the resolver for the orderPrintOperator field.

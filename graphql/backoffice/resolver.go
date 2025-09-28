@@ -14,10 +14,10 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	DraftOrder               *draft_order.Handler
-	DraftOrderProductVariant *draft_order_product_variant.Handler
-	CustomClient             *custom.Client
-	ShopifyClient            *shopify.Client
-	S3PresignClient          *s3.PresignClient
-	S3Client                 *s3.Client
+	DraftOrderHandler               *draft_order.Handler
+	DraftOrderProductVariantHandler *draft_order_product_variant.Handler
+	CustomClient                    *custom.Client
+	ShopifyClient                   *shopify.Client
+	S3PresignClient                 *s3.PresignClient
+	S3Client                        *s3.Client
 }

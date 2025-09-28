@@ -8,15 +8,17 @@ import (
 )
 
 type Handler struct {
-	shopifyClient *shopify.Client
-	customClient  *custom.Client
-	s3Client      *s3.Client
+	shopifyClient   *shopify.Client
+	customClient    *custom.Client
+	s3Client        *s3.Client
+	s3PresignClient *s3.PresignClient
 }
 
-func NewHandler(shopifyClient *shopify.Client, customClient *custom.Client, s3Client *s3.Client) *Handler {
+func NewHandler(shopifyClient *shopify.Client, customClient *custom.Client, s3Client *s3.Client, s3PresignClient *s3.PresignClient) *Handler {
 	return &Handler{
-		shopifyClient: shopifyClient,
-		customClient:  customClient,
-		s3Client:      s3Client,
+		shopifyClient:   shopifyClient,
+		customClient:    customClient,
+		s3Client:        s3Client,
+		s3PresignClient: s3PresignClient,
 	}
 }
