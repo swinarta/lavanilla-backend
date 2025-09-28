@@ -110,7 +110,7 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
 func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error) {
-	return r.DraftOrderHandler.Get(ctx, status)
+	return r.DraftOrderHandler.Find(ctx, status)
 }
 
 // DraftOrder is the resolver for the draftOrder field.

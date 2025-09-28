@@ -8,7 +8,7 @@ import (
 	"github.com/samber/lo"
 )
 
-func (h *Handler) Get(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error) {
+func (h *Handler) Find(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error) {
 	orders, err := h.shopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"), status)
 	if err != nil {
 		return nil, err
