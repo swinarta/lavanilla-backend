@@ -2733,6 +2733,10 @@ type GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder struct {
 	Email string `json:"email"`
 	// The assigned phone number.
 	Phone string `json:"phone"`
+	// The date and time when the draft order was created in Shopify.
+	CreatedAt time.Time `json:"createdAt"`
+	// The customer who will be sent an invoice.
+	Customer GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrderCustomer `json:"customer"`
 }
 
 // GetId returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Id, and is useful for accessing the field via an interface.
@@ -2751,6 +2755,38 @@ func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetEmail(
 // GetPhone returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Phone, and is useful for accessing the field via an interface.
 func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetPhone() string {
 	return v.Phone
+}
+
+// GetCreatedAt returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetCreatedAt() time.Time {
+	return v.CreatedAt
+}
+
+// GetCustomer returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder.Customer, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder) GetCustomer() GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrderCustomer {
+	return v.Customer
+}
+
+// GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrderCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrderCustomer struct {
+	// The full name of the customer, based on the values for first_name and last_name. If the first_name and
+	// last_name are not available, then this falls back to the customer's email
+	// address, and if that is not available, the customer's phone number.
+	DisplayName string `json:"displayName"`
+}
+
+// GetDisplayName returns GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrderCustomer.DisplayName, and is useful for accessing the field via an interface.
+func (v *GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrderCustomer) GetDisplayName() string {
+	return v.DisplayName
 }
 
 // GetDraftOrdersResponse is returned by GetDraftOrders on success.
@@ -6709,6 +6745,10 @@ query GetDraftOrders ($query: String) {
 			name
 			email
 			phone
+			createdAt
+			customer {
+				displayName
+			}
 		}
 	}
 }

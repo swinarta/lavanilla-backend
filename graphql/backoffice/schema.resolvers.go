@@ -206,8 +206,10 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 	}
 	return lo.Map(orders.DraftOrders.Nodes, func(item shopify.GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder, _ int) *model.Order {
 		return &model.Order{
-			ID:   item.Id,
-			Name: item.Name,
+			ID:        item.Id,
+			Name:      item.Name,
+			CreatedAt: item.CreatedAt,
+			Customer:  &model.Customer{Name: item.Customer.DisplayName},
 		}
 	}), nil
 }

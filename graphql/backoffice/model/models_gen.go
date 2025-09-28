@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+type Customer struct {
+	Name string `json:"name"`
+}
+
 type LineItem struct {
 	Product        *Product        `json:"product"`
 	Variant        *ProductVariant `json:"variant,omitempty"`
@@ -30,6 +34,8 @@ type Order struct {
 	Name      string      `json:"name"`
 	LineItems []*LineItem `json:"lineItems,omitempty"`
 	Timelines []*Timeline `json:"timelines,omitempty"`
+	CreatedAt time.Time   `json:"createdAt"`
+	Customer  *Customer   `json:"customer"`
 }
 
 type PriceRange struct {

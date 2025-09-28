@@ -48,6 +48,10 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Customer struct {
+		Name func(childComplexity int) int
+	}
+
 	LineItem struct {
 		Product        func(childComplexity int) int
 		Quantity       func(childComplexity int) int
@@ -63,6 +67,8 @@ type ComplexityRoot struct {
 	}
 
 	Order struct {
+		CreatedAt func(childComplexity int) int
+		Customer  func(childComplexity int) int
 		ID        func(childComplexity int) int
 		LineItems func(childComplexity int) int
 		Name      func(childComplexity int) int
@@ -146,6 +152,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Customer.name":
+		if e.complexity.Customer.Name == nil {
+			break
+		}
+
+		return e.complexity.Customer.Name(childComplexity), true
+
 	case "LineItem.product":
 		if e.complexity.LineItem.Product == nil {
 			break
@@ -216,6 +229,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.DraftOrderUpdateProductVariant(childComplexity, args["id"].(string), args["variantId"].(string), args["quantity"].(int)), true
 
+	case "Order.createdAt":
+		if e.complexity.Order.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Order.CreatedAt(childComplexity), true
+	case "Order.customer":
+		if e.complexity.Order.Customer == nil {
+			break
+		}
+
+		return e.complexity.Order.Customer(childComplexity), true
 	case "Order.id":
 		if e.complexity.Order.ID == nil {
 			break
@@ -766,6 +791,35 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _Customer_name(ctx context.Context, field graphql.CollectedField, obj *model.Customer) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Customer_name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Customer_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Customer",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _LineItem_product(ctx context.Context, field graphql.CollectedField, obj *model.LineItem) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -1023,6 +1077,10 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderAddProductVariant(ct
 				return ec.fieldContext_Order_lineItems(ctx, field)
 			case "timelines":
 				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1074,6 +1132,10 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderUpdateProductVariant
 				return ec.fieldContext_Order_lineItems(ctx, field)
 			case "timelines":
 				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1219,6 +1281,68 @@ func (ec *executionContext) fieldContext_Order_timelines(_ context.Context, fiel
 				return ec.fieldContext_Timeline_action(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Timeline", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Order_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Order) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Order_createdAt,
+		func(ctx context.Context) (any, error) {
+			return obj.CreatedAt, nil
+		},
+		nil,
+		ec.marshalNTime2timeᚐTime,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Order_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Order_customer(ctx context.Context, field graphql.CollectedField, obj *model.Order) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Order_customer,
+		func(ctx context.Context) (any, error) {
+			return obj.Customer, nil
+		},
+		nil,
+		ec.marshalNCustomer2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐCustomer,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Order_customer(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_Customer_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Customer", field.Name)
 		},
 	}
 	return fc, nil
@@ -1750,6 +1874,10 @@ func (ec *executionContext) fieldContext_Query_draftOrderDesigner(ctx context.Co
 				return ec.fieldContext_Order_lineItems(ctx, field)
 			case "timelines":
 				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1801,6 +1929,10 @@ func (ec *executionContext) fieldContext_Query_draftOrder(ctx context.Context, f
 				return ec.fieldContext_Order_lineItems(ctx, field)
 			case "timelines":
 				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1933,6 +2065,10 @@ func (ec *executionContext) fieldContext_Query_orderPrintOperator(_ context.Cont
 				return ec.fieldContext_Order_lineItems(ctx, field)
 			case "timelines":
 				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1973,6 +2109,10 @@ func (ec *executionContext) fieldContext_Query_order(ctx context.Context, field 
 				return ec.fieldContext_Order_lineItems(ctx, field)
 			case "timelines":
 				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -3686,6 +3826,45 @@ func (ec *executionContext) unmarshalInputLineItemInput(ctx context.Context, obj
 
 // region    **************************** object.gotpl ****************************
 
+var customerImplementors = []string{"Customer"}
+
+func (ec *executionContext) _Customer(ctx context.Context, sel ast.SelectionSet, obj *model.Customer) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, customerImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Customer")
+		case "name":
+			out.Values[i] = ec._Customer_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var lineItemImplementors = []string{"LineItem"}
 
 func (ec *executionContext) _LineItem(ctx context.Context, sel ast.SelectionSet, obj *model.LineItem) graphql.Marshaler {
@@ -3829,6 +4008,16 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Order_lineItems(ctx, field, obj)
 		case "timelines":
 			out.Values[i] = ec._Order_timelines(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._Order_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "customer":
+			out.Values[i] = ec._Order_customer(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4630,6 +4819,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNCustomer2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐCustomer(ctx context.Context, sel ast.SelectionSet, v *model.Customer) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Customer(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNEventAction2lavanillaᚋgraphqlᚋbackofficeᚋmodelᚐEventAction(ctx context.Context, v any) (model.EventAction, error) {

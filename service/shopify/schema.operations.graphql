@@ -221,6 +221,10 @@ query GetDraftOrders($query: String) {
             name
             email
             phone
+            createdAt
+            customer {
+                displayName
+            }
         }
     }
 }
