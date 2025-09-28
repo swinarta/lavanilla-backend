@@ -23,6 +23,10 @@ func (h *Handler) Add(ctx context.Context, id string, variantID string, quantity
 		return nil, errors.New("variant already exists")
 	}
 
+	if err = h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, id); err != nil {
+		return nil, err
+	}
+
 	existingLineItems := lo.Map(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem, _ int) custom.DraftOrderLineItemInput {
 		return custom.DraftOrderLineItemInput{
 			Quantity:  item.Quantity,
