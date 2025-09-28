@@ -99,7 +99,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		DownloadAssetsDesigner      func(childComplexity int, draftOrderID string) int
-		DownloadAssetsPrintOperator func(childComplexity int, orderID string) int
+		DownloadAssetsPrintOperator func(childComplexity int, orderID string, sku *string) int
 		DraftOrder                  func(childComplexity int, draftOrderID string) int
 		DraftOrderDesigner          func(childComplexity int, status *model.DraftOrderStatus) int
 		Order                       func(childComplexity int, orderID string) int
@@ -130,7 +130,7 @@ type QueryResolver interface {
 	DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error)
 	OrderPrintOperator(ctx context.Context) ([]*model.Order, error)
 	Order(ctx context.Context, orderID string) (*model.Order, error)
-	DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error)
+	DownloadAssetsPrintOperator(ctx context.Context, orderID string, sku *string) (string, error)
 }
 
 type executableSchema struct {
@@ -368,7 +368,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.DownloadAssetsPrintOperator(childComplexity, args["orderId"].(string)), true
+		return e.complexity.Query.DownloadAssetsPrintOperator(childComplexity, args["orderId"].(string), args["sku"].(*string)), true
 	case "Query.draftOrder":
 		if e.complexity.Query.DraftOrder == nil {
 			break
@@ -671,6 +671,11 @@ func (ec *executionContext) field_Query_downloadAssetsPrintOperator_args(ctx con
 		return nil, err
 	}
 	args["orderId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "sku", ec.unmarshalOString2ᚖstring)
+	if err != nil {
+		return nil, err
+	}
+	args["sku"] = arg1
 	return args, nil
 }
 
@@ -2153,7 +2158,7 @@ func (ec *executionContext) _Query_downloadAssetsPrintOperator(ctx context.Conte
 		ec.fieldContext_Query_downloadAssetsPrintOperator,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Query().DownloadAssetsPrintOperator(ctx, fc.Args["orderId"].(string))
+			return ec.resolvers.Query().DownloadAssetsPrintOperator(ctx, fc.Args["orderId"].(string), fc.Args["sku"].(*string))
 		},
 		nil,
 		ec.marshalNURL2string,

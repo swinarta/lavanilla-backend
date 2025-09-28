@@ -15,9 +15,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/samber/lo"
 )
 
-func (h *Handler) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
+func (h *Handler) DownloadAssetsPrintOperator(ctx context.Context, orderID string, sku *string) (string, error) {
 	orderID, globalOrderID, err := utils.ExtractIDWithOrderPrefix(orderID)
 	if err != nil {
 		return "", err
@@ -25,7 +26,7 @@ func (h *Handler) DownloadAssetsPrintOperator(ctx context.Context, orderID strin
 
 	resp, err := h.s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(service.S3BucketOrder),
-		Prefix: aws.String(orderID),
+		Prefix: aws.String(lo.IfF(sku != nil, func() string { return fmt.Sprintf("%s/%s", orderID, *sku) }).Else(orderID)),
 	})
 	if err != nil {
 		return "", errors.New(fmt.Sprintf("failed to list objects: %v", err))

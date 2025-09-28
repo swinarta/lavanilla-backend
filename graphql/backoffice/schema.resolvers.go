@@ -265,8 +265,8 @@ func (r *queryResolver) Order(ctx context.Context, orderID string) (*model.Order
 }
 
 // DownloadAssetsPrintOperator is the resolver for the downloadAssetsPrintOperator field.
-func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string) (string, error) {
-	return r.OrderHandler.DownloadAssetsPrintOperator(ctx, orderID)
+func (r *queryResolver) DownloadAssetsPrintOperator(ctx context.Context, orderID string, sku *string) (string, error) {
+	return r.OrderHandler.DownloadAssetsPrintOperator(ctx, orderID, sku)
 }
 
 // Mutation returns MutationResolver implementation.

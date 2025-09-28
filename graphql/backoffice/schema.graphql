@@ -9,7 +9,7 @@ type Query {
     # print operator
     orderPrintOperator: [Order!]
     order(orderId: ID!): Order!
-    downloadAssetsPrintOperator(orderId: ID!): URL!
+    downloadAssetsPrintOperator(orderId: ID!, sku: String): URL!
 }
 
 type Mutation {
