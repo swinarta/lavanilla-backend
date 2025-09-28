@@ -72,6 +72,7 @@ type DraftOrderInput struct {
 	Tags             []string                  `json:"tags"`
 	PaymentTerms     PaymentTermsInput         `json:"paymentTerms"`
 	PurchasingEntity PurchasingEntityInput     `json:"purchasingEntity"`
+	Metafields       []MetafieldInput          `json:"metafields"`
 }
 
 // GetEmail returns DraftOrderInput.Email, and is useful for accessing the field via an interface.
@@ -94,6 +95,9 @@ func (v *DraftOrderInput) GetPaymentTerms() PaymentTermsInput { return v.Payment
 
 // GetPurchasingEntity returns DraftOrderInput.PurchasingEntity, and is useful for accessing the field via an interface.
 func (v *DraftOrderInput) GetPurchasingEntity() PurchasingEntityInput { return v.PurchasingEntity }
+
+// GetMetafields returns DraftOrderInput.Metafields, and is useful for accessing the field via an interface.
+func (v *DraftOrderInput) GetMetafields() []MetafieldInput { return v.Metafields }
 
 type DraftOrderLineItemInput struct {
 	VariantId string `json:"variantId"`
@@ -219,6 +223,29 @@ type DraftOrderUpdateResponse struct {
 func (v *DraftOrderUpdateResponse) GetDraftOrderUpdate() DraftOrderUpdateDraftOrderUpdateDraftOrderResponse {
 	return v.DraftOrderUpdate
 }
+
+type MetafieldInput struct {
+	Id        string `json:"id"`
+	Namespace string `json:"namespace"`
+	Key       string `json:"key"`
+	Value     string `json:"value"`
+	Type      string `json:"type"`
+}
+
+// GetId returns MetafieldInput.Id, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetId() string { return v.Id }
+
+// GetNamespace returns MetafieldInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns MetafieldInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetKey() string { return v.Key }
+
+// GetValue returns MetafieldInput.Value, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetValue() string { return v.Value }
+
+// GetType returns MetafieldInput.Type, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetType() string { return v.Type }
 
 type PaymentTermsInput struct {
 	PaymentTermsTemplateId string `json:"paymentTermsTemplateId"`

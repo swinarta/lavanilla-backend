@@ -2,10 +2,13 @@ package custom
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"lavanilla/graphql/self-service/model"
 	"lavanilla/service"
+	"lavanilla/service/metadata"
 	"net/http"
+	"time"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/samber/lo"
@@ -34,6 +37,11 @@ func NewClient() *Client {
 }
 
 func (c *Client) DraftOrderCreate(ctx context.Context, input model.OrderInput, customerId string) (*DraftOrderCreateResponse, error) {
+	create := []metadata.Timeline{{
+		Timestamp: time.Now(),
+		Action:    "DRAFT_ORDER_CREATED",
+	}}
+	marshal, _ := json.Marshal(create)
 	payload := DraftOrderInput{
 		PurchasingEntity: PurchasingEntityInput{CustomerId: customerId},
 		LineItems: lo.Map(input.Items, func(item *model.LineItem, _ int) DraftOrderLineItemInput {
@@ -49,6 +57,13 @@ func (c *Client) DraftOrderCreate(ctx context.Context, input model.OrderInput, c
 		PaymentTerms: PaymentTermsInput{
 			PaymentTermsTemplateId: "gid://shopify/PaymentTermsTemplate/1",
 		},
+		Metafields: []MetafieldInput{{
+			// Id:        "",
+			Namespace: "LVN-APP",
+			Key:       "TIMELINE",
+			Value:     string(marshal),
+			Type:      "json",
+		}},
 	}
 	if input.Customer.Email != nil {
 		payload.Email = *input.Customer.Email
