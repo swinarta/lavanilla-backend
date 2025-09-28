@@ -13,8 +13,7 @@ import (
 
 func (h *Handler) Start(ctx context.Context, id string) (bool, error) {
 	var designerJob *metadata.DesignerJob
-	_, err := h.shopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob)
-	if err != nil {
+	if _, err := h.shopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob); err != nil {
 		return false, err
 	}
 
@@ -37,11 +36,10 @@ func (h *Handler) Start(ctx context.Context, id string) (bool, error) {
 		return false, errors.New(string(m.MetafieldsSet.UserErrors[0].Code))
 	}
 
-	_, err = h.shopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
+	if _, _, err = h.shopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
 		Timestamp: now,
 		Action:    "DESIGNER_START",
-	})
-	if err != nil {
+	}); err != nil {
 		return false, err
 	}
 

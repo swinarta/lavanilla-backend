@@ -183,14 +183,71 @@ func (c *Client) GetDraftOrderTimeline(ctx context.Context, orderId string) ([]m
 			return nil, err
 		}
 	}
-	payload = append([]metadata.Timeline{{
-		Action:    "DRAFT_ORDER_CREATED",
-		Timestamp: found.DraftOrder.CreatedAt,
-	}}, payload...)
 	return payload, nil
 }
 
-func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, error) {
+func (c *Client) TimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, []metadata.Timeline, error) {
+	payload, err := c.GetDraftOrderTimeline(ctx, orderId)
+	payload = append(payload, value)
+
+	marshal, _ := json.Marshal(payload)
+	add, err := MetaDataAdd(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName, string(marshal))
+	if err != nil {
+		return nil, nil, err
+	}
+	if len(add.MetafieldsSet.UserErrors) > 0 {
+		return nil, nil, errors.New(string(add.MetafieldsSet.UserErrors[0].Code))
+	}
+	return &add.MetafieldsSet.Metafields[0].Id, payload, nil
+}
+
+func (c *Client) GetOrderMetaField(ctx context.Context, orderId string, key string, value any) (*GetOrderMetaFieldResponse, error) {
+	res, err := GetOrderMetaField(ctx, c.graphql, orderId, NameSpace, key)
+	if err != nil {
+		return nil, err
+	}
+
+	rv := reflect.ValueOf(value)
+	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		fmt.Println("value must be a non-nil pointer")
+		return res, nil
+	}
+
+	elem := rv.Elem()
+	newVal := reflect.New(elem.Type().Elem())
+	_ = json.Unmarshal([]byte(res.Order.Metafield.Value), newVal.Interface())
+	elem.Set(newVal)
+
+	return res, nil
+}
+
+func (c *Client) GetOrderTimeline(ctx context.Context, orderId string) ([]metadata.Timeline, error) {
+	found, err := GetOrderMetaField(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName)
+	if err != nil {
+		return nil, err
+	}
+	var payload []metadata.Timeline
+	if found.Order.Metafield.Value != "" {
+		if err := json.Unmarshal([]byte(found.Order.Metafield.Value), &payload); err != nil {
+			return nil, err
+		}
+	}
+	return payload, nil
+}
+
+func (c *Client) OrderTimestampInit(ctx context.Context, orderId string, payload []metadata.Timeline) (*string, error) {
+	marshal, _ := json.Marshal(payload)
+	add, err := MetaDataAdd(ctx, c.graphql, orderId, NameSpace, metadata.TImeLineKeyName, string(marshal))
+	if err != nil {
+		return nil, err
+	}
+	if len(add.MetafieldsSet.UserErrors) > 0 {
+		return nil, errors.New(string(add.MetafieldsSet.UserErrors[0].Code))
+	}
+	return &add.MetafieldsSet.Metafields[0].Id, nil
+}
+
+func (c *Client) OrderTimestampAdd(ctx context.Context, orderId string, value metadata.Timeline) (*string, error) {
 	payload, err := c.GetDraftOrderTimeline(ctx, orderId)
 	payload = append(payload, value)
 

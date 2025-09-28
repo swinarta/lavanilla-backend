@@ -10,10 +10,13 @@ import (
 	"encoding/hex"
 	"errors"
 	"lavanilla/graphql/self-service/model"
+	"lavanilla/service/metadata"
 	"lavanilla/service/shopify"
 	"lavanilla/utils"
+	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/samber/lo"
 )
@@ -65,6 +68,14 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 	id, _, _ := utils.ExtractID(resp.DraftOrderCreate.DraftOrder.Id)
 	hash := sha256.Sum256([]byte(id))
 	token := hex.EncodeToString(hash[:])
+
+	if _, _, err := r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
+		Timestamp: time.Now(),
+		Action:    "DRAFT_ORDER_CREATED",
+	}); err != nil {
+		log.Println("unable to create metadata")
+		log.Println(err)
+	}
 
 	return &model.Order{
 		ID:          resp.DraftOrderCreate.DraftOrder.Id,

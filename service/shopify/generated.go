@@ -3088,6 +3088,111 @@ type GetFulfillmentResponse struct {
 // GetFulfillment returns GetFulfillmentResponse.Fulfillment, and is useful for accessing the field via an interface.
 func (v *GetFulfillmentResponse) GetFulfillment() GetFulfillmentFulfillment { return v.Fulfillment }
 
+// GetOrderMetaFieldOrder includes the requested fields of the GraphQL type Order.
+// The GraphQL type's documentation follows.
+//
+// The `Order` object represents a customer's request to purchase one or more
+// products from a store. Use the `Order` object to handle the complete purchase
+// lifecycle from checkout to fulfillment.
+//
+// Use the `Order` object when you need to:
+//
+// - Display order details on customer account pages or admin dashboards.
+// - Create orders for phone sales, wholesale customers, or subscription services.
+// - Update order information like shipping addresses, notes, or fulfillment status.
+// - Process returns, exchanges, and partial refunds.
+// - Generate invoices, receipts, and shipping labels.
+//
+// The `Order` object serves as the central hub connecting customer information,
+// product details, payment processing, and fulfillment data within the GraphQL
+// Admin API schema.
+//
+// > Note:
+// > Only the last 60 days' worth of orders from a store are accessible from the
+// `Order` object by default. If you want to access older records,
+// > then you need to [request access to all
+// orders](https://shopify.dev/docs/api/usage/access-scopes#orders-permissions). If
+// your app is granted
+// > access, then you can add the `read_all_orders`, `read_orders`, and `write_orders` scopes.
+//
+// > Caution:
+// > Only use orders data if it's required for your app's functionality. Shopify
+// will restrict [access to scopes](https://shopify.dev/docs/api/usage/access-scopes#requesting-specific-permissions)
+// for apps that don't have a legitimate use for the associated data.
+//
+// Learn more about [building apps for orders and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment).
+type GetOrderMetaFieldOrder struct {
+	// The date and time in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601)
+	// when an order was created. This timestamp is set when the customer completes
+	// checkout and remains unchanged throughout an order's lifecycle.
+	CreatedAt time.Time `json:"createdAt"`
+	// A [custom field](https://shopify.dev/docs/apps/build/custom-data),
+	// including its `namespace` and `key`, that's associated with a Shopify resource
+	// for the purposes of adding and storing additional information.
+	Metafield GetOrderMetaFieldOrderMetafield `json:"metafield"`
+}
+
+// GetCreatedAt returns GetOrderMetaFieldOrder.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetOrderMetaFieldOrder) GetCreatedAt() time.Time { return v.CreatedAt }
+
+// GetMetafield returns GetOrderMetaFieldOrder.Metafield, and is useful for accessing the field via an interface.
+func (v *GetOrderMetaFieldOrder) GetMetafield() GetOrderMetaFieldOrderMetafield { return v.Metafield }
+
+// GetOrderMetaFieldOrderMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such
+// as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or
+// a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin/graphql/reference/common-objects/HasMetafields).
+// Some examples of the data that metafields enable you to store are
+// specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a
+// value along with type information for that value.
+type GetOrderMetaFieldOrderMetafield struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetId returns GetOrderMetaFieldOrderMetafield.Id, and is useful for accessing the field via an interface.
+func (v *GetOrderMetaFieldOrderMetafield) GetId() string { return v.Id }
+
+// GetValue returns GetOrderMetaFieldOrderMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetOrderMetaFieldOrderMetafield) GetValue() string { return v.Value }
+
+// GetOrderMetaFieldResponse is returned by GetOrderMetaField on success.
+type GetOrderMetaFieldResponse struct {
+	// The `order` query retrieves an
+	// [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/order) by
+	// its ID. This query provides access to comprehensive order information such as
+	// customer details, line items, financial data, and fulfillment status.
+	//
+	// Use the `order` query to retrieve information associated with the following processes:
+	//
+	// - [Order management and fulfillment](https://shopify.dev/docs/apps/build/orders-fulfillment/order-management-apps)
+	// - [Financial reporting](https://help.shopify.com/manual/finance)
+	// - [Customer purchase history](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/customers-reports)
+	// and [transaction analysis](https://shopify.dev/docs/apps/launch/billing/view-charges-earnings#transaction-data-through-the-graphql-admin-api)
+	// - [Shipping](https://shopify.dev/docs/apps/build/checkout/delivery-shipping) and [inventory management](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps)
+	//
+	// You can only retrieve the last 60 days worth of orders from a store by
+	// default. If you want to access older orders, then you need to [request access to all
+	// orders](https://shopify.dev/docs/api/usage/access-scopes#orders-permissions).
+	//
+	// For large order datasets, consider using [bulk operations](https://shopify.dev/docs/api/usage/bulk-operations/queries).
+	// Bulk operations handle pagination automatically and allow you to retrieve data
+	// asynchronously without being constrained by API rate limits.
+	// Learn more about [creating orders](https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate)
+	// and [building order management
+	// apps](https://shopify.dev/docs/apps/build/orders-fulfillment).
+	Order GetOrderMetaFieldOrder `json:"order"`
+}
+
+// GetOrder returns GetOrderMetaFieldResponse.Order, and is useful for accessing the field via an interface.
+func (v *GetOrderMetaFieldResponse) GetOrder() GetOrderMetaFieldOrder { return v.Order }
+
 // GetOrderOrder includes the requested fields of the GraphQL type Order.
 // The GraphQL type's documentation follows.
 //
@@ -6506,6 +6611,22 @@ type __GetOrderInput struct {
 // GetOrderId returns __GetOrderInput.OrderId, and is useful for accessing the field via an interface.
 func (v *__GetOrderInput) GetOrderId() string { return v.OrderId }
 
+// __GetOrderMetaFieldInput is used internally by genqlient
+type __GetOrderMetaFieldInput struct {
+	Id        string `json:"id"`
+	Namespace string `json:"namespace"`
+	Key       string `json:"key"`
+}
+
+// GetId returns __GetOrderMetaFieldInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetOrderMetaFieldInput) GetId() string { return v.Id }
+
+// GetNamespace returns __GetOrderMetaFieldInput.Namespace, and is useful for accessing the field via an interface.
+func (v *__GetOrderMetaFieldInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns __GetOrderMetaFieldInput.Key, and is useful for accessing the field via an interface.
+func (v *__GetOrderMetaFieldInput) GetKey() string { return v.Key }
+
 // __GetOrdersInput is used internally by genqlient
 type __GetOrdersInput struct {
 	Query string `json:"query"`
@@ -7004,6 +7125,48 @@ func GetOrder(
 	}
 
 	data_ = &GetOrderResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetOrderMetaField.
+const GetOrderMetaField_Operation = `
+query GetOrderMetaField ($id: ID!, $namespace: String!, $key: String!) {
+	order(id: $id) {
+		createdAt
+		metafield(namespace: $namespace, key: $key) {
+			id
+			value
+		}
+	}
+}
+`
+
+func GetOrderMetaField(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	namespace string,
+	key string,
+) (data_ *GetOrderMetaFieldResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetOrderMetaField",
+		Query:  GetOrderMetaField_Operation,
+		Variables: &__GetOrderMetaFieldInput{
+			Id:        id,
+			Namespace: namespace,
+			Key:       key,
+		},
+	}
+
+	data_ = &GetOrderMetaFieldResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

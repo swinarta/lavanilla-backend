@@ -26,10 +26,10 @@ func (h *Handler) Order(ctx context.Context, orderID string) (*model.Order, erro
 
 	var timelineData []metadata.Timeline
 	if collectTimelines {
-		// timelineData, err = h.shopifyClient.GetDraftOrderTimeline(ctx, draftOrderID)
-		// if err != nil {
-		// 	return nil, err
-		// }
+		timelineData, err = h.shopifyClient.GetOrderTimeline(ctx, orderID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &model.Order{

@@ -226,6 +226,16 @@ query GetOrder($orderId: ID!) {
     }
 }
 
+query GetOrderMetaField($id: ID!, $namespace: String!, $key: String!) {
+    order(id: $id){
+        createdAt
+        metafield(namespace: $namespace, key: $key){
+            id
+            value
+        }
+    }
+}
+
 query GetDraftOrders($query: String) {
     draftOrders(first: 50, sortKey: UPDATED_AT, reverse: false, query: $query) {
         nodes {

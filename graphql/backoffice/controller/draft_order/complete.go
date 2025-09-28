@@ -33,28 +33,33 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 	if err != nil {
 		return nil, err
 	}
-
-	newOrderId, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
-	if err != nil {
-		return nil, err
+	if len(order.DraftOrderComplete.UserErrors) > 0 {
+		return nil, errors.New(order.DraftOrderComplete.UserErrors[0].Message)
 	}
+	newOrderId, newGlobalOrderId, _ := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
 
 	// rename from draftOrder.name to order.id
 	if err := S3util.RenameS3Directory(ctx, h.s3Client, service.S3BucketOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", newOrderId)); err != nil {
 		return nil, err
 	}
 
+	// add draft order timeline and copy timeline to order
 	now := time.Now()
-	_, err = h.shopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
+	designerEndMetadata := metadata.Timeline{
 		Timestamp: now,
 		Action:    "DESIGNER_END",
-	})
+	}
+	_, newMetadata, err := h.shopifyClient.TimestampAdd(ctx, id, designerEndMetadata)
 	if err != nil {
 		return nil, err
 	}
+	if _, err := h.shopifyClient.OrderTimestampInit(ctx, newGlobalOrderId, newMetadata); err != nil {
+		return nil, err
+	}
+
+	// set designer perf metadata to draft order
 	var designerJob *metadata.DesignerJob
-	_, err = h.shopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob)
-	if err != nil {
+	if _, err = h.shopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob); err != nil {
 		return nil, err
 	}
 
@@ -69,7 +74,7 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 	}
 
 	return &model.Order{
-		ID:        order.DraftOrderComplete.DraftOrder.Order.Id,
+		ID:        newGlobalOrderId,
 		Name:      order.DraftOrderComplete.DraftOrder.Order.Name,
 		LineItems: nil,
 		Timelines: nil,
