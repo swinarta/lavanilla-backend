@@ -110,18 +110,7 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 
 // DraftOrderDesigner is the resolver for the draftOrderDesigner field.
 func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.DraftOrderStatus) ([]*model.Order, error) {
-	orders, err := r.ShopifyClient.GetDraftOrders(ctx, lo.ToPtr("DESAINER"), status)
-	if err != nil {
-		return nil, err
-	}
-	return lo.Map(orders.DraftOrders.Nodes, func(item shopify.GetDraftOrdersDraftOrdersDraftOrderConnectionNodesDraftOrder, _ int) *model.Order {
-		return &model.Order{
-			ID:        item.Id,
-			Name:      item.Name,
-			CreatedAt: item.CreatedAt,
-			Customer:  &model.Customer{Name: item.Customer.DisplayName},
-		}
-	}), nil
+	return r.DraftOrderHandler.Get(ctx, status)
 }
 
 // DraftOrder is the resolver for the draftOrder field.

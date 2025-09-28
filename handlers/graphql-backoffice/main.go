@@ -51,7 +51,6 @@ func graphqlHandler() gin.HandlerFunc {
 	c := graph.Config{Resolvers: &graph.Resolver{
 		DraftOrderHandler:               draft_order.NewHandler(shopifyClient, customClient, s3Client, s3PresignClient),
 		DraftOrderProductVariantHandler: draft_order_product_variant.NewHandler(shopifyClient, customClient),
-		CustomClient:                    customClient,
 		ShopifyClient:                   shopifyClient,
 		S3PresignClient:                 s3PresignClient,
 		S3Client:                        s3Client,
