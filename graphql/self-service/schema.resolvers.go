@@ -65,11 +65,11 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		return nil, errors.New(resp.DraftOrderCreate.UserErrors[0].Message)
 	}
 
-	id, _, _ := utils.ExtractID(resp.DraftOrderCreate.DraftOrder.Id)
+	id, globalId, _ := utils.ExtractID(resp.DraftOrderCreate.DraftOrder.Id)
 	hash := sha256.Sum256([]byte(id))
 	token := hex.EncodeToString(hash[:])
 
-	if _, _, err := r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
+	if _, _, err := r.ShopifyClient.TimestampAdd(ctx, globalId, metadata.Timeline{
 		Timestamp: time.Now(),
 		Action:    "DRAFT_ORDER_CREATED",
 	}); err != nil {
