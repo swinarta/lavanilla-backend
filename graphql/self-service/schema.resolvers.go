@@ -44,7 +44,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 	if len(customerResp.Customers.Nodes) > 0 {
 		customerId = customerResp.Customers.Nodes[0].Id
 	} else {
-		customerCreateResp, err := r.ShopifyClient.CreateCustomer(ctx, input.Customer.Email, input.Customer.Phone)
+		customerCreateResp, err := r.ShopifyClient.CreateCustomer(ctx, input.Customer.Name, input.Customer.Email, input.Customer.Phone)
 		if err != nil {
 			return nil, err
 		}

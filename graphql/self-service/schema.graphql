@@ -19,6 +19,7 @@ input LineItem {
 }
 
 input Customer {
+    name: String!
     email: String
     phone: String
 }

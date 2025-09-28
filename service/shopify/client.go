@@ -68,8 +68,10 @@ func (c *Client) GetCustomer(ctx context.Context, email *string, phone *string) 
 	return GetCustomer(ctx, c.graphql, query)
 }
 
-func (c *Client) CreateCustomer(ctx context.Context, email *string, phone *string) (*CreateCustomerResponse, error) {
-	input := CustomerInput{}
+func (c *Client) CreateCustomer(ctx context.Context, name string, email *string, phone *string) (*CreateCustomerResponse, error) {
+	input := CustomerInput{
+		FirstName: name,
+	}
 	if email != nil {
 		input.Email = *email
 	}

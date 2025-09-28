@@ -3,6 +3,7 @@
 package model
 
 type Customer struct {
+	Name  string  `json:"name"`
 	Email *string `json:"email,omitempty"`
 	Phone *string `json:"phone,omitempty"`
 }
