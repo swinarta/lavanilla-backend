@@ -9,6 +9,7 @@ import (
 	"lavanilla/service"
 	"lavanilla/utils"
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -16,26 +17,32 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
 
-func (h *Handler) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
+func (h *Handler) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (*string, error) {
 	draftOrderID, globalDraftOrderId, err := utils.ExtractIDWithDraftOrderPrefix(draftOrderID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if err = h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, globalDraftOrderId); err != nil {
-		return "", err
+		return nil, err
 	}
+
+	draftOrder, err := h.shopifyClient.GetDraftOrder(ctx, globalDraftOrderId)
+	if err != nil {
+		return nil, err
+	}
+	orderName := draftOrder.DraftOrder.Name
 
 	resp, err := h.s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: aws.String(service.S3BucketSelfService),
 		Prefix: aws.String(draftOrderID),
 	})
 	if err != nil {
-		return "", errors.New(fmt.Sprintf("failed to list objects: %v", err))
+		return nil, errors.New(fmt.Sprintf("failed to list objects: %v", err))
 	}
 
 	if len(resp.Contents) <= 0 {
-		return "", errors.New("no assets to download")
+		return nil, errors.New("no assets to download")
 	}
 
 	results := make(chan utils.FileData)
@@ -62,7 +69,12 @@ func (h *Handler) DownloadAssetsDesigner(ctx context.Context, draftOrderID strin
 				results <- utils.FileData{Key: *content.Key, Err: err}
 				return
 			}
-			results <- utils.FileData{Key: *content.Key, Data: buf.Bytes()}
+			filename := *content.Key
+			parts := strings.Split(filename, "/")
+			if len(parts) > 0 {
+				parts[0] = orderName
+			}
+			results <- utils.FileData{Key: strings.Join(parts, "/"), Data: buf.Bytes()}
 		}(content)
 	}
 
@@ -71,10 +83,10 @@ func (h *Handler) DownloadAssetsDesigner(ctx context.Context, draftOrderID strin
 		close(results)
 	}()
 
-	urlResp, err := utils.CreateZipArchive(ctx, draftOrderID, h.s3Client, h.s3PresignClient, results)
+	urlResp, err := utils.CreateZipArchive(ctx, orderName, h.s3Client, h.s3PresignClient, results)
 	if err != nil {
-		return "", fmt.Errorf("failed to create zip archive: %w", err)
+		return nil, fmt.Errorf("failed to create zip archive: %w", err)
 	}
 
-	return *urlResp, nil
+	return urlResp, nil
 }

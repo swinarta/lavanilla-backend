@@ -20,7 +20,7 @@ type FileData struct {
 	Err  error
 }
 
-func CreateZipArchive(ctx context.Context, draftOrderID string, client *s3.Client, presignClient *s3.PresignClient, results <-chan FileData) (*string, error) {
+func CreateZipArchive(ctx context.Context, zipFileName string, client *s3.Client, presignClient *s3.PresignClient, results <-chan FileData) (*string, error) {
 	var zipBuf bytes.Buffer
 	zipWriter := zip.NewWriter(&zipBuf)
 
@@ -48,7 +48,7 @@ func CreateZipArchive(ctx context.Context, draftOrderID string, client *s3.Clien
 		return nil, fmt.Errorf("failed to close zip writer: %w", err)
 	}
 
-	zipKey := fmt.Sprintf("%s.zip", draftOrderID)
+	zipKey := fmt.Sprintf("%s.zip", zipFileName)
 	_, err := client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(service.S3BucketTemp),
 		Key:    aws.String(zipKey),

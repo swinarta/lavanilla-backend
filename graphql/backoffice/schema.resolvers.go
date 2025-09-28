@@ -267,7 +267,11 @@ func (r *queryResolver) PresignedURLDesigner(ctx context.Context, orderName stri
 
 // DownloadAssetsDesigner is the resolver for the downloadAssetsDesigner field.
 func (r *queryResolver) DownloadAssetsDesigner(ctx context.Context, draftOrderID string) (string, error) {
-	return r.DraftOrderHandler.DownloadAssetsDesigner(ctx, draftOrderID)
+	result, err := r.DraftOrderHandler.DownloadAssetsDesigner(ctx, draftOrderID)
+	if err != nil {
+		return "", err
+	}
+	return *result, nil
 }
 
 // OrderPrintOperator is the resolver for the orderPrintOperator field.
