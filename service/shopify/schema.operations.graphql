@@ -191,6 +191,10 @@ query GetOrders($query: String) {
             name
             email
             phone
+            createdAt
+            customer {
+                displayName
+            }
         }
     }
 }
@@ -199,6 +203,10 @@ query GetOrder($orderId: ID!) {
     order(id: $orderId) {
         id
         name
+        createdAt
+        customer {
+            displayName
+        }
         lineItems(first: 100) {
             nodes {
                 id

@@ -3093,6 +3093,14 @@ type GetOrderOrder struct {
 	// This value isn't unique across multiple stores. Use this field to identify
 	// orders in the Shopify admin and for order tracking.
 	Name string `json:"name"`
+	// The date and time in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601)
+	// when an order was created. This timestamp is set when the customer completes
+	// checkout and remains unchanged throughout an order's lifecycle.
+	CreatedAt time.Time `json:"createdAt"`
+	// The customer who placed an order. Returns `null` if an order was created
+	// through a checkout without customer authentication, such as a guest checkout.
+	// Learn more about [customer accounts](https://help.shopify.com/manual/customers/customer-accounts).
+	Customer GetOrderOrderCustomer `json:"customer"`
 	// A list of the order's line items. Line items represent the individual products and quantities that make up the order.
 	LineItems GetOrderOrderLineItemsLineItemConnection `json:"lineItems"`
 }
@@ -3103,8 +3111,34 @@ func (v *GetOrderOrder) GetId() string { return v.Id }
 // GetName returns GetOrderOrder.Name, and is useful for accessing the field via an interface.
 func (v *GetOrderOrder) GetName() string { return v.Name }
 
+// GetCreatedAt returns GetOrderOrder.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetOrderOrder) GetCreatedAt() time.Time { return v.CreatedAt }
+
+// GetCustomer returns GetOrderOrder.Customer, and is useful for accessing the field via an interface.
+func (v *GetOrderOrder) GetCustomer() GetOrderOrderCustomer { return v.Customer }
+
 // GetLineItems returns GetOrderOrder.LineItems, and is useful for accessing the field via an interface.
 func (v *GetOrderOrder) GetLineItems() GetOrderOrderLineItemsLineItemConnection { return v.LineItems }
+
+// GetOrderOrderCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type GetOrderOrderCustomer struct {
+	// The full name of the customer, based on the values for first_name and last_name. If the first_name and
+	// last_name are not available, then this falls back to the customer's email
+	// address, and if that is not available, the customer's phone number.
+	DisplayName string `json:"displayName"`
+}
+
+// GetDisplayName returns GetOrderOrderCustomer.DisplayName, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderCustomer) GetDisplayName() string { return v.DisplayName }
 
 // GetOrderOrderLineItemsLineItemConnection includes the requested fields of the GraphQL type LineItemConnection.
 // The GraphQL type's documentation follows.
@@ -3303,6 +3337,14 @@ type GetOrdersOrdersOrderConnectionNodesOrder struct {
 	// Useful for contacting customers about shipping updates, delivery notifications, or order issues.
 	// Returns `null` if no phone number was provided during checkout.
 	Phone string `json:"phone"`
+	// The date and time in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601)
+	// when an order was created. This timestamp is set when the customer completes
+	// checkout and remains unchanged throughout an order's lifecycle.
+	CreatedAt time.Time `json:"createdAt"`
+	// The customer who placed an order. Returns `null` if an order was created
+	// through a checkout without customer authentication, such as a guest checkout.
+	// Learn more about [customer accounts](https://help.shopify.com/manual/customers/customer-accounts).
+	Customer GetOrdersOrdersOrderConnectionNodesOrderCustomer `json:"customer"`
 }
 
 // GetId returns GetOrdersOrdersOrderConnectionNodesOrder.Id, and is useful for accessing the field via an interface.
@@ -3316,6 +3358,36 @@ func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetEmail() string { return v.
 
 // GetPhone returns GetOrdersOrdersOrderConnectionNodesOrder.Phone, and is useful for accessing the field via an interface.
 func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetPhone() string { return v.Phone }
+
+// GetCreatedAt returns GetOrdersOrdersOrderConnectionNodesOrder.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetCreatedAt() time.Time { return v.CreatedAt }
+
+// GetCustomer returns GetOrdersOrdersOrderConnectionNodesOrder.Customer, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrder) GetCustomer() GetOrdersOrdersOrderConnectionNodesOrderCustomer {
+	return v.Customer
+}
+
+// GetOrdersOrdersOrderConnectionNodesOrderCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type GetOrdersOrdersOrderConnectionNodesOrderCustomer struct {
+	// The full name of the customer, based on the values for first_name and last_name. If the first_name and
+	// last_name are not available, then this falls back to the customer's email
+	// address, and if that is not available, the customer's phone number.
+	DisplayName string `json:"displayName"`
+}
+
+// GetDisplayName returns GetOrdersOrdersOrderConnectionNodesOrderCustomer.DisplayName, and is useful for accessing the field via an interface.
+func (v *GetOrdersOrdersOrderConnectionNodesOrderCustomer) GetDisplayName() string {
+	return v.DisplayName
+}
 
 // GetOrdersResponse is returned by GetOrders on success.
 type GetOrdersResponse struct {
@@ -6858,6 +6930,10 @@ query GetOrder ($orderId: ID!) {
 	order(id: $orderId) {
 		id
 		name
+		createdAt
+		customer {
+			displayName
+		}
 		lineItems(first: 100) {
 			nodes {
 				id
@@ -6908,6 +6984,10 @@ query GetOrders ($query: String) {
 			name
 			email
 			phone
+			createdAt
+			customer {
+				displayName
+			}
 		}
 	}
 }

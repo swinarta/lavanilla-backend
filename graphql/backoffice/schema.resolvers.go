@@ -385,8 +385,12 @@ func (r *queryResolver) OrderPrintOperator(ctx context.Context) ([]*model.Order,
 	}
 	return lo.Map(orders.Orders.Nodes, func(item shopify.GetOrdersOrdersOrderConnectionNodesOrder, _ int) *model.Order {
 		return &model.Order{
-			ID:   item.Id,
-			Name: item.Name,
+			ID:        item.Id,
+			Name:      item.Name,
+			CreatedAt: item.CreatedAt,
+			Customer: &model.Customer{
+				Name: item.Customer.DisplayName,
+			},
 		}
 	}), nil
 }
