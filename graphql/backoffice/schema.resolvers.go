@@ -14,7 +14,6 @@ import (
 	"lavanilla/graphql/backoffice/model"
 	"lavanilla/service"
 	"lavanilla/service/metadata"
-	S3util "lavanilla/service/s3util"
 	"lavanilla/service/shopify"
 	"lavanilla/utils"
 	"log"
@@ -79,54 +78,7 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
 func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
-	tag, err := r.ShopifyClient.RemoveTag(ctx, id, metadata.DesignerInProgressKeyName)
-	if err != nil {
-		return false, err
-	}
-	if len(tag.TagsRemove.UserErrors) > 0 {
-		return false, errors.New(tag.TagsRemove.UserErrors[0].Message)
-	}
-
-	order, err := r.ShopifyClient.DraftOrderComplete(ctx, id)
-	if err != nil {
-		return false, err
-	}
-
-	newOrderId, _, err := utils.ExtractID(order.DraftOrderComplete.DraftOrder.Order.Id)
-	if err != nil {
-		return false, err
-	}
-
-	// rename from draftOrder.name to order.id
-	if err := S3util.RenameS3Directory(ctx, r.S3Client, service.S3BucketOrder, fmt.Sprintf("%s/", order.DraftOrderComplete.DraftOrder.Name), fmt.Sprintf("%s/", newOrderId)); err != nil {
-		return false, err
-	}
-
-	now := time.Now()
-	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
-		Timestamp: now,
-		Action:    "DESIGNER_END",
-	})
-	if err != nil {
-		return false, err
-	}
-	var designerJob *metadata.DesignerJob
-	_, err = r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob)
-	if err != nil {
-		return false, err
-	}
-
-	if designerJob != nil {
-		designerJob.EndAt = lo.ToPtr(now)
-	}
-
-	marshal, _ := json.Marshal(designerJob)
-	_, err = r.ShopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal)
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
+	return r.DraftOrder.DraftOrderComplete(ctx, id)
 }
 
 // DraftOrderAddProductVariant is the resolver for the draftOrderAddProductVariant field.
