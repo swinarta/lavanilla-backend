@@ -7,7 +7,6 @@ package backoffice
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -32,53 +31,12 @@ import (
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
 func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool, error) {
-	var designerJob *metadata.DesignerJob
-	_, err := r.ShopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob)
-	if err != nil {
-		return false, err
-	}
-
-	if designerJob != nil && designerJob.StartAt != nil {
-		return false, errors.New(fmt.Sprintf("meta fields %s are not empty", metadata.DesignerKeyName))
-	}
-
-	now := time.Now()
-	job := metadata.DesignerJob{
-		StartAt: lo.ToPtr(now),
-		EndAt:   nil,
-	}
-
-	marshal, _ := json.Marshal(job)
-	m, err := r.ShopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal)
-	if err != nil {
-		return false, err
-	}
-	if len(m.MetafieldsSet.UserErrors) > 0 {
-		return false, errors.New(string(m.MetafieldsSet.UserErrors[0].Code))
-	}
-
-	_, err = r.ShopifyClient.TimestampAdd(ctx, id, metadata.Timeline{
-		Timestamp: now,
-		Action:    "DESIGNER_START",
-	})
-	if err != nil {
-		return false, err
-	}
-
-	tag, err := r.ShopifyClient.AddTag(ctx, id, metadata.DesignerInProgressKeyName)
-	if err != nil {
-		return false, err
-	}
-	if len(tag.TagsAdd.UserErrors) > 0 {
-		return false, errors.New(tag.TagsAdd.UserErrors[0].Message)
-	}
-
-	return true, nil
+	return r.DraftOrderHandler.Start(ctx, id)
 }
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
 func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
-	return r.DraftOrderHandler.DraftOrderComplete(ctx, id)
+	return r.DraftOrderHandler.Complete(ctx, id)
 }
 
 // DraftOrderAddProductVariant is the resolver for the draftOrderAddProductVariant field.

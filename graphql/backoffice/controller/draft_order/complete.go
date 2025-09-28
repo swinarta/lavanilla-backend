@@ -14,7 +14,7 @@ import (
 	"github.com/samber/lo"
 )
 
-func (h *Handler) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
+func (h *Handler) Complete(ctx context.Context, id string) (bool, error) {
 
 	if err := h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, id); err != nil {
 		return false, err
