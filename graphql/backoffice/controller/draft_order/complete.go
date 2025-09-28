@@ -15,13 +15,13 @@ import (
 	"github.com/samber/lo"
 )
 
-func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error) {
+func (h *Handler) Complete(ctx context.Context, draftOrderID string) (*model.Order, error) {
 
-	if err := h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, id); err != nil {
+	if err := h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
 		return nil, err
 	}
 
-	tag, err := h.shopifyClient.RemoveTag(ctx, id, metadata.DesignerInProgressKeyName)
+	tag, err := h.shopifyClient.RemoveTag(ctx, draftOrderID, metadata.DesignerInProgressKeyName)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 		return nil, errors.New(tag.TagsRemove.UserErrors[0].Message)
 	}
 
-	order, err := h.shopifyClient.DraftOrderComplete(ctx, id)
+	order, err := h.shopifyClient.DraftOrderComplete(ctx, draftOrderID)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 		Timestamp: now,
 		Action:    "DESIGNER_END",
 	}
-	_, newMetadata, err := h.shopifyClient.TimestampAdd(ctx, id, designerEndMetadata)
+	_, newMetadata, err := h.shopifyClient.TimestampAdd(ctx, draftOrderID, designerEndMetadata)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 
 	// set designer perf metadata to draft order
 	var designerJob *metadata.DesignerJob
-	if _, err = h.shopifyClient.GetDraftOrderMetaField(ctx, id, metadata.DesignerKeyName, &designerJob); err != nil {
+	if _, err = h.shopifyClient.GetDraftOrderMetaField(ctx, draftOrderID, metadata.DesignerKeyName, &designerJob); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 	}
 
 	marshal, _ := json.Marshal(designerJob)
-	if _, err = h.shopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal); err != nil {
+	if _, err = h.shopifyClient.MetaDataAdd(ctx, draftOrderID, metadata.DesignerKeyName, marshal); err != nil {
 		return nil, err
 	}
 	if _, err = h.shopifyClient.MetaDataAdd(ctx, newGlobalOrderId, metadata.DesignerKeyName, marshal); err != nil {

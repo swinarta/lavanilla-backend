@@ -60,10 +60,10 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		DraftOrderAddProductVariant    func(childComplexity int, id string, variantID string, quantity int) int
-		DraftOrderComplete             func(childComplexity int, id string) int
-		DraftOrderStart                func(childComplexity int, id string) int
-		DraftOrderUpdateProductVariant func(childComplexity int, id string, variantID string, quantity int) int
+		DraftOrderAddProductVariant    func(childComplexity int, draftOrderID string, variantID string, quantity int) int
+		DraftOrderComplete             func(childComplexity int, draftOrderID string) int
+		DraftOrderStart                func(childComplexity int, draftOrderID string) int
+		DraftOrderUpdateProductVariant func(childComplexity int, draftOrderID string, variantID string, quantity int) int
 	}
 
 	Order struct {
@@ -116,10 +116,10 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	DraftOrderStart(ctx context.Context, id string) (bool, error)
-	DraftOrderComplete(ctx context.Context, id string) (*model.Order, error)
-	DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
-	DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
+	DraftOrderStart(ctx context.Context, draftOrderID string) (bool, error)
+	DraftOrderComplete(ctx context.Context, draftOrderID string) (*model.Order, error)
+	DraftOrderAddProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error)
+	DraftOrderUpdateProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error)
 }
 type QueryResolver interface {
 	Products(ctx context.Context) ([]*model.Product, error)
@@ -194,7 +194,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DraftOrderAddProductVariant(childComplexity, args["id"].(string), args["variantId"].(string), args["quantity"].(int)), true
+		return e.complexity.Mutation.DraftOrderAddProductVariant(childComplexity, args["draftOrderId"].(string), args["variantId"].(string), args["quantity"].(int)), true
 	case "Mutation.draftOrderComplete":
 		if e.complexity.Mutation.DraftOrderComplete == nil {
 			break
@@ -205,7 +205,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DraftOrderComplete(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DraftOrderComplete(childComplexity, args["draftOrderId"].(string)), true
 	case "Mutation.draftOrderStart":
 		if e.complexity.Mutation.DraftOrderStart == nil {
 			break
@@ -216,7 +216,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DraftOrderStart(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DraftOrderStart(childComplexity, args["draftOrderId"].(string)), true
 	case "Mutation.draftOrderUpdateProductVariant":
 		if e.complexity.Mutation.DraftOrderUpdateProductVariant == nil {
 			break
@@ -227,7 +227,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DraftOrderUpdateProductVariant(childComplexity, args["id"].(string), args["variantId"].(string), args["quantity"].(int)), true
+		return e.complexity.Mutation.DraftOrderUpdateProductVariant(childComplexity, args["draftOrderId"].(string), args["variantId"].(string), args["quantity"].(int)), true
 
 	case "Order.createdAt":
 		if e.complexity.Order.CreatedAt == nil {
@@ -580,11 +580,11 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_draftOrderAddProductVariant_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "draftOrderId", ec.unmarshalNID2string)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["draftOrderId"] = arg0
 	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "variantId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
@@ -601,33 +601,33 @@ func (ec *executionContext) field_Mutation_draftOrderAddProductVariant_args(ctx 
 func (ec *executionContext) field_Mutation_draftOrderComplete_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "draftOrderId", ec.unmarshalNID2string)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["draftOrderId"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_draftOrderStart_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "draftOrderId", ec.unmarshalNID2string)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["draftOrderId"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_draftOrderUpdateProductVariant_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "draftOrderId", ec.unmarshalNID2string)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["draftOrderId"] = arg0
 	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "variantId", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
@@ -975,7 +975,7 @@ func (ec *executionContext) _Mutation_draftOrderStart(ctx context.Context, field
 		ec.fieldContext_Mutation_draftOrderStart,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DraftOrderStart(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DraftOrderStart(ctx, fc.Args["draftOrderId"].(string))
 		},
 		nil,
 		ec.marshalNBoolean2bool,
@@ -1016,7 +1016,7 @@ func (ec *executionContext) _Mutation_draftOrderComplete(ctx context.Context, fi
 		ec.fieldContext_Mutation_draftOrderComplete,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DraftOrderComplete(ctx, fc.Args["id"].(string))
+			return ec.resolvers.Mutation().DraftOrderComplete(ctx, fc.Args["draftOrderId"].(string))
 		},
 		nil,
 		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
@@ -1071,7 +1071,7 @@ func (ec *executionContext) _Mutation_draftOrderAddProductVariant(ctx context.Co
 		ec.fieldContext_Mutation_draftOrderAddProductVariant,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DraftOrderAddProductVariant(ctx, fc.Args["id"].(string), fc.Args["variantId"].(string), fc.Args["quantity"].(int))
+			return ec.resolvers.Mutation().DraftOrderAddProductVariant(ctx, fc.Args["draftOrderId"].(string), fc.Args["variantId"].(string), fc.Args["quantity"].(int))
 		},
 		nil,
 		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
@@ -1126,7 +1126,7 @@ func (ec *executionContext) _Mutation_draftOrderUpdateProductVariant(ctx context
 		ec.fieldContext_Mutation_draftOrderUpdateProductVariant,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().DraftOrderUpdateProductVariant(ctx, fc.Args["id"].(string), fc.Args["variantId"].(string), fc.Args["quantity"].(int))
+			return ec.resolvers.Mutation().DraftOrderUpdateProductVariant(ctx, fc.Args["draftOrderId"].(string), fc.Args["variantId"].(string), fc.Args["quantity"].(int))
 		},
 		nil,
 		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,

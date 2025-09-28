@@ -25,23 +25,23 @@ import (
 )
 
 // DraftOrderStart is the resolver for the draftOrderStart field.
-func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool, error) {
-	return r.DraftOrderHandler.Start(ctx, id)
+func (r *mutationResolver) DraftOrderStart(ctx context.Context, draftOrderID string) (bool, error) {
+	return r.DraftOrderHandler.Start(ctx, draftOrderID)
 }
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
-func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (*model.Order, error) {
-	return r.DraftOrderHandler.Complete(ctx, id)
+func (r *mutationResolver) DraftOrderComplete(ctx context.Context, draftOrderID string) (*model.Order, error) {
+	return r.DraftOrderHandler.Complete(ctx, draftOrderID)
 }
 
 // DraftOrderAddProductVariant is the resolver for the draftOrderAddProductVariant field.
-func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	return r.DraftOrderProductVariantHandler.Add(ctx, id, variantID, quantity)
+func (r *mutationResolver) DraftOrderAddProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
+	return r.DraftOrderProductVariantHandler.Add(ctx, draftOrderID, variantID, quantity)
 }
 
 // DraftOrderUpdateProductVariant is the resolver for the draftOrderUpdateProductVariant field.
-func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	return r.DraftOrderProductVariantHandler.Update(ctx, id, variantID, quantity)
+func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
+	return r.DraftOrderProductVariantHandler.Update(ctx, draftOrderID, variantID, quantity)
 }
 
 // Products is the resolver for the products field.

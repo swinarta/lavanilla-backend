@@ -10,8 +10,8 @@ import (
 	"github.com/samber/lo"
 )
 
-func (h *Handler) Add(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error) {
-	order, err := h.shopifyClient.GetDraftOrder(ctx, id)
+func (h *Handler) Add(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
+	order, err := h.shopifyClient.GetDraftOrder(ctx, draftOrderID)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func (h *Handler) Add(ctx context.Context, id string, variantID string, quantity
 		return nil, errors.New("variant already exists")
 	}
 
-	if err = h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, id); err != nil {
+	if err = h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
 		return nil, err
 	}
 
@@ -39,7 +39,7 @@ func (h *Handler) Add(ctx context.Context, id string, variantID string, quantity
 		VariantId: variantID,
 	})
 
-	_, err = h.customClient.DraftOrderUpdateLineItems(ctx, id, newLineItems)
+	_, err = h.customClient.DraftOrderUpdateLineItems(ctx, draftOrderID, newLineItems)
 	if err != nil {
 		return nil, err
 	}

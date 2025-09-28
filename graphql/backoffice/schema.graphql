@@ -13,10 +13,10 @@ type Query {
 }
 
 type Mutation {
-    draftOrderStart(id: ID!): Boolean!
-    draftOrderComplete(id: ID!): Order!
-    draftOrderAddProductVariant(id: ID!, variantId: String!, quantity: Int!): Order!
-    draftOrderUpdateProductVariant(id: ID!, variantId: String!, quantity: Int!): Order!
+    draftOrderStart(draftOrderId: ID!): Boolean!
+    draftOrderComplete(draftOrderId: ID!): Order!
+    draftOrderAddProductVariant(draftOrderId: ID!, variantId: String!, quantity: Int!): Order!
+    draftOrderUpdateProductVariant(draftOrderId: ID!, variantId: String!, quantity: Int!): Order!
 }
 
 enum DraftOrderStatus {
