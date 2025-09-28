@@ -117,7 +117,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	DraftOrderStart(ctx context.Context, id string) (bool, error)
-	DraftOrderComplete(ctx context.Context, id string) (bool, error)
+	DraftOrderComplete(ctx context.Context, id string) (*model.Order, error)
 	DraftOrderAddProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
 	DraftOrderUpdateProductVariant(ctx context.Context, id string, variantID string, quantity int) (*model.Order, error)
 }
@@ -1014,7 +1014,7 @@ func (ec *executionContext) _Mutation_draftOrderComplete(ctx context.Context, fi
 			return ec.resolvers.Mutation().DraftOrderComplete(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalNBoolean2bool,
+		ec.marshalNOrder2ᚖlavanillaᚋgraphqlᚋbackofficeᚋmodelᚐOrder,
 		true,
 		true,
 	)
@@ -1027,7 +1027,21 @@ func (ec *executionContext) fieldContext_Mutation_draftOrderComplete(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Order_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Order_name(ctx, field)
+			case "lineItems":
+				return ec.fieldContext_Order_lineItems(ctx, field)
+			case "timelines":
+				return ec.fieldContext_Order_timelines(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Order_createdAt(ctx, field)
+			case "customer":
+				return ec.fieldContext_Order_customer(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
 	}
 	defer func() {

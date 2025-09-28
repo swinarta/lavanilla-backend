@@ -35,6 +35,10 @@ mutation DraftOrderComplete($id: ID!) {
                 id
                 name
             }
+            createdAt
+            customer {
+                displayName
+            }
         }
         userErrors {
             field

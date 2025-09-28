@@ -1508,6 +1508,10 @@ type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder str
 	Name string `json:"name"`
 	// The order that was created from the draft order.
 	Order DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder `json:"order"`
+	// The date and time when the draft order was created in Shopify.
+	CreatedAt time.Time `json:"createdAt"`
+	// The customer who will be sent an invoice.
+	Customer DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderCustomer `json:"customer"`
 }
 
 // GetId returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder.Id, and is useful for accessing the field via an interface.
@@ -1523,6 +1527,38 @@ func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder
 // GetOrder returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder.Order, and is useful for accessing the field via an interface.
 func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder) GetOrder() DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder {
 	return v.Order
+}
+
+// GetCreatedAt returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder.CreatedAt, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder) GetCreatedAt() time.Time {
+	return v.CreatedAt
+}
+
+// GetCustomer returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder.Customer, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrder) GetCustomer() DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderCustomer {
+	return v.Customer
+}
+
+// DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderCustomer includes the requested fields of the GraphQL type Customer.
+// The GraphQL type's documentation follows.
+//
+// Represents information about a customer of the shop, such as the customer's contact details, their order
+// history, and whether they've agreed to receive marketing material by email.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+type DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderCustomer struct {
+	// The full name of the customer, based on the values for first_name and last_name. If the first_name and
+	// last_name are not available, then this falls back to the customer's email
+	// address, and if that is not available, the customer's phone number.
+	DisplayName string `json:"displayName"`
+}
+
+// GetDisplayName returns DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderCustomer.DisplayName, and is useful for accessing the field via an interface.
+func (v *DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderCustomer) GetDisplayName() string {
+	return v.DisplayName
 }
 
 // DraftOrderCompleteDraftOrderCompleteDraftOrderCompletePayloadDraftOrderOrder includes the requested fields of the GraphQL type Order.
@@ -6588,6 +6624,10 @@ mutation DraftOrderComplete ($id: ID!) {
 			order {
 				id
 				name
+			}
+			createdAt
+			customer {
+				displayName
 			}
 		}
 		userErrors {

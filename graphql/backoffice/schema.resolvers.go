@@ -35,7 +35,7 @@ func (r *mutationResolver) DraftOrderStart(ctx context.Context, id string) (bool
 }
 
 // DraftOrderComplete is the resolver for the draftOrderComplete field.
-func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (bool, error) {
+func (r *mutationResolver) DraftOrderComplete(ctx context.Context, id string) (*model.Order, error) {
 	return r.DraftOrderHandler.Complete(ctx, id)
 }
 
