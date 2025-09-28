@@ -3,6 +3,7 @@ package backoffice
 import (
 	"lavanilla/graphql/backoffice/controller/draft_order"
 	"lavanilla/graphql/backoffice/controller/draft_order_product_variant"
+	"lavanilla/graphql/backoffice/controller/order"
 	"lavanilla/service/shopify"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -15,6 +16,7 @@ import (
 type Resolver struct {
 	DraftOrderHandler               *draft_order.Handler
 	DraftOrderProductVariantHandler *draft_order_product_variant.Handler
+	OrderHandler                    *order.Handler
 	ShopifyClient                   *shopify.Client
 	S3PresignClient                 *s3.PresignClient
 	S3Client                        *s3.Client
