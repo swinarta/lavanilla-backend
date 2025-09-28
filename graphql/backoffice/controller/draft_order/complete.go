@@ -68,8 +68,10 @@ func (h *Handler) Complete(ctx context.Context, id string) (*model.Order, error)
 	}
 
 	marshal, _ := json.Marshal(designerJob)
-	_, err = h.shopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal)
-	if err != nil {
+	if _, err = h.shopifyClient.MetaDataAdd(ctx, id, metadata.DesignerKeyName, marshal); err != nil {
+		return nil, err
+	}
+	if _, err = h.shopifyClient.MetaDataAdd(ctx, newGlobalOrderId, metadata.DesignerKeyName, marshal); err != nil {
 		return nil, err
 	}
 
