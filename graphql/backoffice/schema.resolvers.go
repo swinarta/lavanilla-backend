@@ -44,6 +44,11 @@ func (r *mutationResolver) DraftOrderUpdateProductVariant(ctx context.Context, d
 	return r.DraftOrderProductVariantHandler.Update(ctx, draftOrderID, variantID, quantity)
 }
 
+// DraftOrderAddNoteProductVariantDesigner is the resolver for the draftOrderAddNoteProductVariantDesigner field.
+func (r *mutationResolver) DraftOrderAddNoteProductVariantDesigner(ctx context.Context, draftOrderID string, variantID string, note string) (bool, error) {
+	return r.DraftOrderProductVariantHandler.AddNote(ctx, draftOrderID, variantID, note)
+}
+
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context) ([]*model.Product, error) {
 	productConn, err := r.ShopifyClient.GetProductsSelfService(ctx)

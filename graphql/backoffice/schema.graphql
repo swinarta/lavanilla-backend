@@ -17,6 +17,7 @@ type Mutation {
     draftOrderComplete(draftOrderId: ID!): Order!
     draftOrderAddProductVariant(draftOrderId: ID!, variantId: String!, quantity: Int!): Order!
     draftOrderUpdateProductVariant(draftOrderId: ID!, variantId: String!, quantity: Int!): Order!
+    draftOrderAddNoteProductVariantDesigner(draftOrderId: ID!, variantId: String!, note: String!): Boolean!
 }
 
 enum DraftOrderStatus {

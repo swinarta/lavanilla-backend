@@ -11,6 +11,10 @@ import (
 )
 
 func (h *Handler) Update(ctx context.Context, draftOrderID string, variantID string, quantity int) (*model.Order, error) {
+	if err := h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
+		return nil, err
+	}
+
 	order, err := h.shopifyClient.GetDraftOrder(ctx, draftOrderID)
 	if err != nil {
 		return nil, err
@@ -18,10 +22,6 @@ func (h *Handler) Update(ctx context.Context, draftOrderID string, variantID str
 	_, found := lo.Find(order.DraftOrder.LineItems.Nodes, func(item shopify.GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) bool {
 		return item.Variant.Id == variantID
 	})
-
-	if err = h.shopifyClient.CheckDraftOrderStartedByDesigner(ctx, draftOrderID); err != nil {
-		return nil, err
-	}
 
 	if !found && quantity > 0 {
 		return nil, errors.New("variant does not exist")
