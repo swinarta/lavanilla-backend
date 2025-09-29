@@ -67,6 +67,18 @@ mutation MetaDataAdd($ownerId: ID!, $namespace: String!, $key: String!, $value: 
     }
 }
 
+mutation DraftOrderCustomAttributesAdd($draftOrderId: ID!, $key: String!, $value: String!) {
+    draftOrderUpdate(id: $draftOrderId, input: {customAttributes: {key: $key, value: $value}}){
+        draftOrder {
+            id
+        }
+        userErrors {
+            message
+            field
+        }
+    }
+}
+
 query GetFulfillment($id: ID!) {
     fulfillment(id: $id) {
         status

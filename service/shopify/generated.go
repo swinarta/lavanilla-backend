@@ -1666,6 +1666,100 @@ func (v *DraftOrderCompleteResponse) GetDraftOrderComplete() DraftOrderCompleteD
 	return v.DraftOrderComplete
 }
 
+// DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload includes the requested fields of the GraphQL type DraftOrderUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `draftOrderUpdate` mutation.
+type DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload struct {
+	// The updated draft order.
+	DraftOrder DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder `json:"draftOrder"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDraftOrder returns DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload.DraftOrder, and is useful for accessing the field via an interface.
+func (v *DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload) GetDraftOrder() DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder {
+	return v.DraftOrder
+}
+
+// GetUserErrors returns DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload) GetUserErrors() []DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder includes the requested fields of the GraphQL type DraftOrder.
+// The GraphQL type's documentation follows.
+//
+// An order that a merchant creates on behalf of a customer. Draft orders are
+// useful for merchants that need to do the following tasks:
+//
+// - Create new orders for sales made by phone, in person, by chat, or elsewhere.
+// When a merchant accepts payment for a draft order, an order is created.
+// - Send invoices to customers to pay with a secure checkout link.
+// - Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+// - Re-create orders manually from active sales channels.
+// - Sell products at discount or wholesale rates.
+// - Take pre-orders.
+//
+// For draft orders in multiple currencies `presentment_money` is the source of
+// truth for what a customer is going to be charged and `shop_money` is an estimate
+// of what the merchant might receive in their shop currency.
+//
+// **Caution:** Only use this data if it's required for your app's functionality.
+// Shopify will restrict [access to
+// scopes](https://shopify.dev/api/usage/access-scopes) for apps that don't have a
+// legitimate use for the associated data.
+//
+// Draft orders created on or after April 1, 2025 will be automatically purged after one year of inactivity.
+type DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder.Id, and is useful for accessing the field via an interface.
+func (v *DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadDraftOrder) GetId() string {
+	return v.Id
+}
+
+// DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error in the input of a mutation.
+type DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError struct {
+	// The error message.
+	Message string `json:"message"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+}
+
+// GetMessage returns DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetField returns DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// DraftOrderCustomAttributesAddResponse is returned by DraftOrderCustomAttributesAdd on success.
+type DraftOrderCustomAttributesAddResponse struct {
+	// Updates a draft order.
+	//
+	// If a checkout has been started for a draft order, any update to the draft will unlink the checkout. Checkouts
+	// are created but not immediately completed when opening the merchant credit card modal in the admin, and when a
+	// buyer opens the invoice URL. This is usually fine, but there is an edge case where a checkout is in progress
+	// and the draft is updated before the checkout completes. This will not interfere with the checkout and order
+	// creation, but if the link from draft to checkout is broken the draft will remain open even after the order is
+	// created.
+	DraftOrderUpdate DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload `json:"draftOrderUpdate"`
+}
+
+// GetDraftOrderUpdate returns DraftOrderCustomAttributesAddResponse.DraftOrderUpdate, and is useful for accessing the field via an interface.
+func (v *DraftOrderCustomAttributesAddResponse) GetDraftOrderUpdate() DraftOrderCustomAttributesAddDraftOrderUpdateDraftOrderUpdatePayload {
+	return v.DraftOrderUpdate
+}
+
 // The input fields used to create or update a draft order.
 type DraftOrderInput struct {
 	// The discount that will be applied to the draft order.
@@ -6535,6 +6629,22 @@ type __DraftOrderCompleteInput struct {
 // GetId returns __DraftOrderCompleteInput.Id, and is useful for accessing the field via an interface.
 func (v *__DraftOrderCompleteInput) GetId() string { return v.Id }
 
+// __DraftOrderCustomAttributesAddInput is used internally by genqlient
+type __DraftOrderCustomAttributesAddInput struct {
+	DraftOrderId string `json:"draftOrderId"`
+	Key          string `json:"key"`
+	Value        string `json:"value"`
+}
+
+// GetDraftOrderId returns __DraftOrderCustomAttributesAddInput.DraftOrderId, and is useful for accessing the field via an interface.
+func (v *__DraftOrderCustomAttributesAddInput) GetDraftOrderId() string { return v.DraftOrderId }
+
+// GetKey returns __DraftOrderCustomAttributesAddInput.Key, and is useful for accessing the field via an interface.
+func (v *__DraftOrderCustomAttributesAddInput) GetKey() string { return v.Key }
+
+// GetValue returns __DraftOrderCustomAttributesAddInput.Value, and is useful for accessing the field via an interface.
+func (v *__DraftOrderCustomAttributesAddInput) GetValue() string { return v.Value }
+
 // __DraftOrderUpdateInput is used internally by genqlient
 type __DraftOrderUpdateInput struct {
 	Id    string          `json:"id"`
@@ -6773,6 +6883,50 @@ func DraftOrderComplete(
 	}
 
 	data_ = &DraftOrderCompleteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DraftOrderCustomAttributesAdd.
+const DraftOrderCustomAttributesAdd_Operation = `
+mutation DraftOrderCustomAttributesAdd ($draftOrderId: ID!, $key: String!, $value: String!) {
+	draftOrderUpdate(id: $draftOrderId, input: {customAttributes:{key:$key,value:$value}}) {
+		draftOrder {
+			id
+		}
+		userErrors {
+			message
+			field
+		}
+	}
+}
+`
+
+func DraftOrderCustomAttributesAdd(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	draftOrderId string,
+	key string,
+	value string,
+) (data_ *DraftOrderCustomAttributesAddResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DraftOrderCustomAttributesAdd",
+		Query:  DraftOrderCustomAttributesAdd_Operation,
+		Variables: &__DraftOrderCustomAttributesAddInput{
+			DraftOrderId: draftOrderId,
+			Key:          key,
+			Value:        value,
+		},
+	}
+
+	data_ = &DraftOrderCustomAttributesAddResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

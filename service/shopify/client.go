@@ -139,6 +139,10 @@ func (c *Client) MetaDataAdd(ctx context.Context, ownerId string, key metadata.K
 	return MetaDataAdd(ctx, c.graphql, ownerId, NameSpace, key, string(value))
 }
 
+func (c *Client) DraftOrderCustomAttributesAdd(ctx context.Context, draftOrderId string, key metadata.AttrKey, value string) (*DraftOrderCustomAttributesAddResponse, error) {
+	return DraftOrderCustomAttributesAdd(ctx, c.graphql, draftOrderId, key, value)
+}
+
 func (c *Client) GetDraftOrderMetaField(ctx context.Context, orderId string, key string, value any) (*GetDraftOrderMetaFieldResponse, error) {
 	res, err := GetDraftOrderMetaField(ctx, c.graphql, orderId, NameSpace, key)
 	if err != nil {
