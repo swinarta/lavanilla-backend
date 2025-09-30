@@ -109,7 +109,7 @@ func (r *queryResolver) DraftOrderDesigner(ctx context.Context, status *model.Dr
 
 // DraftOrder is the resolver for the draftOrder field.
 func (r *queryResolver) DraftOrder(ctx context.Context, draftOrderID string) (*model.Order, error) {
-	return r.DraftOrder(ctx, draftOrderID)
+	return r.DraftOrderHandler.DraftOrder(ctx, draftOrderID)
 }
 
 // PresignedURLDesigner is the resolver for the presignedUrlDesigner field.
