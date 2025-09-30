@@ -55,7 +55,6 @@ func graphqlHandler() gin.HandlerFunc {
 		OrderHandler:                    order.NewHandler(shopifyClient, customClient, s3Client, s3PresignClient),
 		ShopifyClient:                   shopifyClient,
 		S3PresignClient:                 s3PresignClient,
-		S3Client:                        s3Client,
 	}}
 
 	h := handler.New(graph.NewExecutableSchema(c))

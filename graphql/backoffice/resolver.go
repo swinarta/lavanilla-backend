@@ -19,5 +19,4 @@ type Resolver struct {
 	OrderHandler                    *order.Handler
 	ShopifyClient                   *shopify.Client
 	S3PresignClient                 *s3.PresignClient
-	S3Client                        *s3.Client
 }
