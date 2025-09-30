@@ -2449,6 +2449,8 @@ type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrder
 	Sku string `json:"sku"`
 	// The title of the product or variant. This field only applies to custom line items.
 	Title string `json:"title"`
+	// A list of attributes that represent custom features or special requests.
+	CustomAttributes []GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute `json:"customAttributes"`
 	// The product variant for the line item.
 	Variant GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant `json:"variant"`
 }
@@ -2473,9 +2475,41 @@ func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftO
 	return v.Title
 }
 
+// GetCustomAttributes returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.CustomAttributes, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetCustomAttributes() []GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute {
+	return v.CustomAttributes
+}
+
 // GetVariant returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem.Variant, and is useful for accessing the field via an interface.
 func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItem) GetVariant() GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant {
 	return v.Variant
+}
+
+// GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute includes the requested fields of the GraphQL type Attribute.
+// The GraphQL type's documentation follows.
+//
+// A custom property. Attributes are used to store additional information about a Shopify resource, such as
+// products, customers, or orders. Attributes are stored as key-value pairs.
+//
+// For example, a list of attributes might include whether a customer is a first-time buyer (`"customer_first_order": "true"`),
+// whether an order is gift-wrapped (`"gift_wrapped": "true"`), a preferred delivery date
+// (`"preferred_delivery_date": "2025-10-01"`), the discount applied (`"loyalty_discount_applied": "10%"`), and any
+// notes provided by the customer (`"customer_notes": "Please leave at the front door"`).
+type GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute struct {
+	// The key or name of the attribute. For example, `"customer_first_order"`.
+	Key string `json:"key"`
+	// The value of the attribute. For example, `"true"`.
+	Value string `json:"value"`
+}
+
+// GetKey returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute.Key, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute) GetKey() string {
+	return v.Key
+}
+
+// GetValue returns GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute.Value, and is useful for accessing the field via an interface.
+func (v *GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemCustomAttributesAttribute) GetValue() string {
+	return v.Value
 }
 
 // GetDraftOrderDraftOrderLineItemsDraftOrderLineItemConnectionNodesDraftOrderLineItemVariantProductVariant includes the requested fields of the GraphQL type ProductVariant.
@@ -3424,6 +3458,8 @@ type GetOrderOrderLineItemsLineItemConnectionNodesLineItem struct {
 	Name string `json:"name"`
 	// The number of units ordered, including refunded and removed units.
 	Quantity int `json:"quantity"`
+	// A list of attributes that represent custom features or special requests.
+	CustomAttributes []GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute `json:"customAttributes"`
 	// The Product object associated with this line item's variant.
 	Product GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct `json:"product"`
 }
@@ -3440,9 +3476,41 @@ func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetName() string
 // GetQuantity returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Quantity, and is useful for accessing the field via an interface.
 func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetQuantity() int { return v.Quantity }
 
+// GetCustomAttributes returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.CustomAttributes, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetCustomAttributes() []GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute {
+	return v.CustomAttributes
+}
+
 // GetProduct returns GetOrderOrderLineItemsLineItemConnectionNodesLineItem.Product, and is useful for accessing the field via an interface.
 func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItem) GetProduct() GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct {
 	return v.Product
+}
+
+// GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute includes the requested fields of the GraphQL type Attribute.
+// The GraphQL type's documentation follows.
+//
+// A custom property. Attributes are used to store additional information about a Shopify resource, such as
+// products, customers, or orders. Attributes are stored as key-value pairs.
+//
+// For example, a list of attributes might include whether a customer is a first-time buyer (`"customer_first_order": "true"`),
+// whether an order is gift-wrapped (`"gift_wrapped": "true"`), a preferred delivery date
+// (`"preferred_delivery_date": "2025-10-01"`), the discount applied (`"loyalty_discount_applied": "10%"`), and any
+// notes provided by the customer (`"customer_notes": "Please leave at the front door"`).
+type GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute struct {
+	// The key or name of the attribute. For example, `"customer_first_order"`.
+	Key string `json:"key"`
+	// The value of the attribute. For example, `"true"`.
+	Value string `json:"value"`
+}
+
+// GetKey returns GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute.Key, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute) GetKey() string {
+	return v.Key
+}
+
+// GetValue returns GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute.Value, and is useful for accessing the field via an interface.
+func (v *GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute) GetValue() string {
+	return v.Value
 }
 
 // GetOrderOrderLineItemsLineItemConnectionNodesLineItemProduct includes the requested fields of the GraphQL type Product.
@@ -7055,6 +7123,10 @@ query GetDraftOrder ($id: ID!) {
 				quantity
 				sku
 				title
+				customAttributes {
+					key
+					value
+				}
 				variant {
 					id
 					title
@@ -7269,6 +7341,10 @@ query GetOrder ($orderId: ID!) {
 				sku
 				name
 				quantity
+				customAttributes {
+					key
+					value
+				}
 				product {
 					id
 					title

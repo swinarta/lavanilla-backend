@@ -3,4 +3,5 @@ type LineItem {
     variant: ProductVariant
     quantity: Int!
     uploadedImages: [URL!]
+    designerNote: String
 }

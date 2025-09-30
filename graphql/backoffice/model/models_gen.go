@@ -19,6 +19,7 @@ type LineItem struct {
 	Variant        *ProductVariant `json:"variant,omitempty"`
 	Quantity       int             `json:"quantity"`
 	UploadedImages []string        `json:"uploadedImages,omitempty"`
+	DesignerNote   *string         `json:"designerNote,omitempty"`
 }
 
 type LineItemInput struct {

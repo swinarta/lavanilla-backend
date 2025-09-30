@@ -45,8 +45,10 @@ func (h *Handler) Order(ctx context.Context, orderID string) (*model.Order, erro
 				Action:  model.EventAction(item.Action),
 			}
 		}),
-
 		LineItems: lo.Map(order.Order.LineItems.Nodes, func(item shopify.GetOrderOrderLineItemsLineItemConnectionNodesLineItem, _ int) *model.LineItem {
+			designerNote, foundDesignerNote := lo.Find(item.CustomAttributes, func(item shopify.GetOrderOrderLineItemsLineItemConnectionNodesLineItemCustomAttributesAttribute) bool {
+				return item.Key == metadata.DesignerNoteKeyName
+			})
 			return &model.LineItem{
 				Quantity: item.Quantity,
 				Product: &model.Product{
@@ -57,6 +59,7 @@ func (h *Handler) Order(ctx context.Context, orderID string) (*model.Order, erro
 					ID:  item.Id,
 					Sku: item.Sku,
 				},
+				DesignerNote: lo.If(foundDesignerNote, &designerNote.Value).Else(nil),
 			}
 		}),
 	}, nil

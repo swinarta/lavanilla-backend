@@ -67,6 +67,7 @@ func (h *Handler) Complete(ctx context.Context, draftOrderID string) (*model.Ord
 		designerJob.EndAt = lo.ToPtr(now)
 	}
 
+	// TODO: goroutine
 	marshal, _ := json.Marshal(designerJob)
 	if _, err = h.shopifyClient.MetaDataAdd(ctx, draftOrderID, metadata.DesignerKeyName, marshal); err != nil {
 		return nil, err
@@ -75,6 +76,7 @@ func (h *Handler) Complete(ctx context.Context, draftOrderID string) (*model.Ord
 		return nil, err
 	}
 
+	// TODO: use get?
 	return &model.Order{
 		ID:        newGlobalOrderId,
 		Name:      order.DraftOrderComplete.DraftOrder.Order.Name,

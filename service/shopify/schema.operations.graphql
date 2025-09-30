@@ -239,6 +239,10 @@ query GetOrder($orderId: ID!) {
                 sku
                 name
                 quantity
+                customAttributes {
+                    key
+                    value
+                }
                 product {
                     id
                     title
@@ -303,6 +307,10 @@ query GetDraftOrder($id: ID!) {
                 quantity
                 sku
                 title
+                customAttributes {
+                    key
+                    value
+                }
                 variant {
                     id
                     title
